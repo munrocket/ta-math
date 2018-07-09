@@ -17,10 +17,10 @@ let line = TA(ohlcv).ema(10);
 ### Supporting indicators and overlays
 
 * sma     -   Simple Moving Average
-* std     -   Standard Deviation
 * ema     -   Exponential Moving Average
-* macd    -   Moving Average Convergence/Divergence
+* std     -   Standard Deviation
 * bband   -   Bollinger Band
+* macd    -   Moving Average Convergence/Divergence
 * zigzag  -   ZigZag Indicator
 
 ### Contributing

@@ -88,19 +88,6 @@ function TA(ohlcv) {
     return result;
   }
 
-  let std = function($close, window) {
-    let result = [];
-    let first = firstNotNaN($close);
-    $close.forEach((_, i) => {
-      if (i + 1 < window + first) {
-        result.push(NaN);
-      } else {
-        result.push(Math.sqrt(variance($close.slice(i + 1 - window, i + 1))));
-      } 
-    });
-    return result;
-  }
-
   let ema = function($close, window) {
     let result = [];
     let first = firstNotNaN($close);
@@ -117,11 +104,17 @@ function TA(ohlcv) {
     return result;
   }
 
-  let macd = function($close, wshort, wlong, wsig) {
-    let macd_line = pointwise(ema($close, wshort), ema($close, wlong), (a, b) => a - b);
-    let macd_signal = ema(macd_line, wsig);
-    let macd_hist = pointwise(macd_line, macd_signal, (a, b) => a - b);
-    return glue(macd_line, macd_signal, macd_hist);
+  let std = function($close, window) {
+    let result = [];
+    let first = firstNotNaN($close);
+    $close.forEach((_, i) => {
+      if (i + 1 < window + first) {
+        result.push(NaN);
+      } else {
+        result.push(Math.sqrt(variance($close.slice(i + 1 - window, i + 1))));
+      } 
+    });
+    return result;
   }
 
   let bband = function($close, window, mult) {
@@ -129,6 +122,13 @@ function TA(ohlcv) {
     let upper = pointwise(middle, std($close, window), (a, b) => a + b * mult);
     let lower = pointwise(middle, std($close, window), (a, b) => a - b * mult);
     return glue(upper, middle, lower);
+  }
+
+  let macd = function($close, wshort, wlong, wsig) {
+    let macd_line = pointwise(ema($close, wshort), ema($close, wlong), (a, b) => a - b);
+    let macd_signal = ema(macd_line, wsig);
+    let macd_hist = pointwise(macd_line, macd_signal, (a, b) => a - b);
+    return glue(macd_line, macd_signal, macd_hist);
   }
 
   let zigzag = function($time, $high, $low, percent) {
@@ -155,10 +155,10 @@ function TA(ohlcv) {
 
   return {
     sma:    (window = 15)                         =>  sma($.close, window),
-    std:    (window = 15)                         =>  std($.close, window),
     ema:    (window = 10)                         =>  ema($.close, window),
-    macd:   (wshort = 12, wlong = 26, wsig = 9)   =>  macd($.close, wshort, wlong, wsig),
+    std:    (window = 15)                         =>  std($.close, window),
     bband:  (window = 15, mult = 2)               =>  bband($.close, window, mult),
+    macd:   (wshort = 12, wlong = 26, wsig = 9)   =>  macd($.close, wshort, wlong, wsig),
     zigzag: (percent = 10)                        =>  zigzag($.time, $.high, $.low, percent)
   }
 }
