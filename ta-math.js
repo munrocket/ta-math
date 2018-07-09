@@ -32,6 +32,12 @@ function TA(ohlcv) {
         return sum + item;
     }, 0) / array.length;
   }
+
+  let variance = function(array) {
+    let meanFill = fillarray(array.length, mean(array));
+    let sqrDiff = pointwise(array, meanFill, (a, b) => (a - b) * (a - b));
+    return mean(sqrDiff);
+  }
   
   let firstNotNaN = function(array) {
     let i = 0;
@@ -51,6 +57,14 @@ function TA(ohlcv) {
     return result;
   }
 
+  let fillarray = function(length, value) {
+    let result = []
+    for(let i = 0; i < length; i++) {
+      result.push(value);
+    }
+    return result;
+  }
+
   let pointwise = function(f, g, operation) {
     let result = [];
     f.forEach((_, i) => {
@@ -58,7 +72,6 @@ function TA(ohlcv) {
     });
     return result;
   }
-
 
   /* TECHNICAL ANALYSIS */
 
@@ -70,6 +83,19 @@ function TA(ohlcv) {
         result.push(NaN);
       } else {
         result.push(mean($close.slice(i + 1 - window, i + 1)));
+      } 
+    });
+    return result;
+  }
+
+  let std = function($close, window) {
+    let result = [];
+    let first = firstNotNaN($close);
+    $close.forEach((_, i) => {
+      if (i + 1 < window + first) {
+        result.push(NaN);
+      } else {
+        result.push(Math.sqrt(variance($close.slice(i + 1 - window, i + 1))));
       } 
     });
     return result;
@@ -91,24 +117,48 @@ function TA(ohlcv) {
     return result;
   }
 
-  let macd = function($close, short, long, signal) {
-    let macd_line = pointwise(ema($close, short), ema($close, long), (a, b) => a - b);
-    let macd_signal = ema(macd_line, signal);
+  let macd = function($close, wshort, wlong, wsig) {
+    let macd_line = pointwise(ema($close, wshort), ema($close, wlong), (a, b) => a - b);
+    let macd_signal = ema(macd_line, wsig);
     let macd_hist = pointwise(macd_line, macd_signal, (a, b) => a - b);
     return glue(macd_line, macd_signal, macd_hist);
   }
 
-  let zigzag = function($high, $low, percent) {
-    return 0;
+  let bband = function($close, window, mult) {
+    let middle = sma($close, window);
+    let upper = pointwise(middle, std($close, window), (a, b) => a + b * mult);
+    let lower = pointwise(middle, std($close, window), (a, b) => a - b * mult);
+    return glue(upper, middle, lower);
+  }
+
+  let zigzag = function($time, $high, $low, percent) {
+    let low = $low[0];    let high = $high[0];
+    let isUp = true;      let result = [[$time[0], $low[0]]];
+    for(let i = 1; i < $time.length; i++) {
+      if(isUp) {
+        high = ($high[i] > high) ? $high[i] : high;
+        if($low[i] < low + (high - low) * (100 - percent) / 100) {
+          isUp = false;   result.push([$time[0], $low[0]]);
+        }
+      } else {
+        low = ($low[i] < low) ? $low[i] : low;
+        if($high[i] > low + (high - low) * percent / 100) {
+          isUp = true;    result.push([$time[0], $low[0]]);
+        }
+      }
+    }
+    return result.pop();
   }
 
 
   /* DEFINITION */
 
   return {
-    sma:    (window = 10)                         =>  sma($.close, window),
+    sma:    (window = 15)                         =>  sma($.close, window),
+    std:    (window = 15)                         =>  std($.close, window),
     ema:    (window = 10)                         =>  ema($.close, window),
-    macd:   (short = 12, long = 26, signal = 9)   =>  macd($.close, short, long, signal),
-    zigzag: (percent = 10)                        =>  zigzig($.high, $.low, percent)
+    macd:   (wshort = 12, wlong = 26, wsig = 9)   =>  macd($.close, wshort, wlong, wsig),
+    bband:  (window = 15, mult = 2)               =>  bband($.close, window, mult),
+    zigzag: (percent = 10)                        =>  zigzag($.time, $.high, $.low, percent)
   }
 }
