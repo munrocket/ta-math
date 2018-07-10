@@ -25,4 +25,4 @@ let line = TA(ohlcv).ema(10);
 
 ### Contributing
 
-Feel free to contribute. Here reference [StockCharts](http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators).
+Feel free to contribute. Here reference how to calculate new indicators [StockCharts](http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators).
