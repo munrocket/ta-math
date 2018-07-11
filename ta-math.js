@@ -16,10 +16,10 @@ function TA(ohlcv) {
   }
 
   let getAndSave = function(i) {
-    if(_ohlcv[i].length == 0) {
-      for(let j = 0; j < ohlcv.length; j++) {
+    if (_ohlcv[i].length == 0) {
+      for (let j = 0; j < ohlcv.length; j++) {
         _ohlcv[i].push(ohlcv[j][i]);
-      };
+      }
     }
     return _ohlcv[i];
   }
@@ -41,25 +41,26 @@ function TA(ohlcv) {
   
   let firstNotNaN = function(array) {
     let i = 0;
-    while(isNaN(array[i]) && i++ < array.length) { };
+    while(isNaN(array[i]) && i++ < array.length) {
+    };
     return i;
   }
   
   let glue = function(...args) {
     let result = [];
-    for(let j = 0; j < args[0].length; j++) {
+    for (let j = 0; j < args[0].length; j++) {
       let tuple = [];
-      for(let i = 0; i < args.length; i++)
+      for (let i = 0; i < args.length; i++) {
         tuple.push(args[i][j]);
-      };
+      }
       result.push(tuple);
-    };
+    }
     return result;
   }
 
   let fillarray = function(length, value) {
     let result = []
-    for(let i = 0; i < length; i++) {
+    for (let i = 0; i < length; i++) {
       result.push(value);
     }
     return result;
@@ -67,9 +68,9 @@ function TA(ohlcv) {
 
   let pointwise = function(f, g, operation) {
     let result = [];
-    for(let i = 0; i < f.length; i++){
+    for (let i = 0; i < f.length; i++) {
       result.push(operation(f[i], g[i]));
-    };
+    }
     return result;
   }
 
@@ -78,13 +79,13 @@ function TA(ohlcv) {
   let sma = function($close, window) {
     let result = [];
     let first = firstNotNaN($close);
-    $close.forEach((_, i) => {
+    for (let i = 0; i < $close.length; i++) {
       if (i + 1 < window + first) {
         result.push(NaN);
       } else {
         result.push(mean($close.slice(i + 1 - window, i + 1)));
       } 
-    });
+    };
     return result;
   }
 
@@ -92,28 +93,28 @@ function TA(ohlcv) {
     let result = [];
     let first = firstNotNaN($close);
     let mult = 2 / (window + 1);
-    $close.forEach((item, i) => {
+    for (let i = 0; i < $close.length; i++) {
       if (i + 1 < window + first) {
         result.push(NaN);
       } else if (i + 1 == window + first) {
         result.push(mean($close.slice(i + 1 - window, i + 1)));
       } else {
-        result.push((item - result[i - 1]) * mult + result[i - 1]);
+        result.push(($close[i] - result[i - 1]) * mult + result[i - 1]);
       }
-    });
+    };
     return result;
   }
 
   let std = function($close, window) {
     let result = [];
     let first = firstNotNaN($close);
-    $close.forEach((_, i) => {
+    for (let i = 0; i < $close.length; i++) {
       if (i + 1 < window + first) {
         result.push(NaN);
       } else {
         result.push(Math.sqrt(variance($close.slice(i + 1 - window, i + 1))));
       } 
-    });
+    }
     return result;
   }
 
@@ -134,10 +135,10 @@ function TA(ohlcv) {
   let zigzag = function($time, $high, $low, percent) {
     let low = $low[0];    let high = $high[0];
     let isUp = true;      let result = [[$time[0], $low[0]]];
-    for(let i = 1; i < $time.length; i++) {
-      if(isUp) {
+    for (let i = 1; i < $time.length; i++) {
+      if (isUp) {
         high = ($high[i] > high) ? $high[i] : high;
-        if($low[i] < low + (high - low) * (100 - percent) / 100) {
+        if ($low[i] < low + (high - low) * (100 - percent) / 100) {
           isUp = false;   result.push([$time[0], $low[0]]);
         }
       } else {
