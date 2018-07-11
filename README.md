@@ -1,18 +1,7 @@
 Technical analysis math
 =========
 
-Library for indicators and overlays with ohlcv data written in ES6.
-
-### Installation
-
-`npm i ta-math`
-
-### Usage
-
-```
-let ohlcv = await new ccxt.cex().fetchOHLCV ('BTC/USD', '1h');
-let line = TA(ohlcv).ema(10);
-```
+Tiny library for indicators and overlays with ohlcv data written in ES6.
 
 ### Supporting indicators and overlays
 
@@ -23,6 +12,21 @@ let line = TA(ohlcv).ema(10);
 * macd    -   Moving Average Convergence/Divergence
 * zigzag  -   ZigZag Indicator
 
+### Installation
+
+`npm i ta-math`
+
+### Usage
+
+Here simple examples. In source you can find case of usage with bitcoin prices from ccxt library and nwd3 charts.
+```
+  let ohlcv = [[t0,o0,h0,l0,c0,v0],  ...  ,[tN,oN,hN,lN,cN,vN]];
+  import TA from 'ta-math';
+  let ta = TA(ohlcv);
+  let ema_line = ta.ema(15);
+  let bband_line = ta.bband(15, 2);  
+```
+
 ### Contributing
 
-Feel free to contribute. Here reference how to calculate new indicators [StockCharts](http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators).
+Feel free to contribute. Here reference how to implement new indicators [StockCharts](http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators).

@@ -4,7 +4,8 @@
   "description": "Technical analysis library in javascript. Calculates indicators and overlays from ohlcv data",
   "main": "main.js",
   "scripts": {
-    "test": "start ./samples/page.html"
+    "test": "node run-test",
+    "view": "start ./examples/page.html"
   },
   "repository": {
     "type": "git",
@@ -25,7 +26,5 @@
   },
   "homepage": "https://github.com/munrocket/ta-math#readme",
   "dependencies": {},
-  "devDependencies": {
-    "ccxt": "^1.15.19"
-  }
+  "devDependencies": {}
 }

@@ -74,6 +74,7 @@ function TA(ohlcv) {
     return result;
   }
 
+  
   /* TECHNICAL ANALYSIS */
 
   let sma = function($close, window) {
