@@ -1,6 +1,6 @@
 "use strict";
 
-function TA(ohlcv) {
+let TA = function(ohlcv) {
 
   /* GETTERS */
 
@@ -164,3 +164,5 @@ function TA(ohlcv) {
     zigzag: (percent = 10)                        =>  zigzag($.time, $.high, $.low, percent)
   }
 }
+
+module.exports = TA;

@@ -18,7 +18,7 @@ Tiny library for indicators and overlays with ohlcv data written in ES6.
 
 ### Usage
 
-Here simple examples. In source you can find case of usage with bitcoin prices from ccxt library and nwd3 charts.
+In source you can find example of usage with bitcoin prices from ccxt library and nwd3 charts. Here simple sample.
 ```
   let ohlcv = [[t0,o0,h0,l0,c0,v0],  ...  ,[tN,oN,hN,lN,cN,vN]];
   import TA from 'ta-math';
