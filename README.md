@@ -21,7 +21,7 @@ Tiny library for indicators and overlays with ohlcv data written in ES6.
 In source you can find example of usage with bitcoin prices from ccxt library and nwd3 charts. Here simple sample.
 ```
   let ohlcv = [[t0,o0,h0,l0,c0,v0],  ...  ,[tN,oN,hN,lN,cN,vN]];
-  import TA from 'ta-math';
+  let TA = require('./ta-math');
   let ta = TA(ohlcv);
   let ema_line = ta.ema(15);
   let bband_line = ta.bband(15, 2);  
