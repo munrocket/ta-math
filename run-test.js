@@ -1,4 +1,6 @@
 'use strict';
+console.log("tests now under construction");
+
 let TA = require('./ta-math');
 const ohlcv = [[1527465600000,7338.99,7376.13,7333.88,7350,674.790009],
   [1527469200000,7350,7389.05,7301,7371.64,1059.501967],

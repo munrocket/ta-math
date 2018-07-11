@@ -2,6 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
+    <title>Without indicators?</title>
     <script src="../ta-math.js"></script>
     <script src="ccxt.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js" charset="utf-8"></script>
@@ -28,10 +29,10 @@
     let ohlcv = await new ccxt.ccex({'proxy': 'https://cors-anywhere.herokuapp.com/'}).fetchOHLCV ('BTC/USDT', '1d', Date.now() - 1000*60*60*24*30*5);
     showChart();
 
-    //------
+    //--usage--
     let ema = TA(ohlcv).ema(10);
     console.log(ema);
-    //------
+    //---------
 
     let data = [{
         values: ohlcv.map( (x) => {return {"date" : x[0] / 1000 / 60 / 60 / 24, "open": x[1], "high": x[2], "low": x[3], "close": x[4], "volume": x[5]}})

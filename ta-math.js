@@ -1,6 +1,6 @@
 "use strict";
 
-let TA = function(ohlcv) {
+module.exports = function TA(ohlcv) {
 
   /* GETTERS */
 
@@ -133,6 +133,21 @@ let TA = function(ohlcv) {
     return glue(macd_line, macd_signal, macd_hist);
   }
 
+  let vbp = function($close, $volume, zones, left, right) {
+    let result = fillarray(right - left, 0);
+    let bottom = Infinity, top = -Infinity, total = 0;
+    for (let i = start; i < (end ? end : $close.length); i++) {
+      total += $volume[i];
+      (top < $close[i]) ? top = $close[i] : 0;
+      (bottom > $close[i]) ? bottom = $close[i] : 0;
+    }
+    for (let i = start; i < (end ? end : $close.length); i++) {
+      let z = Math.floor(($close - bottom + 1e-14) / (top - bottom + 1e-12) * zones);
+      result[z] += $volume[i];
+    }
+    return { bottom: this.bottom, top: this.top, volumes: result.map(x => x / total)};
+  }
+
   let zigzag = function($time, $high, $low, percent) {
     let low = $low[0];    let high = $high[0];
     let isUp = true;      let result = [[$time[0], $low[0]]];
@@ -140,11 +155,11 @@ let TA = function(ohlcv) {
       if (isUp) {
         high = ($high[i] > high) ? $high[i] : high;
         if ($low[i] < low + (high - low) * (100 - percent) / 100) {
-          isUp = false;   result.push([$time[0], $low[0]]);
+          isUp = false; result.push([$time[0], $low[0]]);
         }
       } else {
         low = ($low[i] < low) ? $low[i] : low;
-        if($high[i] > low + (high - low) * percent / 100) {
+        if ($high[i] > low + (high - low) * percent / 100) {
           isUp = true;    result.push([$time[0], $low[0]]);
         }
       }
@@ -156,13 +171,12 @@ let TA = function(ohlcv) {
   /* DEFINITION */
 
   return {
-    sma:    (window = 15)                         =>  sma($.close, window),
-    ema:    (window = 10)                         =>  ema($.close, window),
-    std:    (window = 15)                         =>  std($.close, window),
-    bband:  (window = 15, mult = 2)               =>  bband($.close, window, mult),
-    macd:   (wshort = 12, wlong = 26, wsig = 9)   =>  macd($.close, wshort, wlong, wsig),
-    zigzag: (percent = 10)                        =>  zigzag($.time, $.high, $.low, percent)
+    sma:    (window = 15)                           =>  sma($.close, window),
+    ema:    (window = 10)                           =>  ema($.close, window),
+    std:    (window = 15)                           =>  std($.close, window),
+    bband:  (window = 15, mult = 2)                 =>  bband($.close, window, mult),
+    macd:   (wshort = 12, wlong = 26, wsig = 9)     =>  macd($.close, wshort, wlong, wsig),
+    vbp:    (zones = 12, left = 0, right = null)    =>  vbp($.close, $.volume, zones, left, right),
+    zigzag: (percent = 15)                          =>  zigzag($.time, $.high, $.low, percent)
   }
 }
-
-module.exports = TA;
