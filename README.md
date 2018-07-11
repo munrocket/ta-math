@@ -1,5 +1,5 @@
 
-Technical analysis math [![Dependency Status][depstat-image]][depstat-url]
+Technical analysis math [comment]: <> ([![Dependency Status][depstat-image]][depstat-url])
 =========
 
 Tiny library for indicators and overlays with ohlcv data written in ES6.
@@ -11,6 +11,7 @@ Tiny library for indicators and overlays with ohlcv data written in ES6.
 * std     -   Standard Deviation
 * bband   -   Bollinger Band
 * macd    -   Moving Average Convergence/Divergence
+* vbp     -   Volume by Price
 * zigzag  -   ZigZag Indicator
 
 ### Installation
