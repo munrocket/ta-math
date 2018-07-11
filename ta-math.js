@@ -17,9 +17,9 @@ function TA(ohlcv) {
 
   let getAndSave = function(i) {
     if(_ohlcv[i].length == 0) {
-      ohlcv.forEach((item) => {
-        _ohlcv[i].push(item[i]);
-      });
+      for(let j = 0; j < ohlcv.length; j++) {
+        _ohlcv[i].push(ohlcv[j][i]);
+      };
     }
     return _ohlcv[i];
   }
@@ -45,15 +45,15 @@ function TA(ohlcv) {
     return i;
   }
   
-  let glue = function(...arg) {
+  let glue = function(...args) {
     let result = [];
-    arg[0].forEach((_, i) => {
+    for(let j = 0; j < args[0].length; j++) {
       let tuple = [];
-      arg.forEach((_, j) => {
-        tuple.push(arg[j][i]);
-      });
+      for(let i = 0; i < args.length; i++)
+        tuple.push(args[i][j]);
+      };
       result.push(tuple);
-    });
+    };
     return result;
   }
 
@@ -67,9 +67,9 @@ function TA(ohlcv) {
 
   let pointwise = function(f, g, operation) {
     let result = [];
-    f.forEach((_, i) => {
+    for(let i = 0; i < f.length; i++){
       result.push(operation(f[i], g[i]));
-    });
+    };
     return result;
   }
 
