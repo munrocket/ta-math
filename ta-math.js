@@ -1,6 +1,6 @@
 "use strict";
 
-module.exports = function TA(ohlcv) {
+let TA = function (ohlcv) {
 
   /* GETTERS */
 
@@ -38,18 +38,6 @@ module.exports = function TA(ohlcv) {
     let sqrDiff = pointwise(array, meanFill, (a, b) => (a - b) * (a - b));
     return mean(sqrDiff);
   }
-  
-  let glue = function(...args) {
-    let result = [];
-    for (let j = 0; j < args[0].length; j++) {
-      let tuple = [];
-      for (let i = 0; i < args.length; i++) {
-        tuple.push(args[i][j]);
-      }
-      result.push(tuple);
-    }
-    return result;
-  }
 
   let fillarray = function(length, value) {
     let result = []
@@ -67,7 +55,7 @@ module.exports = function TA(ohlcv) {
     return result;
   }
 
-  
+
   /* TECHNICAL ANALYSIS */
 
   let sma = function($close, window) {
@@ -101,14 +89,14 @@ module.exports = function TA(ohlcv) {
     let middle = sma($close, window);
     let upper = pointwise(middle, std($close, window), (a, b) => a + b * mult);
     let lower = pointwise(middle, std($close, window), (a, b) => a - b * mult);
-    return glue(upper, middle, lower);
+    return [upper, middle, lower];
   }
 
   let macd = function($close, wshort, wlong, wsig) {
     let macd_line = pointwise(ema($close, wshort), ema($close, wlong), (a, b) => a - b);
     let macd_signal = ema(macd_line, wsig);
     let macd_hist = pointwise(macd_line, macd_signal, (a, b) => a - b);
-    return glue(macd_line, macd_signal, macd_hist);
+    return [macd_line, macd_signal, macd_hist];
   }
 
   let rsi = function($close, window) {
@@ -138,27 +126,28 @@ module.exports = function TA(ohlcv) {
 
   let zigzag = function($time, $high, $low, percent) {
     let low = $low[0];    let high = $high[0];
-    let isUp = true;      let result = [[$time[0], $low[0]]];
+    let isUp = true;      let time = [],        zigzag = [];
     for (let i = 1; i < $time.length; i++) {
       if (isUp) {
         high = ($high[i] > high) ? $high[i] : high;
         if ($low[i] < low + (high - low) * (100 - percent) / 100) {
-          isUp = false; result.push([$time[0], $low[0]]);
+          isUp = false;   time.push($time[0]);  zigzag.push($low[0]);
         }
       } else {
         low = ($low[i] < low) ? $low[i] : low;
         if ($high[i] > low + (high - low) * percent / 100) {
-          isUp = true;    result.push([$time[0], $low[0]]);
+          isUp = true;    time.push($time[0]);  zigzag.push($low[0]);
         }
       }
     }
-    return result.pop();
+    return [time.pop(), zigzag.pop()];
   }
 
 
   /* DEFINITION */
 
   return {
+    $:$,
     sma:    (window = 15)                           =>  sma($.close, window),
     ema:    (window = 10)                           =>  ema($.close, window),
     std:    (window = 15)                           =>  std($.close, window),

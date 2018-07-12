@@ -1,5 +1,5 @@
 'use strict';
-let TA = require('./ta-math');
+//let TA = require('./ta-math');
 const ohlcv = [[1527465600000,7338.99,7376.13,7333.88,7350,674.790009],
   [1527469200000,7350,7389.05,7301,7371.64,1059.501967],
   [1527472800000,7371,7372.84,7345.01,7366.1,610.967862],
@@ -26,10 +26,10 @@ const ohlcv = [[1527465600000,7338.99,7376.13,7333.88,7350,674.790009],
   [1527548400000,7131.99,7135,7084.3,7099,1082.691586],
   [1527552000000,7099,7132.1,7094.05,7116.4,952.303604]];
 console.log(ohlcv);
-let ta = TA(ohlcv);
-console.log("sma", ta.sma(15));
-console.log("ema", ta.ema(10));
-console.log("std", ta.std(15));
-console.log("bband", ta.bband(15));
-console.log("macd", ta.macd(12,26,9));
-console.log("zigzag", ta.zigzag(10));
+// let ta = TA(ohlcv);
+// console.log("sma", ta.sma(15));
+// console.log("ema", ta.ema(10));
+// console.log("std", ta.std(15));
+// console.log("bband", ta.bband(15));
+// console.log("macd", ta.macd(12,26,9));
+// console.log("zigzag", ta.zigzag(10));

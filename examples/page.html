@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Without indicators?</title>
+    <title>Testing page</title>
     <script src="../ta-math.js"></script>
     <script src="ccxt.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js" charset="utf-8"></script>
@@ -13,7 +13,7 @@
 <body>
 
 <div id="loader"></div>
-<div id="loader2">Waiting ohlcv data from server...</div>
+<div id="loader2">Fetching actual bitcoin prices through proxy...</div>
 
 <div id="chart" style="display:none;" class="animate-bottom" viewBox="25 25 50 50" >
     <svg ></svg>
@@ -26,23 +26,17 @@
         document.getElementById("loader2").style.display = "none";
         document.getElementById("chart").style.display = "block";
     }
-    let ohlcv = await new ccxt.ccex({'proxy': 'https://cors-anywhere.herokuapp.com/'}).fetchOHLCV ('BTC/USDT', '1d', Date.now() - 1000*60*60*24*30*5);
+    let ohlcv = await new ccxt.binance({'proxy': 'https://cors-anywhere.herokuapp.com/'}).fetchOHLCV ('BTC/USDT', '1d', Date.now() - 1000*60*60*24*30*5);
     showChart();
 
-    //--usage--
-    let ema = TA(ohlcv).ema(10);
-    console.log(ema);
-    //---------
-
-    let data = [{
+    let OHLCV = [{
         values: ohlcv.map( (x) => {return {"date" : x[0] / 1000 / 60 / 60 / 24, "open": x[1], "high": x[2], "low": x[3], "close": x[4], "volume": x[5]}})
     }];
+
     nv.addGraph(function() {
         var chart = nv.models.candlestickBarChart()
             .x(function(d) { return d['date'] })
-            .y(function(d) { return d['close'] })
-            .duration(250)
-            .margin({left: 75, bottom: 50});
+            .y(function(d) { return d['close'] });
         chart.xAxis
                 .axisLabel("Dates")
                 .tickFormat(function(d) {
@@ -52,10 +46,65 @@
                 .axisLabel('BTC Price')
                 .tickFormat(function(d,i){ return '$' + d3.format(',.1f')(d); });
         d3.select("#chart svg")
-                .datum(data)
+                .datum(OHLCV)
                 .transition().duration(500)
                 .call(chart);
-        nv.utils.windowResize(chart.update);
+
+        chart = nv.models.lineChart()
+                .useInteractiveGuideline(false)
+                .showLegend(true)
+                .showYAxis(false)
+                .showXAxis(false); 
+
+        let ta = TA(ohlcv);
+
+        function convert(t, f) {
+            let result = [];
+            t.forEach((_, i) => {
+                result.push( {
+                    x: t[i],
+                    y: f[i]
+                })
+            });
+            return result;
+        }
+
+        let time = ta.$.time;
+        var myData = [{
+                values: convert(time, ta.ema(10)),
+                key: 'Ema short',
+                color: '#ff7f0e'
+            },
+            {
+                values: convert(time, ta.ema(21)),
+                key: 'Ema long',
+                color: '#2ca02c'
+            },
+            {
+                values: convert(time, ta.bband()[0]),
+                key: 'bband0',
+                color: '#654571'
+            },
+            {
+                values: convert(time, ta.bband()[2]),
+                key: 'bband2',
+                color: '#654571'
+            },
+            // {
+            //     values: convert(ta.zigzag()[0], ta.zigzag()[1]),
+            //     key: 'zigzag',
+            //     color: '#654571'
+            // },
+            ];
+        console.log( ta.bband());
+
+        d3.select('#chart svg')   
+            .datum(myData)
+            .transition().duration(500)
+            .call(chart);
+
+        nv.utils.windowResize(chart.update());
+        window.alert("Can you imagine that this charts in one scale? :D")
         return chart;
     });
 })();
