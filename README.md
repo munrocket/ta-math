@@ -1,5 +1,5 @@
 
-Technical analysis math [comment]: <> ([![Dependency Status][depstat-image]][depstat-url])
+Technical analysis math
 =========
 
 Tiny library for indicators and overlays with ohlcv data written in ES6.
@@ -29,6 +29,12 @@ In source you can find example of usage with bitcoin prices from ccxt library an
   let ema_line = ta.ema(15);
   let bband_line = ta.bband(15, 2);  
 ```
+
+### 2do list
+* example with working multi chart
+* unit testing
+* typescript integration (.d.ts)
+* new indicators (OBV, parabolic sar, accum/dist, stochastic momentum).
 
 ### Contributing
 
