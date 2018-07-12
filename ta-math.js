@@ -28,22 +28,15 @@ module.exports = function TA(ohlcv) {
   /* HELPER FUNCTIONS */
 
   let mean = function(array) {
-    return array.reduce((sum, item) => {
-        return sum + item;
-    }, 0) / array.length;
+    let sum = 0;
+    for (let i = 0; i < array.length; i++) { sum += array[i]; }
+    return sum / array.length;
   }
 
   let variance = function(array) {
     let meanFill = fillarray(array.length, mean(array));
     let sqrDiff = pointwise(array, meanFill, (a, b) => (a - b) * (a - b));
     return mean(sqrDiff);
-  }
-  
-  let firstNotNaN = function(array) {
-    let i = 0;
-    while(isNaN(array[i]) && i++ < array.length) {
-    };
-    return i;
   }
   
   let glue = function(...args) {
@@ -79,42 +72,27 @@ module.exports = function TA(ohlcv) {
 
   let sma = function($close, window) {
     let result = [];
-    let first = firstNotNaN($close);
     for (let i = 0; i < $close.length; i++) {
-      if (i + 1 < window + first) {
-        result.push(NaN);
-      } else {
-        result.push(mean($close.slice(i + 1 - window, i + 1)));
-      } 
-    };
+      let j = i + 1 - window;
+      result.push(mean($close.slice((j > 0) ? j : 0, i + 1)));
+    }
     return result;
   }
 
-  let ema = function($close, window) {
-    let result = [];
-    let first = firstNotNaN($close);
-    let mult = 2 / (window + 1);
-    for (let i = 0; i < $close.length; i++) {
-      if (i + 1 < window + first) {
-        result.push(NaN);
-      } else if (i + 1 == window + first) {
-        result.push(mean($close.slice(i + 1 - window, i + 1)));
-      } else {
-        result.push(($close[i] - result[i - 1]) * mult + result[i - 1]);
-      }
+  let ema = function($close, window, weight) {
+    let result = [$close[0]];
+    weight = weight ? weight : 2 / (window + 1);
+    for (let i = 1; i < $close.length; i++) {
+      result.push(($close[i] - result[i - 1]) * weight + result[i - 1]);
     };
     return result;
   }
 
   let std = function($close, window) {
     let result = [];
-    let first = firstNotNaN($close);
     for (let i = 0; i < $close.length; i++) {
-      if (i + 1 < window + first) {
-        result.push(NaN);
-      } else {
-        result.push(Math.sqrt(variance($close.slice(i + 1 - window, i + 1))));
-      } 
+        let j = i + 1 - window;
+        result.push(Math.sqrt(variance($close.slice((j > 0) ? j : 0, i + 1))));
     }
     return result;
   }
@@ -133,19 +111,29 @@ module.exports = function TA(ohlcv) {
     return glue(macd_line, macd_signal, macd_hist);
   }
 
-  let vbp = function($close, $volume, zones, left, right) {
-    let result = fillarray(right - left, 0);
-    let bottom = Infinity, top = -Infinity, total = 0;
-    for (let i = start; i < (end ? end : $close.length); i++) {
-      total += $volume[i];
-      (top < $close[i]) ? top = $close[i] : 0;
-      (bottom > $close[i]) ? bottom = $close[i] : 0;
+  let rsi = function($close, window) {
+    let gains = [1e-14], loss = [0];
+    for (let i = 1; i < $close.length; i++) {
+      let diff = $close[i] - $close[i - 1];
+      gains.push(diff >= 0 ? diff : 0);
+      loss.push(diff < 0 ? -diff : 0);
     }
-    for (let i = start; i < (end ? end : $close.length); i++) {
-      let z = Math.floor(($close - bottom + 1e-14) / (top - bottom + 1e-12) * zones);
+    return pointwise(sma(gains), sma(loss), (a, b) => 100 - 100 / (1 + a / b));
+  }
+
+  let vbp = function($close, $volume, zones, left, right) {
+    let result = fillarray(zones, 0);
+    let bottom = Infinity, top = -Infinity, total = 0;
+    for (let i = left; i < (right ? right : $close.length); i++) {
+      total += $volume[i];
+      top = (top < $close[i]) ? $close[i] : top;
+      bottom = (bottom > $close[i]) ? $close[i] : bottom;
+    }
+    for (let i = left; i < (right ? right : $close.length); i++) {
+      let z = Math.floor(($close[i] - bottom + 1e-14) / (top - bottom + 1e-12) * zones);
       result[z] += $volume[i];
     }
-    return { bottom: this.bottom, top: this.top, volumes: result.map(x => x / total)};
+    return { bottom: bottom, top: top, volumes: result.map((x) => { return x / total })};
   }
 
   let zigzag = function($time, $high, $low, percent) {
@@ -176,7 +164,8 @@ module.exports = function TA(ohlcv) {
     std:    (window = 15)                           =>  std($.close, window),
     bband:  (window = 15, mult = 2)                 =>  bband($.close, window, mult),
     macd:   (wshort = 12, wlong = 26, wsig = 9)     =>  macd($.close, wshort, wlong, wsig),
+    rsi:    (window = 14)                           =>  rsi($.close, window),
     vbp:    (zones = 12, left = 0, right = null)    =>  vbp($.close, $.volume, zones, left, right),
-    zigzag: (percent = 15)                          =>  zigzag($.time, $.high, $.low, percent)
+    zigzag: (percent = 15)                          =>  zigzag($.time, $.high, $.low, percent),
   }
 }

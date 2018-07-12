@@ -11,6 +11,7 @@ Tiny library for indicators and overlays with ohlcv data written in ES6.
 * std     -   Standard Deviation
 * bband   -   Bollinger Band
 * macd    -   Moving Average Convergence/Divergence
+* rsi     -   Relative Strength Index
 * vbp     -   Volume by Price
 * zigzag  -   ZigZag Indicator
 
