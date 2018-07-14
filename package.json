@@ -2,9 +2,11 @@
   "name": "ta-math",
   "version": "0.1.0",
   "description": "Technical analysis library in javascript. Calculates indicators and overlays from ohlcv data",
-  "main": "main.js",
+  "main": "ta-math.js",
   "scripts": {
-    "test": "node run-test",
+    "build": "rollup ./src/main.mjs -f cjs > ./ta-math.js && rollup ./test/smoke.mjs -f cjs > ./test.js",
+    "test": "node ./test.js",
+    "travis": "npm run build && npm run test",
     "view": "start ./examples/page.html"
   },
   "repository": {
@@ -26,5 +28,8 @@
   },
   "homepage": "https://github.com/munrocket/ta-math#readme",
   "dependencies": {},
-  "devDependencies": {}
+  "devDependencies": {
+    "rollup": "^0.62.0",
+    "tape": "^4.9.1"
+  }
 }
