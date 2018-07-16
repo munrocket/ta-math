@@ -1,7 +1,8 @@
 import * as indicators from './indicators.mjs';
 import * as overlays from './overlays.mjs';
+import * as core from './core.mjs';
 
-export default function TA(ohlcv) {
+export default function (ohlcv) {
 
   let _ohlcv = [[],[],[],[],[],[]];
 
@@ -25,6 +26,7 @@ export default function TA(ohlcv) {
 
   return {
     $:$,
+    rmsd: (f,g) => core.rmsd(f, g),
     sma:    (window = 15)                           =>  overlays.sma($.close, window),
     ema:    (window = 10)                           =>  overlays.ema($.close, window),
     std:    (window = 15)                           =>  overlays.std($.close, window),

@@ -115,7 +115,7 @@ function rsi($close, window) {
   return pointwise(sma(gains), sma(loss), (a, b) => 100 - 100 / (1 + a / b));
 }
 
-function TA(ohlcv) {
+function main (ohlcv) {
 
   let _ohlcv = [[],[],[],[],[],[]];
 
@@ -139,6 +139,7 @@ function TA(ohlcv) {
 
   return {
     $:$,
+    rmsd: (f,g) => rmsd(f, g),
     sma:    (window = 15)                           =>  sma($.close, window),
     ema:    (window = 10)                           =>  ema($.close, window),
     std:    (window = 15)                           =>  std($.close, window),
@@ -150,4 +151,4 @@ function TA(ohlcv) {
   }
 }
 
-module.exports = TA;
+module.exports = main;

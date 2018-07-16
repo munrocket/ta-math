@@ -31,10 +31,11 @@ In source you can find example of usage with bitcoin prices from ccxt library an
 ```
 
 ### 2do list
-* example with working multi chart
+* fix rollup bug
 * unit testing
 * typescript integration (.d.ts)
 * new indicators (OBV, parabolic sar, accum/dist, stochastic momentum).
+* example with working multi chart
 
 ### Contributing
 
