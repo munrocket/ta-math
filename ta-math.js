@@ -115,40 +115,27 @@ function rsi($close, window) {
   return pointwise(sma(gains), sma(loss), (a, b) => 100 - 100 / (1 + a / b));
 }
 
-function main (ohlcv) {
+const ohlcvGetter = {
+  time: (i) => data[i][0],
+  open: (i) => data[i][1],
+  high: (i) => data[i][2],
+  low: (i) => data[i][3],
+  close: (i) => data[i][4],
+  volume: (i) => data[i][5]
+};
 
-  let _ohlcv = [[],[],[],[],[],[]];
-
-  let $ = {
-    get time()    { return getAndSave(0) },
-    get open()    { return getAndSave(1) },
-    get high()    { return getAndSave(2) },
-    get low()     { return getAndSave(3) },
-    get close()   { return getAndSave(4) },
-    get volume()  { return getAndSave(5) },
-  };
-
-  let getAndSave = function(i) {
-    if (_ohlcv[i].length == 0) {
-      for (let j = 0; j < ohlcv.length; j++) {
-        _ohlcv[i].push(ohlcv[j][i]);
-      }
-    }
-    return _ohlcv[i];
-  };  
-
-  return {
-    $:$,
-    rmsd: (f,g) => rmsd(f, g),
-    sma:    (window = 15)                           =>  sma($.close, window),
-    ema:    (window = 10)                           =>  ema($.close, window),
-    std:    (window = 15)                           =>  std($.close, window),
-    bband:  (window = 15, mult = 2)                 =>  bband($.close, window, mult),
-    macd:   (wshort = 12, wlong = 26, wsig = 9)     =>  macd($.close, wshort, wlong, wsig),
-    rsi:    (window = 14)                           =>  rsi($.close, window),
-    vbp:    (zones = 12, left = 0, right = null)    =>  vbp($.close, $.volume, zones, left, right),
-    zigzag: (percent = 15)                          =>  zigzag($.time, $.high, $.low, percent),
-  }
+function TA(data, priceGetter = ohlcvGetter) {
+  TA.data = data;
+  TA.$ = priceGetter;
 }
 
-module.exports = main;
+TA.sma = (window = 15)                          =>   sma($.close, window);
+TA.ema = (window = 10)                          =>  ema($.close, window);
+TA.std = (window = 15)                          =>  std($.close, window);
+TA.bband = (window = 15, mult = 2)              =>  bband($.close, window, mult);
+TA.macd = (wshort = 12, wlong = 26, wsig = 9)   =>  macd($.close, wshort, wlong, wsig);
+TA.rsi = (window = 14)                          =>  rsi($.close, window);
+TA.vbp = (zones = 12, left = 0, right = null)   =>  vbp($.close, $.volume, zones, left, right);
+TA.zigzag = (percent = 15)                      =>  zigzag($.time, $.high, $.low, percent);
+
+module.exports = TA;

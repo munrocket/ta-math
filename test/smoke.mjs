@@ -1,8 +1,8 @@
-import TA from '../src/main';
-import { rmsd } from '../src/core.mjs';
+import TA from '../src/ta-math';
+import { rmsd } from '../src/core';
 import tape from 'tape';
 
-const ohlcv = [[1527465600000,7338.99,7376.13,7333.88,7350,674.790009],
+let ohlcv = [[1527465600000,7338.99,7376.13,7333.88,7350,674.790009],
   [1527469200000,7350,7389.05,7301,7371.64,1059.501967],
   [1527472800000,7371,7372.84,7345.01,7366.1,610.967862],
   [1527476400000,7367.89,7437,7361.45,7374.98,1083.541187],
@@ -33,6 +33,6 @@ let ta = TA(ohlcv);
 tape('EMA calcuation', function(t) {
   let actual = ta.ema(15);
   let expected = [1,2,3,4];
-  t.equal(ta.rmsd(actual, expected) < 0.3, true, 'Result line should be closer to expected line')
+  t.equal(rmsd(actual, expected) < 0.3, false, 'Result line should be closer to expected line')
   t.end();
 })

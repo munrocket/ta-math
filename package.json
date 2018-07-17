@@ -5,8 +5,8 @@
   "main": "ta-math.js",
   "scripts": {
     "build": "npm run build:node && npm run build:bro",
-    "build:node": "rollup src/main.mjs -f cjs > ta-math.js && rollup test/smoke.mjs -f cjs > test.js",
-    "build:bro": "browserify ta-math.js > dist/ta-math.browser.js",
+    "build:node": "rollup src/ta-math.mjs -f cjs > ta-math.js && rollup test/smoke.mjs -f cjs > test.js",
+    "build:bro": "browserify ./ta-math.js > ./dist/ta-math.browser.js",
     "test": "npm run build && node ./test.js && start ./examples/page.html"
   },
   "repository": {

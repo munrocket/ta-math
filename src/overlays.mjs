@@ -1,4 +1,4 @@
-import { rolling, mean, sd, pointwise, fillarray} from './core.mjs';
+import { rolling, mean, sd, pointwise, fillarray } from './core.mjs';
 
 export function sma($close, window) {
   return rolling($close, window, x => mean(x));
