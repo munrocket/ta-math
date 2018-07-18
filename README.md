@@ -20,7 +20,7 @@ Tiny library for indicators and overlays with ohlcv data written in ES6.
 `npm i ta-math`
 
 ### 2do list
-* fix library, make easy usage with any ohlcv source
+* fix library, make proxy for ohcv data
 * fill unit testing
 * typescript integration (.d.ts)
 * new indicators (OBV, parabolic sar, accum/dist, stochastic momentum).
