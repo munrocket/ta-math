@@ -46,12 +46,11 @@ How to set new data format. Just define a function that return length and some p
 
 ### 2do list
 
-* unit testing
+* fill unit tests
 * es5 with babel
 * typescript integration (.d.ts)
 * new indicators (OBV, parabolic sar, accum/dist, stochastic momentum).
-* example with working multi chart
-
+* good loking multi chart
 
 ### Contributing
 
