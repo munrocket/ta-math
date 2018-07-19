@@ -5,8 +5,8 @@ export function mean(array) {
 }
 
 export function sd(array) {
-  const correction = (array.length > 1) ? Math.sqrt(array.length / (array.length - 1)) : 1;
-  return correction * rmsd(array, fillarray(array.length, mean(array)));
+  //const correction = (array.length > 1) ? Math.sqrt(array.length / (array.length - 1)) : 1;
+  return rmsd(array, fillarray(array.length, mean(array)));
 }
 
 export function rmsd(f, g) {

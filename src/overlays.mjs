@@ -53,6 +53,6 @@ export function zigzag($time, $high, $low, percent) {
         isUp = true;    time.push($time[i]);  zigzag.push($low[i]);
       }
     }
-  };                    time.pop();           zigzag.pop();
+  };
   return [time, zigzag];
 }

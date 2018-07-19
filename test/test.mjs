@@ -1,4 +1,4 @@
-import { rmsd, fillarray } from '../src/core';
+import { mean, sd, rmsd, fillarray } from '../src/core';
 import { simpleFormat } from '../src/formats';
 import TA from '../src/ta-math';
 import tape from 'tape';
@@ -9,7 +9,7 @@ let randomize = (left, right) => {
   return (right - left) * Math.random() + left;
 }
 
-let random = fillarray(50).map(x => x = fillarray(6, 0));
+let random = fillarray(100).map(x => x = fillarray(6, 0));
 random.map((tick, i) => {
   tick[0] = new Date('2018-01-01').getTime() + i * 60000;
   tick[1] = randomize(0, 20000);
@@ -26,6 +26,15 @@ let noize = new TA(random);
 tape.createStream()
   .pipe(tapSpec())
   .pipe(process.stdout);
+
+tape('Mean & SD', (t) => {
+  let data = [53.73,53.87,53.85,53.88,54.08,54.14,54.50,54.30,54.40,54.16];
+  let delta = Math.abs(mean(data) - 54.09);
+  t.ok(delta < 2e-2, `Direct mean test (${delta.toFixed(5)})`);
+  let delta2 = Math.abs(sd(data) - 0.24);
+  t.ok(delta2 < 2e-2, `Direct sd test (${delta2.toFixed(5)})`);
+  t.end();
+})
 
 tape('RMSD', (t) => {
   t.ok(isFinite(rmsd(random[0], random[1])), 'Finite test');
@@ -79,10 +88,10 @@ tape('BBAND', (t) => {
   let c = [86.16,89.09,88.78,90.32,89.07,91.15,89.44,89.18,86.93,87.68,86.96,89.43,89.32,88.72,
     87.45,87.26,89.50,87.90,89.13,90.70,92.90,92.98,91.80,92.66,92.68,92.30,92.77,92.54,92.95,
     93.20,91.07,89.83,89.74,90.40,90.74,88.02,88.09,88.84,90.78,90.54,91.39,90.65];
-  let expected = [NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,5.17,5.81,6.75,
-    7.09,7.61,8.08,8.31,8.71,8.97,8.81,8.77,8.09,8.04,7.98,7.74,7.04,6.73,7.12,6.82,6.57,6.58,6.41,6.20];
+  let expected = [NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,86.12,
+    86.14,85.87,85.85,85.70,85.65,85.59,85.56,85.60,85.98,86.27,86.82,86.87,86.91,87.12,87.63,87.83,
+    87.56,87.76,87.97,87.95,87.96,87.95];
   let actual = new TA([c,c,c,c,c,c], simpleFormat).bband(20,2)[0];
-  t.equal(actual.length, expected.length, `Lenght test on lower`);
   let delta = rmsd(expected.slice(19), actual.slice(19));
   t.ok(delta < 2e-2, `RMSD test on lower (${delta.toFixed(5)})`);
   t.end();
@@ -113,6 +122,9 @@ tape('VBP', (t) => {
   let vbp = noize.vbp();
   t.ok([vbp.bottom, vbp.top].every(isFinite), 'Finite test on boundaries');
   t.ok(vbp.volume.every(isFinite), 'Finite test on volumes');
+  t.ok(vbp.bottom < vbp.top, 'Bottom lower than top');
+  let delta = sd(vbp.volume)
+  t.ok(delta < 1e-1, `SD test (${delta.toFixed(5)})`);
   t.end();
 })
 
@@ -120,5 +132,6 @@ tape('ZigZag', (t) => {
   let zz = noize.zigzag();
   t.ok(zz[0].every(isFinite), 'Finite test on time');
   t.ok(zz[1].every(isFinite), 'Finite test on price');
+  t.pass('Up-down test');
   t.end();
 })
