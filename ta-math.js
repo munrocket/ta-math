@@ -7,12 +7,12 @@ function mean(array) {
 }
 
 function sd(array) {
-  let correction = (array.length > 1) ? math.sqrt(array.length / (array.length - 1)) : 1;
+  const correction = (array.length > 1) ? Math.sqrt(array.length / (array.length - 1)) : 1;
   return correction * rmsd(array, fillarray(array.length, mean(array)));
 }
 
 function rmsd(f, g) {
-  let sqrDiff = pointwise(f, g, (a, b) => (a - b) * (a - b));
+  const sqrDiff = pointwise(f, g, (a, b) => (a - b) * (a - b));
   return Math.sqrt(mean(sqrDiff));
 }
 
@@ -36,7 +36,7 @@ function rolling(array, window, operation) {
   let result = [];
   for (let i = 0; i < array.length; i++) {
     let j = i + 1 - window;
-    result.push(operation(array.slice((j > 0) ? j : 0, i + 1)));
+    result.push(operation(slice(array, (j > 0) ? j : 0, i + 1)));
   }
   return result;
 }
@@ -49,7 +49,7 @@ function std($close, window) {
   return rolling($close, window, x => sd(x));
 }
 
-function ema($close, window, weight) {
+function ema($close, window, weight = null) {
   let result = [$close[0]];
   weight = weight ? weight : 2 / (window + 1);
   for (let i = 1; i < $close.length; i++) {
@@ -58,9 +58,9 @@ function ema($close, window, weight) {
 }
 
 function bband($close, window, mult) {
-  let middle = sma($close, window);
-  let upper = pointwise(middle, std($close, window), (a, b) => a + b * mult);
-  let lower = pointwise(middle, std($close, window), (a, b) => a - b * mult);
+  const middle = sma($close, window);
+  const upper = pointwise(middle, std($close, window), (a, b) => a + b * mult);
+  const lower = pointwise(middle, std($close, window), (a, b) => a - b * mult);
   return [upper, middle, lower];
 }
 
@@ -73,8 +73,7 @@ function vbp($close, $volume, nzones, left, right) {
     bottom = (bottom > $close[i]) ? $close[i] : bottom;
   }
   for (let i = left; i < (right ? right : $close.length); i++) {
-    let z = Math.floor(($close[i] - bottom + 1e-14) / (top - bottom + 1e-12) * nzones);
-    result[z] += $volume[i];
+    result[Math.floor(($close[i] - bottom + 1e-14) / (top - bottom + 1e-12) * nzones)] += $volume[i];
   }
   return { bottom: bottom, top: top, volumes: result.map((x) => { return x / total })};
 }
@@ -99,9 +98,9 @@ function zigzag($time, $high, $low, percent) {
 }
 
 function macd($close, wshort, wlong, wsig) {
-  let macd_line = pointwise(ema($close, wshort), ema($close, wlong), (a, b) => a - b);
-  let macd_signal = ema(macd_line, wsig);
-  let macd_hist = pointwise(macd_line, macd_signal, (a, b) => a - b);
+  const macd_line = pointwise(ema($close, wshort), ema($close, wlong), (a, b) => a - b);
+  const macd_signal = ema(macd_line, wsig);
+  const macd_hist = pointwise(macd_line, macd_signal, (a, b) => a - b);
   return [macd_line, macd_signal, macd_hist];
 }
 
@@ -115,27 +114,62 @@ function rsi($close, window) {
   return pointwise(sma(gains), sma(loss), (a, b) => 100 - 100 / (1 + a / b));
 }
 
-const ohlcvGetter = {
-  time: (i) => data[i][0],
-  open: (i) => data[i][1],
-  high: (i) => data[i][2],
-  low: (i) => data[i][3],
-  close: (i) => data[i][4],
-  volume: (i) => data[i][5]
-};
+/**
+ * Class for calculating technical analysis indicators and overlays
+ */
+class TA {
+  constructor(data, getter = null) {
+    
+    let defaultGetter = (x) => {
+      return {
+        length: x.length,
+        time: (i) => x[i][0],
+        open: (i) => x[i][1],
+        high: (i) => x[i][2],
+        low: (i) => x[i][3],
+        close: (i) => x[i][4],
+        volume: (i) => x[i][5]
+      }
+    };
+    this.getter = (getter == null) ? defaultGetter : getter;
 
-function TA(data, priceGetter = ohlcvGetter) {
-  TA.data = data;
-  TA.$ = priceGetter;
+    let proxy = (prop) => new Proxy(this.getter(data)[prop], {
+      get: (obj, key) => {
+        if(key == 'length') {                 //length
+          return this.getter(data).length;
+        } else if (key == 'slice') {          //slice
+          return (start, end) => {
+            var result = [];
+            for (var i = start; i < end; i++) { result.push(obj(i)); }
+            return result;
+          }
+        } else {
+          try {
+            if (key === parseInt(key).toString()) {   //operator[]
+              return obj(key);
+            }
+          } catch(er) {}
+        }
+      }
+    });
+
+    this.$ = ['time', 'open', 'high', 'low', 'close', 'volume'];
+    this.$.forEach(prop => this.$[prop] = proxy(prop));
+
+
+    /* TECHNICAL ANALYSYS METHOD DEFENITION */
+
+    return {
+      sma:    (window = 15)                           =>    sma(this.$.close, window),
+      ema:    (window = 10)                           =>    ema(this.$.close, window),
+      std:    (window = 15)                           =>    std(this.$.close, window),
+      bband:  (window = 15, mult = 2)                 =>    bband(this.$.close, window, mult),
+      macd:   (wshort = 12, wlong = 26, wsig = 9)     =>    macd(this.$.close, wshort, wlong, wsig),
+      rsi:    (window = 14)                           =>    rsi(this.$.close, window),
+      vbp:    (zones = 12, left = 0, right = null)    =>    vbp(this.$.close, $.volume, zones, left, right),
+      zigzag: (percent = 15)                          =>    zigzag(this.$.time, $.high, $.low, percent)
+    }
+  }
 }
-
-TA.sma = (window = 15)                          =>   sma($.close, window);
-TA.ema = (window = 10)                          =>  ema($.close, window);
-TA.std = (window = 15)                          =>  std($.close, window);
-TA.bband = (window = 15, mult = 2)              =>  bband($.close, window, mult);
-TA.macd = (wshort = 12, wlong = 26, wsig = 9)   =>  macd($.close, wshort, wlong, wsig);
-TA.rsi = (window = 14)                          =>  rsi($.close, window);
-TA.vbp = (zones = 12, left = 0, right = null)   =>  vbp($.close, $.volume, zones, left, right);
-TA.zigzag = (percent = 15)                      =>  zigzag($.time, $.high, $.low, percent);
 
 module.exports = TA;

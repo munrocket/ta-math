@@ -1,25 +1,60 @@
-import * as indicators from './indicators.mjs';
-import * as overlays from './overlays.mjs';
+import * as indicators from './indicators';
+import * as overlays from './overlays';
 
-const ohlcvGetter = {
-  time: (i) => data[i][0],
-  open: (i) => data[i][1],
-  high: (i) => data[i][2],
-  low: (i) => data[i][3],
-  close: (i) => data[i][4],
-  volume: (i) => data[i][5]
+/**
+ * Class for calculating technical analysis indicators and overlays
+ */
+export default class TA {
+  constructor(data, getter = null) {
+    
+    let defaultGetter = (x) => {
+      return {
+        length: x.length,
+        time: (i) => x[i][0],
+        open: (i) => x[i][1],
+        high: (i) => x[i][2],
+        low: (i) => x[i][3],
+        close: (i) => x[i][4],
+        volume: (i) => x[i][5]
+      }
+    };
+    this.getter = (getter == null) ? defaultGetter : getter;
+
+    let proxy = (prop) => new Proxy(this.getter(data)[prop], {
+      get: (obj, key) => {
+        if(key == 'length') {                 //length
+          return this.getter(data).length;
+        } else if (key == 'slice') {          //slice
+          return (start, end) => {
+            var result = [];
+            for (var i = start; i < end; i++) { result.push(obj(i)); }
+            return result;
+          }
+        } else {
+          try {
+            if (key === parseInt(key).toString()) {   //operator[]
+              return obj(key);
+            }
+          } catch(er) {}
+        }
+      }
+    });
+
+    this.$ = ['time', 'open', 'high', 'low', 'close', 'volume'];
+    this.$.forEach(prop => this.$[prop] = proxy(prop));
+
+
+    /* TECHNICAL ANALYSYS METHOD DEFENITION */
+
+    return {
+      sma:    (window = 15)                           =>    overlays.sma(this.$.close, window),
+      ema:    (window = 10)                           =>    overlays.ema(this.$.close, window),
+      std:    (window = 15)                           =>    overlays.std(this.$.close, window),
+      bband:  (window = 15, mult = 2)                 =>    overlays.bband(this.$.close, window, mult),
+      macd:   (wshort = 12, wlong = 26, wsig = 9)     =>    indicators.macd(this.$.close, wshort, wlong, wsig),
+      rsi:    (window = 14)                           =>    indicators.rsi(this.$.close, window),
+      vbp:    (zones = 12, left = 0, right = null)    =>    overlays.vbp(this.$.close, $.volume, zones, left, right),
+      zigzag: (percent = 15)                          =>    overlays.zigzag(this.$.time, $.high, $.low, percent)
+    }
+  }
 }
-
-export default function TA(data, priceGetter = ohlcvGetter) {
-  TA.data = data;
-  TA.$ = priceGetter;
-}
-
-TA.sma = (window = 15)                          =>   overlays.sma($.close, window);
-TA.ema = (window = 10)                          =>  overlays.ema($.close, window);
-TA.std = (window = 15)                          =>  overlays.std($.close, window);
-TA.bband = (window = 15, mult = 2)              =>  overlays.bband($.close, window, mult);
-TA.macd = (wshort = 12, wlong = 26, wsig = 9)   =>  indicators.macd($.close, wshort, wlong, wsig);
-TA.rsi = (window = 14)                          =>  indicators.rsi($.close, window);
-TA.vbp = (zones = 12, left = 0, right = null)   =>  overlays.vbp($.close, $.volume, zones, left, right);
-TA.zigzag = (percent = 15)                      =>  overlays.zigzag($.time, $.high, $.low, percent);

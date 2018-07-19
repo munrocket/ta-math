@@ -5,12 +5,12 @@ export function mean(array) {
 }
 
 export function sd(array) {
-  let correction = (array.length > 1) ? math.sqrt(array.length / (array.length - 1)) : 1;
+  const correction = (array.length > 1) ? Math.sqrt(array.length / (array.length - 1)) : 1;
   return correction * rmsd(array, fillarray(array.length, mean(array)));
 }
 
 export function rmsd(f, g) {
-  let sqrDiff = pointwise(f, g, (a, b) => (a - b) * (a - b));
+  const sqrDiff = pointwise(f, g, (a, b) => (a - b) * (a - b));
   return Math.sqrt(mean(sqrDiff));
 }
 
@@ -34,7 +34,7 @@ export function rolling(array, window, operation) {
   let result = [];
   for (let i = 0; i < array.length; i++) {
     let j = i + 1 - window;
-    result.push(operation(array.slice((j > 0) ? j : 0, i + 1)));
+    result.push(operation(slice(array, (j > 0) ? j : 0, i + 1)));
   }
   return result;
 }

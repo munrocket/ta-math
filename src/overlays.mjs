@@ -1,4 +1,4 @@
-import { rolling, mean, sd, pointwise, fillarray } from './core.mjs';
+import { rolling, mean, sd, pointwise, fillarray } from './core';
 
 export function sma($close, window) {
   return rolling($close, window, x => mean(x));
@@ -8,7 +8,7 @@ export function std($close, window) {
   return rolling($close, window, x => sd(x));
 }
 
-export function ema($close, window, weight) {
+export function ema($close, window, weight = null) {
   let result = [$close[0]];
   weight = weight ? weight : 2 / (window + 1);
   for (let i = 1; i < $close.length; i++) {
@@ -18,9 +18,9 @@ export function ema($close, window, weight) {
 }
 
 export function bband($close, window, mult) {
-  let middle = sma($close, window);
-  let upper = pointwise(middle, std($close, window), (a, b) => a + b * mult);
-  let lower = pointwise(middle, std($close, window), (a, b) => a - b * mult);
+  const middle = sma($close, window);
+  const upper = pointwise(middle, std($close, window), (a, b) => a + b * mult);
+  const lower = pointwise(middle, std($close, window), (a, b) => a - b * mult);
   return [upper, middle, lower];
 }
 
@@ -33,8 +33,7 @@ export function vbp($close, $volume, nzones, left, right) {
     bottom = (bottom > $close[i]) ? $close[i] : bottom;
   }
   for (let i = left; i < (right ? right : $close.length); i++) {
-    let z = Math.floor(($close[i] - bottom + 1e-14) / (top - bottom + 1e-12) * nzones);
-    result[z] += $volume[i];
+    result[Math.floor(($close[i] - bottom + 1e-14) / (top - bottom + 1e-12) * nzones)] += $volume[i];
   }
   return { bottom: bottom, top: top, volumes: result.map((x) => { return x / total })};
 }

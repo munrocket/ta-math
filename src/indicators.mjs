@@ -1,10 +1,10 @@
-import { pointwise } from './core.mjs';
-import { ema, sma } from './overlays.mjs';
+import { pointwise } from './core';
+import { ema, sma } from './overlays';
 
 export function macd($close, wshort, wlong, wsig) {
-  let macd_line = pointwise(ema($close, wshort), ema($close, wlong), (a, b) => a - b);
-  let macd_signal = ema(macd_line, wsig);
-  let macd_hist = pointwise(macd_line, macd_signal, (a, b) => a - b);
+  const macd_line = pointwise(ema($close, wshort), ema($close, wlong), (a, b) => a - b);
+  const macd_signal = ema(macd_line, wsig);
+  const macd_hist = pointwise(macd_line, macd_signal, (a, b) => a - b);
   return [macd_line, macd_signal, macd_hist];
 }
 
