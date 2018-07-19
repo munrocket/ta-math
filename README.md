@@ -25,8 +25,9 @@ Here simple example. In source you can find how to use it with bitcoin prices fe
 ```
   import TA from 'ta-math';
   let ohlcv = [[t0,o0,h0,l0,c0,v0],  ...  ,[tN,oN,hN,lN,cN,vN]];
-  let ema_line = TA(ohlcv).ema(15);
-  let bband_line = TA(ohlcv).bband(15, 2);
+  let ta = new TA(ohlcv);
+  let ema_line = ta.ema(15);
+  let bband_line = ta.bband(15, 2);
 ```
 
 How to set new data format. Just define a function that return length and some prices.
@@ -41,7 +42,7 @@ How to set new data format. Just define a function that return length and some p
       volume: (i) => data[i]['volume'],
     }
   };
-  let rsi_line = TA(ohlcv2, format).rsi(14);
+  let rsi_line = new TA(ohlcv2, format).rsi(14);
 ```
 
 ### 2do list

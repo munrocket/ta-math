@@ -37,7 +37,7 @@ var TA = (function () {
     let result = [];
     for (let i = 0; i < array.length; i++) {
       let j = i + 1 - window;
-      result.push(operation(slice(array, (j > 0) ? j : 0, i + 1)));
+      result.push(operation(array.slice((j > 0) ? j : 0, i + 1)));
     }
     return result;
   }
@@ -62,7 +62,7 @@ var TA = (function () {
     const middle = sma($close, window);
     const upper = pointwise(middle, std($close, window), (a, b) => a + b * mult);
     const lower = pointwise(middle, std($close, window), (a, b) => a - b * mult);
-    return [upper, middle, lower];
+    return [lower, middle, upper];
   }
 
   function vbp($close, $volume, nzones, left, right) {
@@ -76,7 +76,7 @@ var TA = (function () {
     for (let i = left; i < (right ? right : $close.length); i++) {
       result[Math.floor(($close[i] - bottom + 1e-14) / (top - bottom + 1e-12) * nzones)] += $volume[i];
     }
-    return { bottom: bottom, top: top, volumes: result.map((x) => { return x / total })};
+    return { bottom: bottom, top: top, volume: result.map((x) => { return x / total })};
   }
 
   function zigzag($time, $high, $low, percent) {
@@ -167,8 +167,8 @@ var TA = (function () {
         bband:  (window = 15, mult = 2)                 =>    bband(this.$.close, window, mult),
         macd:   (wshort = 12, wlong = 26, wsig = 9)     =>    macd(this.$.close, wshort, wlong, wsig),
         rsi:    (window = 14)                           =>    rsi(this.$.close, window),
-        vbp:    (zones = 12, left = 0, right = null)    =>    vbp(this.$.close, $.volume, zones, left, right),
-        zigzag: (percent = 15)                          =>    zigzag(this.$.time, $.high, $.low, percent)
+        vbp:    (zones = 12, left = 0, right = null)    =>    vbp(this.$.close, this.$.volume, zones, left, right),
+        zigzag: (percent = 15)                          =>    zigzag(this.$.time, this.$.high, this.$.low, percent)
       }
     }
   }

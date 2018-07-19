@@ -34,7 +34,7 @@ export function rolling(array, window, operation) {
   let result = [];
   for (let i = 0; i < array.length; i++) {
     let j = i + 1 - window;
-    result.push(operation(slice(array, (j > 0) ? j : 0, i + 1)));
+    result.push(operation(array.slice((j > 0) ? j : 0, i + 1)));
   }
   return result;
 }

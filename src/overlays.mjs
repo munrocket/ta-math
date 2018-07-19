@@ -21,7 +21,7 @@ export function bband($close, window, mult) {
   const middle = sma($close, window);
   const upper = pointwise(middle, std($close, window), (a, b) => a + b * mult);
   const lower = pointwise(middle, std($close, window), (a, b) => a - b * mult);
-  return [upper, middle, lower];
+  return [lower, middle, upper];
 }
 
 export function vbp($close, $volume, nzones, left, right) {
@@ -35,7 +35,7 @@ export function vbp($close, $volume, nzones, left, right) {
   for (let i = left; i < (right ? right : $close.length); i++) {
     result[Math.floor(($close[i] - bottom + 1e-14) / (top - bottom + 1e-12) * nzones)] += $volume[i];
   }
-  return { bottom: bottom, top: top, volumes: result.map((x) => { return x / total })};
+  return { bottom: bottom, top: top, volume: result.map((x) => { return x / total })};
 }
 
 export function zigzag($time, $high, $low, percent) {
