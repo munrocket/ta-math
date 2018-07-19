@@ -94,8 +94,7 @@ var TA = (function () {
           isUp = true;    time.push($time[i]);  zigzag.push($low[i]);
         }
       }
-    }                    time.pop();           zigzag.pop();
-    return [time, zigzag];
+    }  return [time, zigzag];
   }
 
   function macd($close, wshort, wlong, wsig) {
@@ -112,7 +111,25 @@ var TA = (function () {
       gains.push(diff >= 0 ? diff : 0);
       loss.push(diff < 0 ? -diff : 0);
     }
-    return pointwise(sma(gains), sma(loss), (a, b) => 100 - 100 / (1 + a / b));
+    let again = sma(gains, window);
+    let aloss = sma(loss, window);
+    return pointwise(again, aloss, (a, b) => 100 - 100 / (1 + a / b));
+  }
+
+  function obv($close, $volume) {
+    let obv = [0];
+    for(let i = 1; i < $close.length; i++) {
+      obv.push(obv[i - 1] + Math.sign($close[i] - $close[i - 1]) * $volume[i]);
+    }
+    return obv;
+  }
+
+  function adl($high, $low, $close, $volume) {
+    let result = [$volume[0] * (2*$close[0] - $low[0] - $high[0]) / ($high[0] - $low[0])];
+    for(let i = 1; i < $high.length; i++) {
+      result[i] = result[i - 1] + $volume[i] * (2*$close[i] - $low[i] - $high[i]) / ($high[i] - $low[i]);
+    }
+    return result;
   }
 
   let exchangeFormat = (x) => {
@@ -168,7 +185,9 @@ var TA = (function () {
         macd:   (wshort = 12, wlong = 26, wsig = 9)     =>    macd(this.$.close, wshort, wlong, wsig),
         rsi:    (window = 14)                           =>    rsi(this.$.close, window),
         vbp:    (zones = 12, left = 0, right = null)    =>    vbp(this.$.close, this.$.volume, zones, left, right),
-        zigzag: (percent = 15)                          =>    zigzag(this.$.time, this.$.high, this.$.low, percent)
+        zigzag: (percent = 15)                          =>    zigzag(this.$.time, this.$.high, this.$.low, percent),
+        obv:    ()                                      =>    obv(this.$.close, this.$.volume),
+        adl:    ()                                      =>    adl(this.$.high, this.$.low, this.$.close, this.$.volume)
       }
     }
   }

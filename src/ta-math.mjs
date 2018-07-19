@@ -43,7 +43,9 @@ export default class TA {
       macd:   (wshort = 12, wlong = 26, wsig = 9)     =>    indicators.macd(this.$.close, wshort, wlong, wsig),
       rsi:    (window = 14)                           =>    indicators.rsi(this.$.close, window),
       vbp:    (zones = 12, left = 0, right = null)    =>    overlays.vbp(this.$.close, this.$.volume, zones, left, right),
-      zigzag: (percent = 15)                          =>    overlays.zigzag(this.$.time, this.$.high, this.$.low, percent)
+      zigzag: (percent = 15)                          =>    overlays.zigzag(this.$.time, this.$.high, this.$.low, percent),
+      obv:    ()                                      =>    indicators.obv(this.$.close, this.$.volume),
+      adl:    ()                                      =>    indicators.adl(this.$.high, this.$.low, this.$.close, this.$.volume)
     }
   }
 }

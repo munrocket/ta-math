@@ -14,6 +14,10 @@ export function rmsd(f, g) {
   return (f.length != g.length) ? Infinity : Math.sqrt(mean(sqrDiff));
 }
 
+export function nrmsd(f, g) {
+  return rmsd(f, g) / (Math.max(...f) - Math.min(...g));
+}
+
 export function fillarray(length, value) {
   let result = []
   for (let i = 0; i < length; i++) {

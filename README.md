@@ -14,6 +14,8 @@ Tiny library for calculating indicators and overlays from price data in any form
 * rsi     -   Relative Strength Index
 * vbp     -   Volume by Price
 * zigzag  -   ZigZag Indicator
+* obv     -   On Balance Volume
+* adl     -   Accumulation / Distribution line
 
 ### Installation
 
@@ -32,10 +34,10 @@ You can see how to set new data format in `formats.mjs`, by default it uses exch
 
 ### 2do list
 
-* fix rsi
+* add smothing to rsi, it little bit wrong
 * es5 with babel
 * typescript integration (.d.ts)
-* new indicators (OBV, parabolic sar, accum/dist, stochastic momentum).
+* new indicators (parabolic sar, stochastic momentum...)
 * good loking multi chart
 
 ### Contributing
