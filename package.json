@@ -5,9 +5,9 @@
   "main": "ta-math.js",
   "scripts": {
     "build": "npm run build:node && npm run build:bro",
-    "build:node": "rollup src/ta-math.mjs -f cjs > ta-math.js && rollup test/test.mjs -f cjs > test.js",
-    "build:bro": "rollup src/ta-math.mjs -f iife --name=TA > dist/ta-math.browser.js",
-    "test": "npm run build && node test.js | tap-spec",
+    "build:node": "rollup src/ta-math.mjs -f cjs > ta-math.js --silent && rollup test/test.mjs -f cjs > test.js --silent",
+    "build:bro": "rollup src/ta-math.mjs -f iife --name=TA > dist/ta-math.browser.js --silent",
+    "test": "npm run build && node test.js",
     "test:ui": "start ./examples/page.html"
   },
   "repository": {

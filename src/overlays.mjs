@@ -33,26 +33,26 @@ export function vbp($close, $volume, nzones, left, right) {
     bottom = (bottom > $close[i]) ? $close[i] : bottom;
   }
   for (let i = left; i < (right ? right : $close.length); i++) {
-    result[Math.floor(($close[i] - bottom + 1e-14) / (top - bottom + 1e-12) * nzones)] += $volume[i];
+    result[Math.floor(($close[i] - bottom + 1e-14) / (top - bottom + 1e-12) * (nzones - 1))] += $volume[i];
   }
   return { bottom: bottom, top: top, volume: result.map((x) => { return x / total })};
 }
 
 export function zigzag($time, $high, $low, percent) {
-  let low = $low[0];    let high = $high[0];
-  let isUp = true;      let time = [],        zigzag = [];
+  let low = $low[0],    high = $high[0];
+  let isUp = true,      time = [],            zigzag = [];
   for (let i = 1; i < $time.length; i++) {
     if (isUp) {
       high = ($high[i] > high) ? $high[i] : high;
       if ($low[i] < low + (high - low) * (100 - percent) / 100) {
-        isUp = false;   time.push($time[0]);  zigzag.push($low[0]);
+        isUp = false;   time.push($time[i]);  zigzag.push($low[i]);
       }
     } else {
       low = ($low[i] < low) ? $low[i] : low;
       if ($high[i] > low + (high - low) * percent / 100) {
-        isUp = true;    time.push($time[0]);  zigzag.push($low[0]);
+        isUp = true;    time.push($time[i]);  zigzag.push($low[i]);
       }
     }
-  }
-  return [time.pop(), zigzag.pop()];
+  };                    time.pop();           zigzag.pop();
+  return [time, zigzag];
 }

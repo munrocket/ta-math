@@ -47,7 +47,7 @@ How to set new data format. Just define a function that return length and some p
 
 ### 2do list
 
-* fill unit tests
+* fix failed tests
 * es5 with babel
 * typescript integration (.d.ts)
 * new indicators (OBV, parabolic sar, accum/dist, stochastic momentum).

@@ -11,7 +11,7 @@ export function sd(array) {
 
 export function rmsd(f, g) {
   const sqrDiff = pointwise(f, g, (a, b) => (a - b) * (a - b));
-  return Math.sqrt(mean(sqrDiff));
+  return (f.length != g.length) ? Infinity : Math.sqrt(mean(sqrDiff));
 }
 
 export function fillarray(length, value) {

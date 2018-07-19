@@ -1,29 +1,18 @@
 import * as indicators from './indicators';
 import * as overlays from './overlays';
+import { exchangeFormat } from './formats';
 
 /**
  * Class for calculating technical analysis indicators and overlays
  */
 export default class TA {
-  constructor(data, getter = null) {
-    
-    let defaultGetter = (x) => {
-      return {
-        length: x.length,
-        time: (i) => x[i][0],
-        open: (i) => x[i][1],
-        high: (i) => x[i][2],
-        low: (i) => x[i][3],
-        close: (i) => x[i][4],
-        volume: (i) => x[i][5]
-      }
-    };
-    this.getter = (getter == null) ? defaultGetter : getter;
+  constructor(data, format = null) {
+    this.format = (format == null) ? exchangeFormat : format;
 
-    let proxy = (prop) => new Proxy(this.getter(data)[prop], {
+    let proxy = (prop) => new Proxy(this.format(data)[prop], {
       get: (obj, key) => {
         if(key == 'length') {                 //length
-          return this.getter(data).length;
+          return this.format(data).length;
         } else if (key == 'slice') {          //slice
           return (start, end) => {
             var result = [];

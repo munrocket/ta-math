@@ -13,7 +13,7 @@ function sd(array) {
 
 function rmsd(f, g) {
   const sqrDiff = pointwise(f, g, (a, b) => (a - b) * (a - b));
-  return Math.sqrt(mean(sqrDiff));
+  return (f.length != g.length) ? Infinity : Math.sqrt(mean(sqrDiff));
 }
 
 function fillarray(length, value) {
@@ -73,28 +73,28 @@ function vbp($close, $volume, nzones, left, right) {
     bottom = (bottom > $close[i]) ? $close[i] : bottom;
   }
   for (let i = left; i < (right ? right : $close.length); i++) {
-    result[Math.floor(($close[i] - bottom + 1e-14) / (top - bottom + 1e-12) * nzones)] += $volume[i];
+    result[Math.floor(($close[i] - bottom + 1e-14) / (top - bottom + 1e-12) * (nzones - 1))] += $volume[i];
   }
   return { bottom: bottom, top: top, volume: result.map((x) => { return x / total })};
 }
 
 function zigzag($time, $high, $low, percent) {
-  let low = $low[0];    let high = $high[0];
-  let isUp = true;      let time = [],        zigzag = [];
+  let low = $low[0],    high = $high[0];
+  let isUp = true,      time = [],            zigzag = [];
   for (let i = 1; i < $time.length; i++) {
     if (isUp) {
       high = ($high[i] > high) ? $high[i] : high;
       if ($low[i] < low + (high - low) * (100 - percent) / 100) {
-        isUp = false;   time.push($time[0]);  zigzag.push($low[0]);
+        isUp = false;   time.push($time[i]);  zigzag.push($low[i]);
       }
     } else {
       low = ($low[i] < low) ? $low[i] : low;
       if ($high[i] > low + (high - low) * percent / 100) {
-        isUp = true;    time.push($time[0]);  zigzag.push($low[0]);
+        isUp = true;    time.push($time[i]);  zigzag.push($low[i]);
       }
     }
-  }
-  return [time.pop(), zigzag.pop()];
+  }                    time.pop();           zigzag.pop();
+  return [time, zigzag];
 }
 
 function macd($close, wshort, wlong, wsig) {
@@ -114,29 +114,29 @@ function rsi($close, window) {
   return pointwise(sma(gains), sma(loss), (a, b) => 100 - 100 / (1 + a / b));
 }
 
+let exchangeFormat = (x) => {
+  return {
+    length: x.length,
+    time: (i) => x[i][0],
+    open: (i) => x[i][1],
+    high: (i) => x[i][2],
+    low: (i) => x[i][3],
+    close: (i) => x[i][4],
+    volume: (i) => x[i][5]
+  }
+};
+
 /**
  * Class for calculating technical analysis indicators and overlays
  */
 class TA {
-  constructor(data, getter = null) {
-    
-    let defaultGetter = (x) => {
-      return {
-        length: x.length,
-        time: (i) => x[i][0],
-        open: (i) => x[i][1],
-        high: (i) => x[i][2],
-        low: (i) => x[i][3],
-        close: (i) => x[i][4],
-        volume: (i) => x[i][5]
-      }
-    };
-    this.getter = (getter == null) ? defaultGetter : getter;
+  constructor(data, format = null) {
+    this.format = (format == null) ? exchangeFormat : format;
 
-    let proxy = (prop) => new Proxy(this.getter(data)[prop], {
+    let proxy = (prop) => new Proxy(this.format(data)[prop], {
       get: (obj, key) => {
         if(key == 'length') {                 //length
-          return this.getter(data).length;
+          return this.format(data).length;
         } else if (key == 'slice') {          //slice
           return (start, end) => {
             var result = [];
