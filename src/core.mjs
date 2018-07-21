@@ -1,6 +1,8 @@
 export function mean(array) {
   let sum = 0;
-  for (let i = 0; i < array.length; i++) { sum += array[i]; }
+  for (let i = 0; i < array.length; i++) {
+    sum += array[i];
+  }
   return sum / array.length;
 }
 
@@ -9,21 +11,21 @@ export function sd(array) {
   return rmsd(array, fillarray(array.length, mean(array)));
 }
 
-export function rmsd(f, g) {
-  const sqrDiff = pointwise(f, g, (a, b) => (a - b) * (a - b));
-  return (f.length != g.length) ? Infinity : Math.sqrt(mean(sqrDiff));
-}
-
-export function nrmsd(f, g) {
-  return rmsd(f, g) / (Math.max(...f) - Math.min(...g));
-}
-
 export function fillarray(length, value) {
   let result = []
   for (let i = 0; i < length; i++) {
     result.push(value);
   }
   return result;
+}
+
+export function rmsd(f, g) {
+  const sqrDiff = pointwise(f, g, (a, b) => (a - b) * (a - b));
+  return (f.length != g.length) ? Infinity : Math.sqrt(mean(sqrDiff));
+}
+
+export function nrmsd(f, g) {
+  return rmsd(f, g) / (Math.max(...f) - Math.min(...f));
 }
 
 export function pointwise(f, g, operation) {

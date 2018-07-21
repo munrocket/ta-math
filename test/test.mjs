@@ -9,17 +9,18 @@ let randomize = (left, right) => {
   return (right - left) * Math.random() + left;
 }
 
+// random ohlcv
 let random = fillarray(50).map(x => x = fillarray(6, 0));
 random.map((tick, i) => {
   tick[0] = new Date('2018-01-01').getTime() + i * 60000;
-  tick[1] = randomize(0, 20000);
-  tick[2] = randomize(0, 20000);
-  tick[3] = randomize(0, 20000);
-  tick[4] = randomize(0, 20000);
-  tick[5] = randomize(0, 1000);
+  let lcoh = [randomize(5000, 20000),randomize(5000, 20000),randomize(5000, 20000),randomize(5000, 20000)].sort();
+  if(randomize(0,1)) { let temp = lcoh[1]; lcoh[1] = lcoh[2]; lcoh[2] = temp; };
+  tick[1] = lcoh[1];  //o
+  tick[2] = lcoh[0];  //h
+  tick[3] = lcoh[3];  //l
+  tick[4] = lcoh[2];  //c
+  tick[5] = randomize(5, 1000);
 });
-
-//used for finite test
 let noize = new TA(random);
 
 //prittify tests
@@ -40,7 +41,7 @@ tape('RMSD', (t) => {
   t.ok(isFinite(rmsd(random[0], random[1])), 'Finite test');
   t.ok(rmsd(random[0],random[0]) == 0, 'Simple test');
   let delta = Math.abs(rmsd([-2,5,-8,9,-4],[0,0,0,0,0]) - 6.16);
-  t.ok(delta < 1e-1, `Direct test (${delta.toFixed(5)})`)
+  t.ok(delta < 1e-2, `Direct test (${delta.toFixed(5)})`)
   t.end();
 })
 
@@ -50,8 +51,8 @@ tape('SMA', (t) => {
   let expected = [NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,22.22,22.21,22.23,22.26,22.31,22.42,22.61,
           22.77,22.91,23.08,23.21,23.38,23.53,23.65,23.71,23.69,23.61,23.51,23.43,23.28,23.13];
   let actual = new TA([c,c,c,c,c,c], simpleFormat).sma(10);
-  let delta = nrmsd(expected.slice(9), actual.slice(9))
   t.ok(actual.every(isFinite), 'Finite test');
+  let delta = nrmsd(expected.splice(9), actual.splice(9))
   t.ok(delta < 1e-2, `NRMSD test (${delta.toFixed(5)})`);
   t.end();
 })
@@ -62,8 +63,8 @@ tape('EMA', (t) => {
   let expected = [NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,22.22,22.21,22.24,22.27,22.33,22.52,22.80,
           22.97,23.13,23.28,23.34,23.43,23.51,23.54,23.47,23.40,23.39,23.26,23.23,23.08,22.92];
   let actual = new TA([c,c,c,c,c,c], simpleFormat).ema(10);
-  let delta = nrmsd(expected.slice(9), actual.slice(9));
   t.ok(actual.every(isFinite), 'Finite test');
+  let delta = nrmsd(expected.splice(9), actual.splice(9));
   t.ok(delta < 1e-2, `NRMSD test (${delta.toFixed(5)})`);
   t.end();
 })
@@ -74,8 +75,8 @@ tape('STD', (t) => {
   let expected = [NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,0.51,0.73,0.86,0.83,0.79,0.72,0.68,
     0.58,0.51,0.52,0.53,0.48,0.49,0.58,0.62,0.67,0.62,0.66,0.69,0.65,0.36,0.24];
   let actual = new TA([c,c,c,c,c,c], simpleFormat).std(10);
-  let delta = nrmsd(expected.slice(10), actual.slice(10));
   t.ok(actual.every(isFinite), 'Finite test');
+  let delta = nrmsd(expected.splice(10), actual.splice(10));
   t.ok(delta < 1e-2, `NRMSD test (${delta.toFixed(5)})`);
   t.end();
 })
@@ -88,15 +89,15 @@ tape('BBAND', (t) => {
     86.14,85.87,85.85,85.70,85.65,85.59,85.56,85.60,85.98,86.27,86.82,86.87,86.91,87.12,87.63,87.83,
     87.56,87.76,87.97,87.95,87.96,87.95];
   let bb = new TA([c,c,c,c,c,c], simpleFormat).bband(20,2);
-  let delta = nrmsd(expected.slice(19), bb[0].slice(19));
-  t.ok((bb[0].every(isFinite) && bb[1].every(isFinite) && bb[2].every(isFinite)), 'Finite test');
+  t.ok((bb.lower.every(isFinite) && bb.middle.every(isFinite) && bb.upper.every(isFinite)), 'Finite test');
+  let delta = nrmsd(expected.splice(19), bb.lower.splice(19));
   t.ok(delta < 1e-2, `NRMSD test on lower (${delta.toFixed(5)})`);
   t.end();
 })
 
 tape('MACD', (t) => {
   let macd = noize.macd();
-  t.ok(macd[0].every(isFinite) && macd[1].every(isFinite) && macd[2].every(isFinite), 'Finite test');
+  t.ok(macd.line.every(isFinite) && macd.signal.every(isFinite) && macd.hist.every(isFinite), 'Finite test');
   t.end();
 })
 
@@ -106,9 +107,8 @@ tape('RSI', (t) => {
   let expected = [NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,70.53,66.32,66.55,69.41,
     66.36,57.97,62.93,63.26,56.06,62.38,54.71,50.42,39.99,41.46,41.87,45.46,37.30,33.08,37.77];
   let actual = new TA([c,c,c,c,c,c], simpleFormat).rsi(14);
-  let delta = nrmsd(expected.slice(14), actual.slice(14));
   t.ok(actual.every(isFinite), 'Finite test');
-  t.equal(actual.length, expected.length, `Lenght test`);
+  let delta = nrmsd(expected.splice(14), actual.splice(14));
   t.ok(delta < 1e-2, `NRMSD test (${delta.toFixed(5)})`);
   t.end();
 })
@@ -118,14 +118,23 @@ tape('VBP', (t) => {
   let delta = sd(vbp.volume)
   t.ok([vbp.bottom, vbp.top].every(isFinite) && vbp.volume.every(isFinite), 'Finite test');
   t.ok(vbp.bottom < vbp.top, 'Bottom lower than top');
-  t.ok(delta < 1e-1, `Random SD of test (${delta.toFixed(5)})`);
+  t.ok(delta < 0.1, `SD of uniform distribution (${delta.toFixed(5)})`);
   t.end();
 })
 
 tape('ZigZag', (t) => {
   let zz = noize.zigzag();
-  t.ok(zz[0].every(isFinite) && zz[1].every(isFinite), 'Finite test');
-  t.pass('Up-down test');
+  t.ok(zz.time.every(isFinite) && zz.price.every(isFinite), 'Finite test');
+  let isUpDown = true;
+  zz.price.forEach((x, i) => {
+    if(i > 1 && Math.sign((zz.price[i - 2] - zz.price[i - 1]) * (zz.price[i - 1] - zz.price[i])) != -1) {
+      isUpDown = false;
+    }
+  });
+  t.ok(isUpDown, 'Up-down test');
+  // for (let i = 0; i < zz.time.length - 1; i++) {
+  //   console.log(noize.$.close[0]);
+  // }
   t.end();
 })
 
@@ -150,5 +159,29 @@ tape('ADL', (t) => {
   let delta = nrmsd(expected, actual);
   t.ok(actual.every(isFinite), 'Finite test');
   t.ok(delta < 1e-2, `NRMSD test (${delta.toFixed(5)})`);
+  t.end();
+})
+
+tape('ADL', (t) => {
+  let h = [62.34,62.05,62.27,60.79,59.93,61.75,60.00,59.00];
+  let l = [61.37,60.69,60.10,58.61,58.71,59.86,57.97,58.02];
+  let c = [62.15,60.81,60.45,59.18,59.24,60.20,58.48,58.24];
+  let v = [7849,11692,10575,13059,20734,29630,17705,7259];
+  let expected = [4774,-4855,-12019,-18249,-21006,-39976,-48785,-52785];
+  let actual = new TA([c,c,h,l,c,v], simpleFormat).adl();
+  let delta = nrmsd(expected, actual);
+  t.ok(actual.every(isFinite), 'Finite test');
+  t.ok(delta < 1e-2, `NRMSD test (${delta.toFixed(5)})`);
+  t.end();
+})
+
+tape('PSAR', (t) => {
+  let h = [48.11,48.30,48.17,48.60,48.33,48.40,48.55,48.45,48.70,48.72,48.90,48.87,48.82,49.05,49.20,49.35];
+  let l = [47.25,47.77,47.91,47.90,47.74,48.10,48.06,48.07,47.79,48.14,48.39,48.37,48.24,48.64,48.94,48.86];
+  let expected = [47.25,47.25,47.25,47.27,47.32,47.38,47.42,47.47,47.52,47.59,47.68,47.80,47.91,48.01,48.13,48.28];
+  let actual = new TA([h,h,h,l,l,l], simpleFormat).psar();
+  t.ok(actual.every(isFinite), 'Finite test');
+  let delta = rmsd(expected.splice(1), actual.splice(1));
+  t.ok(delta < 2e-2, `NRMSD uptrend test (${delta.toFixed(5)})`);
   t.end();
 })

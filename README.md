@@ -4,7 +4,7 @@ Technical analysis math
 
 Tiny library for calculating indicators and overlays from price data in any format. You choose format and data by yourself and library return charts data.
 
-### Supporting indicators and overlays
+### Supporting 11 indicators and overlays
 
 * sma     -   Simple Moving Average
 * ema     -   Exponential Moving Average
@@ -12,10 +12,11 @@ Tiny library for calculating indicators and overlays from price data in any form
 * bband   -   Bollinger Band
 * macd    -   Moving Average Convergence/Divergence
 * rsi     -   Relative Strength Index
-* vbp     -   Volume by Price
-* zigzag  -   ZigZag Indicator
+* psar    -   Parabolic SAR
 * obv     -   On Balance Volume
 * adl     -   Accumulation / Distribution line
+* vbp     -   Volume by Price
+* zigzag  -   ZigZag Indicator
 
 ### Installation
 
@@ -23,7 +24,7 @@ If you use new node.js or modern browsers, you can just install npm package by `
 
 ### Usage
 
-You can see how to set new data format in `formats.mjs`, by default it uses exchangeFromat. Library don't craete new arrays and uses this geter through proxy. You can find additional example with bitcoin prices that fetched from ccxt library in source.
+You can see how to set new data format in `formats.mjs`, by default it uses exchangeFromat. Library does not craete new arrays and uses getters through proxy. You can find additional example with bitcoin prices that fetched from ccxt library in source.
 ```
   import TA from 'ta-math';
   let ohlcv = [[t0,o0,h0,l0,c0,v0],  ...  ,[tN,oN,hN,lN,cN,vN]];
@@ -34,11 +35,13 @@ You can see how to set new data format in `formats.mjs`, by default it uses exch
 
 ### 2do list
 
-* add smothing to rsi, it little bit wrong
-* es5 with babel
-* typescript integration (.d.ts)
-* new indicators (parabolic sar, stochastic momentum...)
-* good loking multi chart
+- [X] unit tests
+- [X] proxy for ohlcv with different formats
+- [ ] generators?
+- [ ] es5 with babel
+- [ ] typescript integration (.d.ts)
+- [ ] new indicators (stochastic momentum, williams)
+- [ ] good loking ui example
 
 ### Contributing
 
