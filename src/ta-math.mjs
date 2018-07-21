@@ -38,11 +38,12 @@ export default class TA {
     return {
       sma:    (window = 15)                           =>    overlays.sma(this.$.close, window),
       ema:    (window = 10)                           =>    overlays.ema(this.$.close, window),
-      std:    (window = 15)                           =>    overlays.std(this.$.close, window),
+      std:    (window = 15)                           =>    indicators.std(this.$.close, window),
       bband:  (window = 15, mult = 2)                 =>    overlays.bband(this.$.close, window, mult),
       macd:   (wshort = 12, wlong = 26, wsig = 9)     =>    indicators.macd(this.$.close, wshort, wlong, wsig),
       rsi:    (window = 14)                           =>    indicators.rsi(this.$.close, window),
       psar:   (factor = 0.02, maxfactor = 0.2)        =>    overlays.psar(this.$.high, this.$.low, factor, maxfactor),
+      stoch:  (window = 14, signal = 3, smooth = 1)   =>    indicators.stoch(this.$.high, this.$.low, this.$.close, window, signal, smooth),
       obv:    ()                                      =>    indicators.obv(this.$.close, this.$.volume),
       adl:    ()                                      =>    indicators.adl(this.$.high, this.$.low, this.$.close, this.$.volume),
       vbp:    (zones = 12, left = 0, right = null)    =>    overlays.vbp(this.$.close, this.$.volume, zones, left, right),

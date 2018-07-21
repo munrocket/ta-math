@@ -11,31 +11,24 @@ var TA = (function () {
 
   function sd(array) {
     //const correction = (array.length > 1) ? Math.sqrt(array.length / (array.length - 1)) : 1;
-    return rmsd(array, fillarray(array.length, mean(array)));
-  }
-
-  function fillarray(length, value) {
-    let result = [];
-    for (let i = 0; i < length; i++) {
-      result.push(value);
-    }
-    return result;
+    return rmsd(array, new Array(array.length).fill(mean(array)));
   }
 
   function rmsd(f, g) {
-    const sqrDiff = pointwise(f, g, (a, b) => (a - b) * (a - b));
+    const sqrDiff = pointwise((a, b) => (a - b) * (a - b), f, g);
     return (f.length != g.length) ? Infinity : Math.sqrt(mean(sqrDiff));
   }
 
-  function pointwise(f, g, operation) {
+  function pointwise(operation, ...args) {
     let result = [];
-    for (let i = 0; i < f.length; i++) {
-      result.push(operation(f[i], g[i]));
+    for (let i = 0; i < args[0].length; i++) {
+      let iargs = (i) => args.map(array => array[i]);
+      result[i] = operation(...iargs(i));
     }
     return result;
   }
 
-  function rolling(array, window, operation) {
+  function rolling(operation, window, array) {
     let result = [];
     for (let i = 0; i < array.length; i++) {
       let j = i + 1 - window;
@@ -45,11 +38,7 @@ var TA = (function () {
   }
 
   function sma($close, window) {
-    return rolling($close, window, x => mean(x));
-  }
-
-  function std($close, window) {
-    return rolling($close, window, x => sd(x));
+    return rolling(x => mean(x), window, $close);
   }
 
   function ema($close, window, weight = null) {
@@ -62,8 +51,8 @@ var TA = (function () {
 
   function bband($close, window, mult) {
     const middle = sma($close, window);
-    const upper = pointwise(middle, std($close, window), (a, b) => a + b * mult);
-    const lower = pointwise(middle, std($close, window), (a, b) => a - b * mult);
+    const upper = pointwise((a, b) => a + b * mult, middle, std($close, window));
+    const lower = pointwise((a, b) => a - b * mult, middle, std($close, window));
     return { lower : lower, middle : middle, upper : upper};
   }
 
@@ -87,7 +76,7 @@ var TA = (function () {
   }
 
   function vbp($close, $volume, zones, left, right) {
-    let vbp = fillarray(zones, 0);
+    let vbp = new Array(zones).fill(0);
     let bottom = Infinity, top = -Infinity, total = 0;
     for (let i = left; i < (right ? right : $close.length); i++) {
       total += $volume[i];
@@ -116,10 +105,14 @@ var TA = (function () {
     }  return { time : time, price : zigzag};
   }
 
+  function std($close, window) {
+    return rolling(x => sd(x), window, $close);
+  }
+
   function macd($close, wshort, wlong, wsig) {
-    const line = pointwise(ema($close, wshort), ema($close, wlong), (a, b) => a - b);
+    const line = pointwise((a, b) => a - b, ema($close, wshort), ema($close, wlong));
     const signal = ema(line, wsig);
-    const hist = pointwise(line, signal, (a, b) => a - b);
+    const hist = pointwise((a, b) => a - b, line, signal);
     return { line : line, signal : signal, hist : hist };
   }
 
@@ -130,9 +123,7 @@ var TA = (function () {
       gains.push(diff >= 0 ? diff : 0);
       loss.push(diff < 0 ? -diff : 0);
     }
-    let avgain = sma(gains, window);
-    let avloss = sma(loss, window);
-    return pointwise(avgain, avloss, (a, b) => 100 - 100 / (1 + a / b));
+    return pointwise((a, b) => 100 - 100 / (1 + a / b), sma(gains, window), sma(loss, window));
   }
 
   function obv($close, $volume) {
@@ -149,6 +140,13 @@ var TA = (function () {
       adl[i] = adl[i - 1] + $volume[i] * (2*$close[i] - $low[i] - $high[i]) / ($high[i] - $low[i]);
     }
     return adl;
+  }
+
+  function stoch($high, $low, $close, window, signal, smooth) {
+    let lowest = rolling(x => Math.min(...x), window, $low);
+    let highest = rolling(x => Math.max(...x), window, $high);
+    let K = pointwise(function (h, l, c) {return (100 * c - 100 * l) / (h - l)}, highest, lowest, $close); 
+    if (smooth > 1) { K = sma(K, smooth); }  return { line : K, signal : sma(K, signal) };
   }
 
   let exchangeFormat = (x) => {
@@ -204,6 +202,7 @@ var TA = (function () {
         macd:   (wshort = 12, wlong = 26, wsig = 9)     =>    macd(this.$.close, wshort, wlong, wsig),
         rsi:    (window = 14)                           =>    rsi(this.$.close, window),
         psar:   (factor = 0.02, maxfactor = 0.2)        =>    psar(this.$.high, this.$.low, factor, maxfactor),
+        stoch:  (window = 14, signal = 3, smooth = 1)   =>    stoch(this.$.high, this.$.low, this.$.close, window, signal, smooth),
         obv:    ()                                      =>    obv(this.$.close, this.$.volume),
         adl:    ()                                      =>    adl(this.$.high, this.$.low, this.$.close, this.$.volume),
         vbp:    (zones = 12, left = 0, right = null)    =>    vbp(this.$.close, this.$.volume, zones, left, right),

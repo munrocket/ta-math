@@ -1,11 +1,8 @@
-import { rolling, mean, sd, pointwise, fillarray } from './core';
+import { rolling, mean, pointwise } from './core';
+import { std } from './indicators';
 
 export function sma($close, window) {
-  return rolling($close, window, x => mean(x));
-}
-
-export function std($close, window) {
-  return rolling($close, window, x => sd(x));
+  return rolling(x => mean(x), window, $close);
 }
 
 export function ema($close, window, weight = null) {
@@ -19,8 +16,8 @@ export function ema($close, window, weight = null) {
 
 export function bband($close, window, mult) {
   const middle = sma($close, window);
-  const upper = pointwise(middle, std($close, window), (a, b) => a + b * mult);
-  const lower = pointwise(middle, std($close, window), (a, b) => a - b * mult);
+  const upper = pointwise((a, b) => a + b * mult, middle, std($close, window));
+  const lower = pointwise((a, b) => a - b * mult, middle, std($close, window));
   return { lower : lower, middle : middle, upper : upper};
 }
 
@@ -45,7 +42,7 @@ export function psar($high, $low, stepfactor, maxfactor) {
 }
 
 export function vbp($close, $volume, zones, left, right) {
-  let vbp = fillarray(zones, 0);
+  let vbp = new Array(zones).fill(0);
   let bottom = Infinity, top = -Infinity, total = 0;
   for (let i = left; i < (right ? right : $close.length); i++) {
     total += $volume[i];

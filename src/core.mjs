@@ -8,19 +8,11 @@ export function mean(array) {
 
 export function sd(array) {
   //const correction = (array.length > 1) ? Math.sqrt(array.length / (array.length - 1)) : 1;
-  return rmsd(array, fillarray(array.length, mean(array)));
-}
-
-export function fillarray(length, value) {
-  let result = []
-  for (let i = 0; i < length; i++) {
-    result.push(value);
-  }
-  return result;
+  return rmsd(array, new Array(array.length).fill(mean(array)));
 }
 
 export function rmsd(f, g) {
-  const sqrDiff = pointwise(f, g, (a, b) => (a - b) * (a - b));
+  const sqrDiff = pointwise((a, b) => (a - b) * (a - b), f, g);
   return (f.length != g.length) ? Infinity : Math.sqrt(mean(sqrDiff));
 }
 
@@ -28,15 +20,16 @@ export function nrmsd(f, g) {
   return rmsd(f, g) / (Math.max(...f) - Math.min(...f));
 }
 
-export function pointwise(f, g, operation) {
+export function pointwise(operation, ...args) {
   let result = [];
-  for (let i = 0; i < f.length; i++) {
-    result.push(operation(f[i], g[i]));
+  for (let i = 0; i < args[0].length; i++) {
+    let iargs = (i) => args.map(array => array[i]);
+    result[i] = operation(...iargs(i));
   }
   return result;
 }
 
-export function rolling(array, window, operation) {
+export function rolling(operation, window, array) {
   let result = [];
   for (let i = 0; i < array.length; i++) {
     let j = i + 1 - window;

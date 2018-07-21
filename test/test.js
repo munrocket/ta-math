@@ -4,7 +4,6 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 
 var tape = _interopDefault(require('tape'));
 var tapSpec = _interopDefault(require('tap-spec'));
-require('path');
 
 function mean(array) {
   let sum = 0;
@@ -16,19 +15,11 @@ function mean(array) {
 
 function sd(array) {
   //const correction = (array.length > 1) ? Math.sqrt(array.length / (array.length - 1)) : 1;
-  return rmsd(array, fillarray(array.length, mean(array)));
-}
-
-function fillarray(length, value) {
-  let result = [];
-  for (let i = 0; i < length; i++) {
-    result.push(value);
-  }
-  return result;
+  return rmsd(array, new Array(array.length).fill(mean(array)));
 }
 
 function rmsd(f, g) {
-  const sqrDiff = pointwise(f, g, (a, b) => (a - b) * (a - b));
+  const sqrDiff = pointwise((a, b) => (a - b) * (a - b), f, g);
   return (f.length != g.length) ? Infinity : Math.sqrt(mean(sqrDiff));
 }
 
@@ -36,15 +27,16 @@ function nrmsd(f, g) {
   return rmsd(f, g) / (Math.max(...f) - Math.min(...f));
 }
 
-function pointwise(f, g, operation) {
+function pointwise(operation, ...args) {
   let result = [];
-  for (let i = 0; i < f.length; i++) {
-    result.push(operation(f[i], g[i]));
+  for (let i = 0; i < args[0].length; i++) {
+    let iargs = (i) => args.map(array => array[i]);
+    result[i] = operation(...iargs(i));
   }
   return result;
 }
 
-function rolling(array, window, operation) {
+function rolling(operation, window, array) {
   let result = [];
   for (let i = 0; i < array.length; i++) {
     let j = i + 1 - window;
@@ -78,11 +70,7 @@ let simpleFormat = (x) => {
 };
 
 function sma($close, window) {
-  return rolling($close, window, x => mean(x));
-}
-
-function std($close, window) {
-  return rolling($close, window, x => sd(x));
+  return rolling(x => mean(x), window, $close);
 }
 
 function ema($close, window, weight = null) {
@@ -95,8 +83,8 @@ function ema($close, window, weight = null) {
 
 function bband($close, window, mult) {
   const middle = sma($close, window);
-  const upper = pointwise(middle, std($close, window), (a, b) => a + b * mult);
-  const lower = pointwise(middle, std($close, window), (a, b) => a - b * mult);
+  const upper = pointwise((a, b) => a + b * mult, middle, std($close, window));
+  const lower = pointwise((a, b) => a - b * mult, middle, std($close, window));
   return { lower : lower, middle : middle, upper : upper};
 }
 
@@ -120,7 +108,7 @@ function psar($high, $low, stepfactor, maxfactor) {
 }
 
 function vbp($close, $volume, zones, left, right) {
-  let vbp = fillarray(zones, 0);
+  let vbp = new Array(zones).fill(0);
   let bottom = Infinity, top = -Infinity, total = 0;
   for (let i = left; i < (right ? right : $close.length); i++) {
     total += $volume[i];
@@ -149,10 +137,14 @@ function zigzag($time, $high, $low, percent) {
   }  return { time : time, price : zigzag};
 }
 
+function std($close, window) {
+  return rolling(x => sd(x), window, $close);
+}
+
 function macd($close, wshort, wlong, wsig) {
-  const line = pointwise(ema($close, wshort), ema($close, wlong), (a, b) => a - b);
+  const line = pointwise((a, b) => a - b, ema($close, wshort), ema($close, wlong));
   const signal = ema(line, wsig);
-  const hist = pointwise(line, signal, (a, b) => a - b);
+  const hist = pointwise((a, b) => a - b, line, signal);
   return { line : line, signal : signal, hist : hist };
 }
 
@@ -163,9 +155,7 @@ function rsi($close, window) {
     gains.push(diff >= 0 ? diff : 0);
     loss.push(diff < 0 ? -diff : 0);
   }
-  let avgain = sma(gains, window);
-  let avloss = sma(loss, window);
-  return pointwise(avgain, avloss, (a, b) => 100 - 100 / (1 + a / b));
+  return pointwise((a, b) => 100 - 100 / (1 + a / b), sma(gains, window), sma(loss, window));
 }
 
 function obv($close, $volume) {
@@ -182,6 +172,13 @@ function adl($high, $low, $close, $volume) {
     adl[i] = adl[i - 1] + $volume[i] * (2*$close[i] - $low[i] - $high[i]) / ($high[i] - $low[i]);
   }
   return adl;
+}
+
+function stoch($high, $low, $close, window, signal, smooth) {
+  let lowest = rolling(x => Math.min(...x), window, $low);
+  let highest = rolling(x => Math.max(...x), window, $high);
+  let K = pointwise(function (h, l, c) {return (100 * c - 100 * l) / (h - l)}, highest, lowest, $close); 
+  if (smooth > 1) { K = sma(K, smooth); }  return { line : K, signal : sma(K, signal) };
 }
 
 /**
@@ -225,6 +222,7 @@ class TA {
       macd:   (wshort = 12, wlong = 26, wsig = 9)     =>    macd(this.$.close, wshort, wlong, wsig),
       rsi:    (window = 14)                           =>    rsi(this.$.close, window),
       psar:   (factor = 0.02, maxfactor = 0.2)        =>    psar(this.$.high, this.$.low, factor, maxfactor),
+      stoch:  (window = 14, signal = 3, smooth = 1)   =>    stoch(this.$.high, this.$.low, this.$.close, window, signal, smooth),
       obv:    ()                                      =>    obv(this.$.close, this.$.volume),
       adl:    ()                                      =>    adl(this.$.high, this.$.low, this.$.close, this.$.volume),
       vbp:    (zones = 12, left = 0, right = null)    =>    vbp(this.$.close, this.$.volume, zones, left, right),
@@ -238,17 +236,16 @@ let randomize = (left, right) => {
 };
 
 // random ohlcv
-let random = fillarray(50).map(x => x = fillarray(6, 0));
-random.map((tick, i) => {
-  tick[0] = new Date('2018-01-01').getTime() + i * 60000;
+let random = new Array(6).fill(0).map(x => x = new Array(50).fill(0));
+for (let i = 0; i < random[0].length; i++) {
   let lcoh = [randomize(5000, 20000),randomize(5000, 20000),randomize(5000, 20000),randomize(5000, 20000)].sort();
-  if(randomize(0,1)) { let temp = lcoh[1]; lcoh[1] = lcoh[2]; lcoh[2] = temp; }  tick[1] = lcoh[1];  //o
-  tick[2] = lcoh[0];  //h
-  tick[3] = lcoh[3];  //l
-  tick[4] = lcoh[2];  //c
-  tick[5] = randomize(5, 1000);
-});
-let noize = new TA(random);
+  if(randomize(0,1)) { let temp = lcoh[1]; lcoh[1] = lcoh[2]; lcoh[2] = temp; }  random[0][i] = new Date('2018-01-01').getTime() + i * 60000;
+  random[1][i] = lcoh[1];  //o
+  random[2][i] = lcoh[0];  //h
+  random[3][i] = lcoh[3];  //l
+  random[4][i] = lcoh[2];  //c
+  random[5][i] = randomize(5, 1000);
+}let noize = new TA(random, simpleFormat);
 
 //prittify tests
 tape.createStream()
@@ -279,7 +276,7 @@ tape('SMA', (t) => {
           22.77,22.91,23.08,23.21,23.38,23.53,23.65,23.71,23.69,23.61,23.51,23.43,23.28,23.13];
   let actual = new TA([c,c,c,c,c,c], simpleFormat).sma(10);
   t.ok(actual.every(isFinite), 'Finite test');
-  let delta = nrmsd(expected.splice(9), actual.splice(9));
+  let delta = nrmsd(expected.slice(9), actual.slice(9));
   t.ok(delta < 1e-2, `NRMSD test (${delta.toFixed(5)})`);
   t.end();
 });
@@ -291,7 +288,7 @@ tape('EMA', (t) => {
           22.97,23.13,23.28,23.34,23.43,23.51,23.54,23.47,23.40,23.39,23.26,23.23,23.08,22.92];
   let actual = new TA([c,c,c,c,c,c], simpleFormat).ema(10);
   t.ok(actual.every(isFinite), 'Finite test');
-  let delta = nrmsd(expected.splice(9), actual.splice(9));
+  let delta = nrmsd(expected.slice(9), actual.slice(9));
   t.ok(delta < 1e-2, `NRMSD test (${delta.toFixed(5)})`);
   t.end();
 });
@@ -303,7 +300,7 @@ tape('STD', (t) => {
     0.58,0.51,0.52,0.53,0.48,0.49,0.58,0.62,0.67,0.62,0.66,0.69,0.65,0.36,0.24];
   let actual = new TA([c,c,c,c,c,c], simpleFormat).std(10);
   t.ok(actual.every(isFinite), 'Finite test');
-  let delta = nrmsd(expected.splice(10), actual.splice(10));
+  let delta = nrmsd(expected.slice(10), actual.slice(10));
   t.ok(delta < 1e-2, `NRMSD test (${delta.toFixed(5)})`);
   t.end();
 });
@@ -317,14 +314,20 @@ tape('BBAND', (t) => {
     87.56,87.76,87.97,87.95,87.96,87.95];
   let bb = new TA([c,c,c,c,c,c], simpleFormat).bband(20,2);
   t.ok((bb.lower.every(isFinite) && bb.middle.every(isFinite) && bb.upper.every(isFinite)), 'Finite test');
-  let delta = nrmsd(expected.splice(19), bb.lower.splice(19));
+  let delta = nrmsd(expected.slice(19), bb.lower.slice(19));
   t.ok(delta < 1e-2, `NRMSD test on lower (${delta.toFixed(5)})`);
   t.end();
 });
 
 tape('MACD', (t) => {
-  let macd = noize.macd();
+  let c = [16.39,16.50,16.45,16.43,16.52,16.51,16.423,16.41,16.47,16.45,16.32,16.36,16.34,16.59,16.54,16.52,
+    16.44,16.47,16.5,16.45,16.28,16.07,16.08,16.1,16.1,16.09,16.43,16.49,16.59,16.65,16.78,16.86,16.86,16.76];
+  let expected = [NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,0.05,0.01,-0.01,-0.02,-0.01,0.00,-0.01,0.00,
+    0.03,0.09,0.12,0.13,0.13,0.12,0.05,-0.01,-0.06,-0.10,-0.14,-0.17,-0.18,-0.16];
+  let macd = new TA([c,c,c,c,c,c], simpleFormat).macd(13,5,6);
   t.ok(macd.line.every(isFinite) && macd.signal.every(isFinite) && macd.hist.every(isFinite), 'Finite test');
+  let delta = nrmsd(expected.slice(19), macd.line.slice(19));
+  t.ok(delta < 2e-2, `NRMSD test on macd line (${delta.toFixed(5)})`);
   t.end();
 });
 
@@ -335,7 +338,7 @@ tape('RSI', (t) => {
     66.36,57.97,62.93,63.26,56.06,62.38,54.71,50.42,39.99,41.46,41.87,45.46,37.30,33.08,37.77];
   let actual = new TA([c,c,c,c,c,c], simpleFormat).rsi(14);
   t.ok(actual.every(isFinite), 'Finite test');
-  let delta = nrmsd(expected.splice(14), actual.splice(14));
+  let delta = nrmsd(expected.slice(14), actual.slice(14));
   t.ok(delta < 1e-2, `NRMSD test (${delta.toFixed(5)})`);
   t.end();
 });
@@ -358,10 +361,10 @@ tape('ZigZag', (t) => {
       isUpDown = false;
     }
   });
-  t.ok(isUpDown, 'Up-down test');
-  // for (let i = 0; i < zz.time.length - 1; i++) {
-  //   console.log(noize.$.close[0]);
-  // }
+  t.ok(isUpDown, "UpDown test");
+  for (let i = 0; i < zz.time.length - 1; i++) {
+    random[4][random[0].indexOf(zz.time[i])];
+  }
   t.end();
 });
 
@@ -408,7 +411,23 @@ tape('PSAR', (t) => {
   let expected = [47.25,47.25,47.25,47.27,47.32,47.38,47.42,47.47,47.52,47.59,47.68,47.80,47.91,48.01,48.13,48.28];
   let actual = new TA([h,h,h,l,l,l], simpleFormat).psar();
   t.ok(actual.every(isFinite), 'Finite test');
-  let delta = rmsd(expected.splice(1), actual.splice(1));
+  let delta = nrmsd(expected.slice(1), actual.slice(1));
   t.ok(delta < 2e-2, `NRMSD uptrend test (${delta.toFixed(5)})`);
+  t.end();
+});
+
+tape('Stoch', (t) => {
+  let h = [127.01,127.62,126.59,127.35,128.17,128.43,127.37,126.42,126.90,126.85,125.65,125.72,127.16,127.72,127.69,
+    128.22,128.27,128.09,128.27,127.74,128.77,129.29,130.06,129.12,129.29,128.47,128.09,128.65,129.14,128.64];
+  let l = [125.36,126.16,124.93,126.09,126.82,126.48,126.03,124.83,126.39,125.72,124.56,124.57,125.07,126.86,126.63,
+    126.80,126.71,126.80,126.13,125.92,126.99,127.81,128.47,128.06,127.61,127.60,127.00,126.90,127.49,127.40];
+  let c = [NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,127.29,127.18,128.01,127.11,127.73,
+    127.06,127.33,128.71,127.87,128.58,128.60,127.93,128.11,127.60,127.60,128.69,128.27];
+  let expected = [NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,70.44,67.61,89.20,65.81,
+    81.75,64.52,74.53,98.58,70.10,73.06,73.42,61.23,60.96,40.39,40.39,66.83,56.73];
+  let actual = new TA([h,h,h,l,c,c], simpleFormat).stoch();
+  t.ok(actual.line.slice(13).every(isFinite) && actual.line.slice(15).every(isFinite), 'Finite test');
+  let delta = nrmsd(expected.slice(13), actual.line.slice(13));
+  t.ok(delta < 1e-2, `NRMSD uptrend test (${delta.toFixed(5)})`);
   t.end();
 });
