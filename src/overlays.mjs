@@ -50,24 +50,24 @@ export function vbp($close, $volume, zones, left, right) {
     bottom = (bottom > $close[i]) ? $close[i] : bottom;
   }
   for (let i = left; i < (right ? right : $close.length); i++) {
-    vbp[Math.floor(($close[i] - bottom + 1e-14) / (top - bottom + 1e-12) * (zones - 1))] += $volume[i];
+    vbp[Math.floor(($close[i] - bottom + 1e-14) / (top - bottom + 2e-14) * (zones - 1))] += $volume[i];
   }
   return { bottom: bottom, top: top, volume: vbp.map((x) => { return x / total })};
 }
 
 export function zigzag($time, $high, $low, percent) {
-  let lowest = $low[0],         thattime = $time[0],     highest = $high[0];  
-  let isUp = true,              time = [],              zigzag = [];
+  let lowest = $low[0],         thattime = $time[0],    isUp = true;
+  let highest = $high[0],       time = [],              zigzag = [];
   for (let i = 1; i < $time.length; i++) {
     if (isUp) {
       if ($high[i] > highest) { thattime = $time[i];    highest = $high[i]; };
       if ($low[i] < lowest + (highest - lowest) * (100 - percent) / 100) {
-        isUp = false;           time.push(thattime);    zigzag.push(highest);
+        isUp = false;           time.push(thattime);    zigzag.push(highest);   lowest = $low[i];
       }
     } else {
       if ($low[i] < lowest) {   thattime = $time[i];    lowest = $low[i]; };
       if ($high[i] > lowest + (highest - lowest) * percent / 100) {
-        isUp = true;            time.push(thattime);    zigzag.push(lowest);
+        isUp = true;            time.push(thattime);    zigzag.push(lowest);    highest = $high[i];
       }
     }
   };

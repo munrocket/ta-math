@@ -13,13 +13,13 @@ export function macd($close, wshort, wlong, wsig) {
 }
 
 export function rsi($close, window) {
-  let gains = [1e-14], loss = [0];
+  let gains = [0], loss = [1e-14];
   for (let i = 1; i < $close.length; i++) {
     let diff = $close[i] - $close[i - 1];
     gains.push(diff >= 0 ? diff : 0);
     loss.push(diff < 0 ? -diff : 0);
   }
-  return pointwise((a, b) => 100 - 100 / (1 + a / b), sma(gains, window), sma(loss, window));
+  return pointwise((a, b) => 100 - 100 / (1 + a / b), ema(gains, window, 1 / window), ema(loss, window, 1 / window));
 }
 
 export function obv($close, $volume) {

@@ -4,7 +4,7 @@ Technical analysis math
 
 Tiny library for calculating indicators and overlays from price data in any format. You choose format and data by yourself and library return charts data.
 
-### Supporting 11 indicators and overlays
+### Supporting indicators and overlays
 
 * sma     -   Simple Moving Average
 * ema     -   Exponential Moving Average
@@ -13,6 +13,7 @@ Tiny library for calculating indicators and overlays from price data in any form
 * macd    -   Moving Average Convergence/Divergence
 * rsi     -   Relative Strength Index
 * psar    -   Parabolic SAR
+* stoch   -   Stochastic Oscillator (Full)
 * obv     -   On Balance Volume
 * adl     -   Accumulation / Distribution line
 * vbp     -   Volume by Price

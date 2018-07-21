@@ -116,22 +116,22 @@ function vbp($close, $volume, zones, left, right) {
     bottom = (bottom > $close[i]) ? $close[i] : bottom;
   }
   for (let i = left; i < (right ? right : $close.length); i++) {
-    vbp[Math.floor(($close[i] - bottom + 1e-14) / (top - bottom + 1e-12) * (zones - 1))] += $volume[i];
+    vbp[Math.floor(($close[i] - bottom + 1e-14) / (top - bottom + 2e-14) * (zones - 1))] += $volume[i];
   }
   return { bottom: bottom, top: top, volume: vbp.map((x) => { return x / total })};
 }
 
 function zigzag($time, $high, $low, percent) {
-  let lowest = $low[0],         thattime = $time[0],     highest = $high[0];  
-  let isUp = true,              time = [],              zigzag = [];
+  let lowest = $low[0],         thattime = $time[0],    isUp = true;
+  let highest = $high[0],       time = [],              zigzag = [];
   for (let i = 1; i < $time.length; i++) {
     if (isUp) {
       if ($high[i] > highest) { thattime = $time[i];    highest = $high[i]; }      if ($low[i] < lowest + (highest - lowest) * (100 - percent) / 100) {
-        isUp = false;           time.push(thattime);    zigzag.push(highest);
+        isUp = false;           time.push(thattime);    zigzag.push(highest);   lowest = $low[i];
       }
     } else {
       if ($low[i] < lowest) {   thattime = $time[i];    lowest = $low[i]; }      if ($high[i] > lowest + (highest - lowest) * percent / 100) {
-        isUp = true;            time.push(thattime);    zigzag.push(lowest);
+        isUp = true;            time.push(thattime);    zigzag.push(lowest);    highest = $high[i];
       }
     }
   }  return { time : time, price : zigzag};
@@ -149,13 +149,13 @@ function macd($close, wshort, wlong, wsig) {
 }
 
 function rsi($close, window) {
-  let gains = [1e-14], loss = [0];
+  let gains = [0], loss = [1e-14];
   for (let i = 1; i < $close.length; i++) {
     let diff = $close[i] - $close[i - 1];
     gains.push(diff >= 0 ? diff : 0);
     loss.push(diff < 0 ? -diff : 0);
   }
-  return pointwise((a, b) => 100 - 100 / (1 + a / b), sma(gains, window), sma(loss, window));
+  return pointwise((a, b) => 100 - 100 / (1 + a / b), ema(gains, window, 1 / window), ema(loss, window, 1 / window));
 }
 
 function obv($close, $volume) {
@@ -231,8 +231,8 @@ class TA {
   }
 }
 
-let randomize = (left, right) => {
-  return (right - left) * Math.random() + left;
+let randomize = (tleft, right) => {
+  return (right - tleft) * Math.random() + tleft;
 };
 
 // random ohlcv
@@ -241,8 +241,8 @@ for (let i = 0; i < random[0].length; i++) {
   let lcoh = [randomize(5000, 20000),randomize(5000, 20000),randomize(5000, 20000),randomize(5000, 20000)].sort();
   if(randomize(0,1)) { let temp = lcoh[1]; lcoh[1] = lcoh[2]; lcoh[2] = temp; }  random[0][i] = new Date('2018-01-01').getTime() + i * 60000;
   random[1][i] = lcoh[1];  //o
-  random[2][i] = lcoh[0];  //h
-  random[3][i] = lcoh[3];  //l
+  random[2][i] = lcoh[3];  //h
+  random[3][i] = lcoh[0];  //l
   random[4][i] = lcoh[2];  //c
   random[5][i] = randomize(5, 1000);
 }let noize = new TA(random, simpleFormat);
@@ -339,7 +339,7 @@ tape('RSI', (t) => {
   let actual = new TA([c,c,c,c,c,c], simpleFormat).rsi(14);
   t.ok(actual.every(isFinite), 'Finite test');
   let delta = nrmsd(expected.slice(14), actual.slice(14));
-  t.ok(delta < 1e-2, `NRMSD test (${delta.toFixed(5)})`);
+  t.ok(delta < 7e-2, `NRMSD test (${delta.toFixed(5)})`);
   t.end();
 });
 
@@ -363,8 +363,14 @@ tape('ZigZag', (t) => {
   });
   t.ok(isUpDown, "UpDown test");
   for (let i = 0; i < zz.time.length - 1; i++) {
-    random[4][random[0].indexOf(zz.time[i])];
-  }
+    let tleft = random[0].indexOf(zz.time[i]);
+    let tright = random[0].indexOf(zz.time[i + 1]);
+    let isUp = zz.price[tleft] < zz.price[tright];
+    for (let j = tleft; j <= tright; j++) {
+      if (random[4][j] < zz.price[isUp ? tleft : tright] || random[4][j] > zz.price[isUp ? tright : tleft]) {
+        console.log(j);
+      }
+  } }
   t.end();
 });
 
