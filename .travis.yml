@@ -2,7 +2,6 @@ sudo: false
 language: node_js
 node_js:  
   - node
-  - 8
   - 6
 cache:
   directories:
@@ -12,3 +11,5 @@ branches:
     - master
 script:
   - npm run test
+
+#after_script: "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"

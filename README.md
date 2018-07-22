@@ -1,5 +1,5 @@
 
-Technical analysis math
+Technical analysis math ![Travis](https://img.shields.io/travis/munrocket/ta-math.svg)![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg)
 =========
 
 Tiny library for calculating indicators and overlays from price data in any format. You choose format and data by yourself and library return charts data.
