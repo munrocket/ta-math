@@ -1,3 +1,5 @@
+/* basic functions */
+
 export function mean(array) {
   let sum = 0;
   for (let i = 0; i < array.length; i++) {
@@ -7,7 +9,6 @@ export function mean(array) {
 }
 
 export function sd(array) {
-  //const correction = (array.length > 1) ? Math.sqrt(array.length / (array.length - 1)) : 1;
   return rmsd(array, new Array(array.length).fill(mean(array)));
 }
 
@@ -29,6 +30,8 @@ export function pointwise(operation, ...args) {
   return result;
 }
 
+/* rolling or price specific functions */
+
 export function rolling(operation, window, array) {
   let result = [];
   for (let i = 0; i < array.length; i++) {
@@ -36,4 +39,12 @@ export function rolling(operation, window, array) {
     result.push(operation(array.slice((j > 0) ? j : 0, i + 1)));
   }
   return result;
+}
+
+export function trueRange($high, $low, $close) {
+  let tr = [$high[0] - $low[0]];
+  for (let i = 1; i < $low.length; i++) {
+    tr.push(Math.max($high[i] - $low[i], Math.abs($high[i] - $close[i - 1]), Math.abs($low[i] - $close[i - 1])));
+  }
+  return tr;
 }

@@ -1,23 +1,30 @@
 import { rolling, mean, pointwise } from './core';
-import { std } from './indicators';
+import { stddev } from './indicators';
 
 export function sma($close, window) {
   return rolling(x => mean(x), window, $close);
 }
 
-export function ema($close, window, weight = null) {
-  let ema = [$close[0]];
+export function ema($close, window, weight = null, start = null) {
   weight = weight ? weight : 2 / (window + 1);
+  let ema = [ start ? start : mean($close.slice(0, window)) ];
   for (let i = 1; i < $close.length; i++) {
-    ema.push(($close[i] - ema[i - 1]) * weight + ema[i - 1]);
+    ema.push($close[i] * weight + ema[i - 1] * (1 - weight));
   };
   return ema;
 }
 
-export function bband($close, window, mult) {
+export function bb($close, window, mult) {
   const middle = sma($close, window);
-  const upper = pointwise((a, b) => a + b * mult, middle, std($close, window));
-  const lower = pointwise((a, b) => a - b * mult, middle, std($close, window));
+  const upper = pointwise((a, b) => a + b * mult, middle, stddev($close, window));
+  const lower = pointwise((a, b) => a - b * mult, middle, stddev($close, window));
+  return { lower : lower, middle : middle, upper : upper};
+}
+
+export function ebb($close, window, mult) {
+  const middle = ema($close, window);
+  const upper = pointwise((a, b) => a + b * mult, middle, expdev($close, window));
+  const lower = pointwise((a, b) => a - b * mult, middle, expdev($close, window));
   return { lower : lower, middle : middle, upper : upper};
 }
 

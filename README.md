@@ -8,12 +8,16 @@ Tiny library for calculating indicators and overlays from price data in any form
 
 * sma     -   Simple Moving Average
 * ema     -   Exponential Moving Average
-* std     -   Standard Deviation
-* bband   -   Bollinger Band
+* stddev  -   Standard Deviation
+* expstd  -   Exponential Standard Deviation
+* bb      -   Bollinger Band
+* ebb     -   Exponential Bollinger Band
 * macd    -   Moving Average Convergence/Divergence
 * rsi     -   Relative Strength Index
 * psar    -   Parabolic SAR
 * stoch   -   Stochastic Oscillator (Full)
+* atr     -   Average True Range
+* vi      -   Vortex Indicator
 * obv     -   On Balance Volume
 * adl     -   Accumulation / Distribution line
 * vbp     -   Volume by Price
@@ -46,4 +50,4 @@ You can see how to set new data format in `formats.mjs`, by default it uses exch
 
 ### Contributing
 
-Feel free to contribute. Here reference how to implement new indicators [StockCharts](http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators).
+Feel free to contribute. Here [reference](http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators) how to implement new indicators. There are test samples in the xls files, you can use this [tool](https://www.browserling.com/tools/text-columns-to-rows) to convert columns into rows.
