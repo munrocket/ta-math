@@ -1,13 +1,15 @@
-import { sum, sd, pointwise, rolling, trueRange} from './core';
+import { sd, pointwise, rolling, trueRange} from './core';
 import { ema, sma } from './overlays';
+
+/* indicators */
 
 export function stddev($close, window) {
   return rolling(x => sd(x), window, $close);
 }
 
-export function expdev($close, window, weight) {
+export function expdev($close, window, weight = null) {
   let sqrDiff = pointwise((a, b) => (a - b) * (a - b), $close, ema($close, window));
-  return pointwise(x => Math.sqrt(x), ema(sqrDiff, weight, sqrDiff[0]));
+  return pointwise(x => Math.sqrt(x), ema(sqrDiff, window, weight));
 }
 
 export function macd($close, wshort, wlong, wsig) {
@@ -27,6 +29,14 @@ export function rsi($close, window) {
   return pointwise((a, b) => 100 - 100 / (1 + a / b), ema(gains, window, 1 / window), ema(loss, window, 1 / window));
 }
 
+export function stoch($high, $low, $close, window, signal, smooth) {
+  let lowest = rolling(x => Math.min(...x), window, $low);
+  let highest = rolling(x => Math.max(...x), window, $high);
+  let K = pointwise(function (h, l, c) {return 100 * (c - l) / (h - l)}, highest, lowest, $close); 
+  if (smooth > 1) { K = sma(K, smooth) };
+  return { line : K, signal : sma(K, signal) };
+}
+
 export function obv($close, $volume) {
   let obv = [0];
   for (let i = 1; i < $close.length; i++) {
@@ -43,17 +53,9 @@ export function adl($high, $low, $close, $volume) {
   return adl;
 }
 
-export function stoch($high, $low, $close, window, signal, smooth) {
-  let lowest = rolling(x => Math.min(...x), window, $low);
-  let highest = rolling(x => Math.max(...x), window, $high);
-  let K = pointwise(function (h, l, c) {return 100 * (c - l) / (h - l)}, highest, lowest, $close); 
-  if (smooth > 1) { K = sma(K, smooth) };
-  return { line : K, signal : sma(K, signal) };
-}
-
 export function atr($high, $low, $close, window) {
   let tr = trueRange($high, $low, $close);
-  return ema(tr, window, 1 / window, tr[0]);
+  return ema(tr, window, 1 / window);
 }
 
 export function vi($high, $low, $close, window) {

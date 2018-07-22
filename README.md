@@ -42,10 +42,10 @@ You can see how to set new data format in `formats.mjs`, by default it uses exch
 
 - [X] unit tests
 - [X] proxy for ohlcv with different formats
-- [ ] generators?
+- [ ] generators
 - [ ] es5 with babel
 - [ ] typescript integration (.d.ts)
-- [ ] new indicators (stochastic momentum, williams)
+- [ ] new indicators
 - [ ] good loking ui example
 
 ### Contributing

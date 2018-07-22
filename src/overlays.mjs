@@ -1,5 +1,7 @@
 import { rolling, mean, pointwise } from './core';
-import { stddev } from './indicators';
+import { stddev, expdev } from './indicators';
+
+/* overlays */
 
 export function sma($close, window) {
   return rolling(x => mean(x), window, $close);
