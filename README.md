@@ -1,6 +1,7 @@
 
-Technical analysis math ![Travis](https://img.shields.io/travis/munrocket/ta-math.svg)![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg)
+Technical analysis math
 =========
+![Travis](https://img.shields.io/travis/munrocket/ta-math.svg) ![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat)](https://egghead.io/courses/how-to-contribute-to-an-open-source-project-on-github)
 
 Tiny library for calculating indicators and overlays from price data in any format. You choose format and data by yourself and library return charts data.
 
