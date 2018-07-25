@@ -107,6 +107,12 @@ tape('VBP', (t) => {
   t.end();
 })
 
+tape('Keltner channel', (t) => {
+  let keltner = noize.keltner();
+  t.ok(keltner.lower.every(isFinite) && keltner.middle.every(isFinite) && keltner.upper.every(isFinite), 'Finite test');
+  t.end();
+})
+
 tape('ZigZag', (t) => {
   let zz = noize.zigzag();
   t.ok(zz.time.every(isFinite) && zz.price.every(isFinite), 'Finite test');

@@ -143,6 +143,13 @@ function vbp($close, $volume, zones, left, right) {
   return { bottom: bottom, top: top, volume: vbp.map((x) => { return x / total })};
 }
 
+function keltner($high, $low, $close, wmiddle, wchannel, mult) {
+  let middle = ema($close, wmiddle);
+  let upper = pointwise((a, b) => a + mult * b, middle, atr($high, $low, $close, wchannel));
+  let lower = pointwise((a, b) => a - mult * b, middle, atr($high, $low, $close, wchannel));
+  return { lower: lower, middle: middle, upper: upper };
+}
+
 function zigzag($time, $high, $low, percent) {
   let lowest = $low[0],         thattime = $time[0],    isUp = true;
   let highest = $high[0],       time = [],              zigzag = [];
@@ -267,6 +274,7 @@ class TA {
       ebb:    (window = 10, mult = 2)                 =>    ebb(this.$.close, window, mult),
       psar:   (factor = 0.02, maxfactor = 0.2)        =>    psar(this.$.high, this.$.low, factor, maxfactor),
       vbp:    (zones = 12, left = 0, right = null)    =>    vbp(this.$.close, this.$.volume, zones, left, right),
+      keltner:(wmiddle = 20, wchannel = 10, mult = 2) =>    keltner(this.$.high, this.$.low, this.$.close, wmiddle, wchannel, mult),
       zigzag: (percent = 15)                          =>    zigzag(this.$.time, this.$.high, this.$.low, percent),
 
       stddev: (window = 15)                           =>    stddev(this.$.close, window),
@@ -379,6 +387,12 @@ tape('VBP', (t) => {
   t.ok([vbp.bottom, vbp.top].every(isFinite) && vbp.volume.every(isFinite), 'Finite test');
   t.ok(vbp.bottom < vbp.top, 'Bottom lower than top');
   t.ok(delta < 0.1, `SD of uniform distribution (${delta.toFixed(5)})`);
+  t.end();
+});
+
+tape('Keltner channel', (t) => {
+  let keltner = noize.keltner();
+  t.ok(keltner.lower.every(isFinite) && keltner.middle.every(isFinite) && keltner.upper.every(isFinite), 'Finite test');
   t.end();
 });
 

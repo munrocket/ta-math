@@ -42,6 +42,7 @@ export default class TA {
       ebb:    (window = 10, mult = 2)                 =>    overlays.ebb(this.$.close, window, mult),
       psar:   (factor = 0.02, maxfactor = 0.2)        =>    overlays.psar(this.$.high, this.$.low, factor, maxfactor),
       vbp:    (zones = 12, left = 0, right = null)    =>    overlays.vbp(this.$.close, this.$.volume, zones, left, right),
+      keltner:(wmiddle = 20, wchannel = 10, mult = 2) =>    overlays.keltner(this.$.high, this.$.low, this.$.close, wmiddle, wchannel, mult),
       zigzag: (percent = 15)                          =>    overlays.zigzag(this.$.time, this.$.high, this.$.low, percent),
 
       stddev: (window = 15)                           =>    indicators.stddev(this.$.close, window),

@@ -4,24 +4,32 @@ Technical analysis math ![Travis](https://img.shields.io/travis/munrocket/ta-mat
 
 Tiny library for calculating indicators and overlays from price data in any format. You choose format and data by yourself and library return charts data.
 
-### Supporting indicators and overlays
+### Technical Overlays
 
-* sma     -   Simple Moving Average
-* ema     -   Exponential Moving Average
-* stddev  -   Standard Deviation
-* expstd  -   Exponential Standard Deviation
-* bb      -   Bollinger Band
-* ebb     -   Exponential Bollinger Band
-* macd    -   Moving Average Convergence/Divergence
-* rsi     -   Relative Strength Index
-* psar    -   Parabolic SAR
-* stoch   -   Stochastic Oscillator (Full)
-* atr     -   Average True Range
-* vi      -   Vortex Indicator
-* obv     -   On Balance Volume
-* adl     -   Accumulation / Distribution line
-* vbp     -   Volume by Price
+* sma     -   Simple Moving Average √
+* ema     -   Exponential Moving Average √
+* bb      -   Bollinger Band √
+* ebb     -   Exponential Bollinger Band 
+* psar    -   Parabolic SAR √
+* vbp     -   Volume by Price √
+* keltner -   Keltner Channels
 * zigzag  -   ZigZag Indicator
+
+### Technical Indicators
+
+* stddev  -   Standard Deviation √
+* expstd  -   Exponential Standard Deviation 
+* macd    -   Moving Average Convergence/Divergence √
+* rsi     -   Relative Strength Index √
+* stoch   -   Stochastic Oscillator (Full) √
+* obv     -   On Balance Volume √
+* adl     -   Accumulation / Distribution line √
+* atr     -   Average True Range √
+* vi      -   Vortex Indicator √
+
+### Error methods
+* rmsd    -   Root-Mean-Square Deviation √
+* nrmsd   -   Normalized Root-Mean-Square Deviation √
 
 ### Installation
 
