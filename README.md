@@ -49,9 +49,10 @@ You can see how to set new data format in `formats.mjs`, by default it uses exch
 
 ### 2do list
 
+- [X] popular indicators and overlays
 - [X] unit tests
-- [X] proxy for ohlcv with different formats
-- [ ] generators
+- [X] proxy for ohlcv
+- [X] different input formats
 - [ ] es5 with babel
 - [ ] typescript integration (.d.ts)
 - [ ] new indicators
