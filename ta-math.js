@@ -15,57 +15,83 @@ function sd(array) {
 }
 
 function rmsd(f, g) {
-  const sqrDiff = pointwise((a, b) => (a - b) * (a - b), f, g);
-  return (f.length != g.length) ? Infinity : Math.sqrt(mean(sqrDiff));
+  if (f.length != g.length) { return Infinity }  let sqrDiff = generify(pointwise((a, b) => (a - b) * (a - b), f, g), f).all();
+  return Math.sqrt(mean(sqrDiff));
 }
 
-function pointwise(operation, ...args) {
-  let result = [];
-  for (let i = 0; i < args[0].length; i++) {
-    let iargs = (i) => args.map(array => array[i]);
-    result[i] = operation(...iargs(i));
+/* generators */
+
+function* pointwise(operation, ...functions) {
+  for (let i = 0; i < functions[0].length; i++) {
+    let ifunction = (i) => functions.map(array => array[i]);
+    yield operation(...ifunction(i));
   }
-  return result;
 }
 
-/* rolling or price specific functions */
-
-function rolling(operation, window, array) {
-  let result = [];
+function* rolling(operation, window, array) {
   for (let i = 0; i < array.length; i++) {
     let j = i + 1 - window;
-    result.push(operation(array.slice((j > 0) ? j : 0, i + 1)));
+    yield operation(array.slice((j > 0) ? j : 0, i + 1));
   }
-  return result;
 }
 
-function trueRange($high, $low, $close) {
-  let tr = [$high[0] - $low[0]];
+function* trueRange($high, $low, $close) {
+  yield [$high[0] - $low[0]];
   for (let i = 1; i < $low.length; i++) {
-    tr.push(Math.max($high[i] - $low[i], Math.abs($high[i] - $close[i - 1]), Math.abs($low[i] - $close[i - 1])));
+    yield Math.max($high[i] - $low[i], Math.abs($high[i] - $close[i - 1]), Math.abs($low[i] - $close[i - 1]));
   }
-  return tr;
+}
+
+function generify(generator, objectWithLength) {
+  let i = 0;
+  return {
+    next: () => {
+      i++;
+      return generator.next();
+    },
+    update: () => {
+      let update = [];
+      while(i++ < objectWithLength.length) {
+        update.push(generator.next().value);
+      }
+      return update;
+    },
+    all: () => {
+      let result = [];
+      for(let x of generator) {
+        result.push(x);
+      }
+      return result;
+    }
+  }
 }
 
 /* overlays */
 
-function sma($close, window) {
-  return rolling(x => mean(x), window, $close);
+function* sma($close, window) {
+  yield* rolling(x => mean(x), window, $close);
 }
 
-function ema($close, window, weight = null, start = null) {
+function* ema($close, window, weight = null, start = null) {
   weight = weight ? weight : 2 / (window + 1);
-  let ema = [ start ? start : mean($close.slice(0, window)) ];
+  let value = start ? start : mean($close.slice(0, window)); yield value;
   for (let i = 1; i < $close.length; i++) {
-    ema.push($close[i] * weight + ema[i - 1] * (1 - weight));
-  }  return ema;
-}
+    value = $close[i] * weight + value * (1 - weight); yield value;
+  }}
 
-function bb($close, window, mult) {
-  const middle = sma($close, window);
-  const upper = pointwise((a, b) => a + b * mult, middle, stddev($close, window));
-  const lower = pointwise((a, b) => a - b * mult, middle, stddev($close, window));
-  return { lower : lower, middle : middle, upper : upper};
+function* bb($close, window, mult) {
+  let middle = sma($close, window);
+  let range = stddev($close, window);
+  let imiddle, irange;
+  for(let i = 0; i < $close.length; i++) {
+    imiddle = middle.next().value;
+    irange = range.next().value;
+    yield {
+      lower: imiddle - mult * irange,
+      middle: imiddle,
+      upper: imiddle + mult * irange
+    };
+  }
 }
 
 function ebb($close, window, mult) {
@@ -133,8 +159,8 @@ function zigzag($time, $high, $low, percent) {
 
 /* indicators */
 
-function stddev($close, window) {
-  return rolling(x => sd(x), window, $close);
+function* stddev($close, window) {
+  yield* rolling(x => sd(x), window, $close);
 }
 
 function expdev($close, window, weight = null) {
@@ -247,24 +273,24 @@ class TA {
     /* technical analysy method defenition */
 
     return {
-      sma:    (window = 15)                           =>    sma(this.$.close, window),
-      ema:    (window = 10)                           =>    ema(this.$.close, window),
-      bb:     (window = 15, mult = 2)                 =>    bb(this.$.close, window, mult),
-      ebb:    (window = 10, mult = 2)                 =>    ebb(this.$.close, window, mult),
-      psar:   (factor = 0.02, maxfactor = 0.2)        =>    psar(this.$.high, this.$.low, factor, maxfactor),
-      vbp:    (zones = 12, left = 0, right = null)    =>    vbp(this.$.close, this.$.volume, zones, left, right),
-      keltner:(wmiddle = 20, wchannel = 10, mult = 2) =>    keltner(this.$.high, this.$.low, this.$.close, wmiddle, wchannel, mult),
-      zigzag: (percent = 15)                          =>    zigzag(this.$.time, this.$.high, this.$.low, percent),
+      sma:    (window = 15)                           =>    generify(sma(this.$.close, window), this.$.close),
+      ema:    (window = 10)                           =>    generify(ema(this.$.close, window), this.$.close),
+      bb:     (window = 15, mult = 2)                 =>    generify(bb(this.$.close, window, mult), this.$.close),
+      ebb:    (window = 10, mult = 2)                 =>    generify(ebb(this.$.close, window, mult), this.$.close),
+      psar:   (factor = 0.02, maxfactor = 0.2)        =>    generify(psar(this.$.high, this.$.low, factor, maxfactor), this.$.high),
+      vbp:    (zones = 12, left = 0, right = null)    =>    generify(vbp(this.$.close, this.$.volume, zones, left, right), this.$.close),
+      keltner:(wmiddle = 20, wchannel = 10, mult = 2) =>    generify(keltner(this.$.high, this.$.low, this.$.close, wmiddle, wchannel, mult), this.$.high),
+      zigzag: (percent = 15)                          =>    generify(zigzag(this.$.time, this.$.high, this.$.low, percent), this.$.high),
 
-      stddev: (window = 15)                           =>    stddev(this.$.close, window),
-      expdev: (window = 15)                           =>    expdev(this.$.close, window),
-      macd:   (wshort = 12, wlong = 26, wsig = 9)     =>    macd(this.$.close, wshort, wlong, wsig),
-      rsi:    (window = 14)                           =>    rsi(this.$.close, window),
-      stoch:  (window = 14, signal = 3, smooth = 1)   =>    stoch(this.$.high, this.$.low, this.$.close, window, signal, smooth),
-      obv:    ()                                      =>    obv(this.$.close, this.$.volume),
-      adl:    ()                                      =>    adl(this.$.high, this.$.low, this.$.close, this.$.volume),
-      atr:    (window = 14)                           =>    atr(this.$.high, this.$.low, this.$.close, window),
-      vi:     (window = 14)                           =>    vi(this.$.high, this.$.low, this.$.close, window),
+      stddev: (window = 15)                           =>    generify(stddev(this.$.close, window), this.$.close),
+      expdev: (window = 15)                           =>    generify(expdev(this.$.close, window), this.$.close),
+      macd:   (wshort = 12, wlong = 26, wsig = 9)     =>    generify(macd(this.$.close, wshort, wlong, wsig), this.$.close),
+      rsi:    (window = 14)                           =>    generify(rsi(this.$.close, window), this.$.close),
+      stoch:  (window = 14, signal = 3, smooth = 1)   =>    generify(stoch(this.$.high, this.$.low, this.$.close, window, signal, smooth), this.$.close),
+      obv:    ()                                      =>    generify(obv(this.$.close, this.$.volume), this.$.close),
+      adl:    ()                                      =>    generify(adl(this.$.high, this.$.low, this.$.close, this.$.volume), this.$.close),
+      atr:    (window = 14)                           =>    generify(atr(this.$.high, this.$.low, this.$.close, window), this.$.close),
+      vi:     (window = 14)                           =>    generify(vi(this.$.high, this.$.low, this.$.close, window), this.$.close)
     }
   }
 }

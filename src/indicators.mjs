@@ -3,8 +3,8 @@ import { ema, sma } from './overlays';
 
 /* indicators */
 
-export function stddev($close, window) {
-  return rolling(x => sd(x), window, $close);
+export function* stddev($close, window) {
+  yield* rolling(x => sd(x), window, $close);
 }
 
 export function expdev($close, window, weight = null) {

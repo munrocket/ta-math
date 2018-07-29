@@ -3,24 +3,31 @@ import { stddev, expdev, atr } from './indicators';
 
 /* overlays */
 
-export function sma($close, window) {
-  return rolling(x => mean(x), window, $close);
+export function* sma($close, window) {
+  yield* rolling(x => mean(x), window, $close);
 }
 
-export function ema($close, window, weight = null, start = null) {
+export function* ema($close, window, weight = null, start = null) {
   weight = weight ? weight : 2 / (window + 1);
-  let ema = [ start ? start : mean($close.slice(0, window)) ];
+  let value = start ? start : mean($close.slice(0, window)); yield value;
   for (let i = 1; i < $close.length; i++) {
-    ema.push($close[i] * weight + ema[i - 1] * (1 - weight));
+    value = $close[i] * weight + value * (1 - weight); yield value;
   };
-  return ema;
 }
 
-export function bb($close, window, mult) {
-  const middle = sma($close, window);
-  const upper = pointwise((a, b) => a + b * mult, middle, stddev($close, window));
-  const lower = pointwise((a, b) => a - b * mult, middle, stddev($close, window));
-  return { lower : lower, middle : middle, upper : upper};
+export function* bb($close, window, mult) {
+  let middle = sma($close, window);
+  let range = stddev($close, window);
+  let imiddle, irange;
+  for(let i = 0; i < $close.length; i++) {
+    imiddle = middle.next().value;
+    irange = range.next().value;
+    yield {
+      lower: imiddle - mult * irange,
+      middle: imiddle,
+      upper: imiddle + mult * irange
+    };
+  }
 }
 
 export function ebb($close, window, mult) {
