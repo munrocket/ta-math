@@ -38,7 +38,7 @@ tape('Mean, SD', (t) => {
 tape('MAE', (t) => {
   t.ok(mae([-2,5,-8,9,-4],[-2,5,-8,9,-4]) < 1e-12, 'Equal test');
   let data = [23.98,23.92,23.79,23.67,23.54,23.36,23.65,23.72,24.16,23.91,23.81,23.92,23.74,24.68,24.94,24.93,25.10,25.12,25.20,25.06];
-  let delta = Math.abs(mae(data, new Array(data.length).fill(0)) - 0.55);
+  let delta = Math.abs(mae(data, new Array(data.length).fill(mean(data))) - 0.55);
   t.ok(delta < 1e-2, `Direct test (${delta.toFixed(5)})`);
   t.end();
 })
