@@ -1,7 +1,7 @@
 
 Technical analysis math
 =========
-![Travis](https://img.shields.io/travis/munrocket/ta-math.svg) ![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat)](https://egghead.io/courses/how-to-contribute-to-an-open-source-project-on-github)
+![PRs Welcome](https://egghead.io/courses/how-to-contribute-to-an-open-source-project-on-github) ![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg) ![Travis](https://img.shields.io/travis/munrocket/ta-math.svg) [![dependencies Status](https://david-dm.org/munrocket/ta-math/status.svg)](https://david-dm.org/munrocket/ta-math)
 
 Tiny library for calculating indicators and overlays from price data in any format. You choose format and data by yourself and library return charts data.
 
@@ -21,11 +21,13 @@ Tiny library for calculating indicators and overlays from price data in any form
 | Function  | Technical Indicator                   | Tested  |
 |:----------|:--------------------------------------|:-------:|
 | stddev    | Standard Deviation                    |    √    |
-| expstd    | Exponential Standard Deviation        |         |
+| madev     | Mean Absolute Deviation               |    √    |
+| expdev    | Exponential Weighted Deviation        |         |
 | macd      | Moving Average Convergence/Divergence |    √    |
 | rsi       | Relative Strength Index               |    √    |
 | stoch     | Stochastic Oscillator (Full)          |    √    |
 | stochRsi  | Combines Stochastics with the RSI     |    √    |
+| cci       | Commodity Channel Index               |    √    |
 | obv       | On Balance Volume                     |    √    |
 | adl       | Accumulation / Distribution line      |    √    |
 | atr       | Average True Range                    |    √    |
@@ -34,8 +36,9 @@ Tiny library for calculating indicators and overlays from price data in any form
 ### Error methods
 | Function  | Error methods                         | Tested  |
 |:----------|:--------------------------------------|:-------:|
-| rmsd      | Root-Mean-Square Deviation            |    √    |
-| nrmsd     | Normalized Root-Mean-Square Deviation |    √    |
+| mae       | Mean Absolute Error                   |    √    |
+| rmse      | Root-Mean-Square Error                |    √    |
+| nrmse     | Normalized Root-Mean-Square Error     |    √    |
 
 ### Installation
 
@@ -48,8 +51,11 @@ You can see how to set new data format in `formats.mjs`, by default it uses exch
   import TA from 'ta-math';
   let ohlcv = [[t0,o0,h0,l0,c0,v0],  ...  ,[tN,oN,hN,lN,cN,vN]];
   let ta = new TA(ohlcv, exchangeFormat);
-  let ema_line = ta.ema(15);
-  let bband_line = ta.bband(15, 2);
+  let ema_short = ta.ema(10);
+  let ema_long = ta.ema(21);
+  let bband = ta.bb(15, 2);
+  let bb_upper = bband.upper;
+  let bb_lower = bband.lower;
 ```
 
 ### 2do list
@@ -60,7 +66,7 @@ You can see how to set new data format in `formats.mjs`, by default it uses exch
 - [X] different input formats
 - [ ] es5 with babel
 - [ ] typescript integration (.d.ts)
-- [ ] new basic indicators (ROC, CCI, Money Flow, [etc](https://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:introduction_to_technical_indicators_and_oscillators#oscillator_types).)
+- [ ] new basic indicators (ROC, Money Flow, Williams %R [etc](https://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:introduction_to_technical_indicators_and_oscillators).)
 - [ ] good loking ui example
 
 ### Contributing

@@ -9,16 +9,25 @@ export function mean(array) {
 }
 
 export function sd(array) {
-  return rmsd(array, new Array(array.length).fill(mean(array)));
+  return rmse(array, new Array(array.length).fill(mean(array)));
 }
 
-export function rmsd(f, g) {
+export function mad(array) {
+  return mae(array, new Array(array.length).fill(mean(array)));
+}
+
+export function mae(f, g) {
+  const absDiff = pointwise((a, b) => Math.abs(a - b), f, g);
+  return (f.length != g.length) ? Infinity : mean(absDiff);
+}
+
+export function rmse(f, g) {
   const sqrDiff = pointwise((a, b) => (a - b) * (a - b), f, g);
   return (f.length != g.length) ? Infinity : Math.sqrt(mean(sqrDiff));
 }
 
-export function nrmsd(f, g) {
-  return rmsd(f, g) / (Math.max(...f) - Math.min(...f));
+export function nrmse(f, g) {
+  return rmse(f, g) / (Math.max(...f) - Math.min(...f));
 }
 
 export function pointwise(operation, ...args) {
@@ -47,4 +56,12 @@ export function trueRange($high, $low, $close) {
     tr.push(Math.max($high[i] - $low[i], Math.abs($high[i] - $close[i - 1]), Math.abs($low[i] - $close[i - 1])));
   }
   return tr;
+}
+
+export function typicalPrice($high, $low, $close) {
+  let tp = [];
+  for (let i = 0; i < $low.length; i++) {
+    tp.push(($high[i] + $low[i] + $close[i]) / 3);
+  }
+  return tp;
 }

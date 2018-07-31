@@ -12,10 +12,19 @@ var TA = (function () {
   }
 
   function sd(array) {
-    return rmsd(array, new Array(array.length).fill(mean(array)));
+    return rmse(array, new Array(array.length).fill(mean(array)));
   }
 
-  function rmsd(f, g) {
+  function mad(array) {
+    return mae(array, new Array(array.length).fill(mean(array)));
+  }
+
+  function mae(f, g) {
+    const absDiff = pointwise((a, b) => Math.abs(a - b), f, g);
+    return (f.length != g.length) ? Infinity : mean(absDiff);
+  }
+
+  function rmse(f, g) {
     const sqrDiff = pointwise((a, b) => (a - b) * (a - b), f, g);
     return (f.length != g.length) ? Infinity : Math.sqrt(mean(sqrDiff));
   }
@@ -46,6 +55,14 @@ var TA = (function () {
       tr.push(Math.max($high[i] - $low[i], Math.abs($high[i] - $close[i - 1]), Math.abs($low[i] - $close[i - 1])));
     }
     return tr;
+  }
+
+  function typicalPrice($high, $low, $close) {
+    let tp = [];
+    for (let i = 0; i < $low.length; i++) {
+      tp.push(($high[i] + $low[i] + $close[i]) / 3);
+    }
+    return tp;
   }
 
   /* overlays */
@@ -143,6 +160,10 @@ var TA = (function () {
     return pointwise(x => Math.sqrt(x), ema(sqrDiff, window, weight));
   }
 
+  function madev($close, window) {
+    return rolling(x => mad(x), window, $close);
+  }
+
   function macd($close, wshort, wlong, wsig) {
     const line = pointwise((a, b) => a - b, ema($close, wshort), ema($close, wlong));
     const signal = ema(line, wsig);
@@ -169,9 +190,17 @@ var TA = (function () {
 
   function stochRsi($close, window, signal, smooth) {
     let _rsi = rsi($close, window);
-    let extreme = rolling(x => {return {low:Math.min(...x), high:Math.max(...x)}}, window, _rsi);
-    let K = pointwise((r, e) => (r - e.low) / (e.high - e.low), _rsi, extreme);
-    if (smooth > 1) { K = sma(K, smooth); }  return { line : K, signal : sma(K, signal) };
+    let extreme = rolling(x => {return {low: Math.min(...x), high: Math.max(...x)}}, window, _rsi);
+    let K = pointwise((rsi, e) => (rsi - e.low) / (e.high - e.low), _rsi, extreme);
+    K[0] = 0; if (smooth > 1) { K = sma(K, smooth); }  return { line : K, signal : sma(K, signal) };
+  }
+
+  function cci($high, $low, $close, window, mult) {
+    let tp = typicalPrice($high, $low, $close);
+    let tpsma = sma(tp, window);
+    let tpmad = madev(tp, window);
+    tpmad[0] = Infinity;
+    return pointwise((a, b, c) => (a - b) / (c * mult), tp, tpsma, tpmad);
   }
 
   function obv($close, $volume) {
@@ -201,9 +230,9 @@ var TA = (function () {
       pv.push(Math.abs($high[i] - $low[i-1]));
       nv.push(Math.abs($high[i-1] - $low[i]));
     }
-    let apv = rolling(x => x.reduce((sum, a) => {return sum + a;}, 0), window, pv);
-    let anv = rolling(x => x.reduce((sum, a) => {return sum + a;}, 0), window, nv);
-    let atr = rolling(x => x.reduce((sum, a) => {return sum + a;}, 0), window, trueRange($high, $low, $close));
+    let apv = rolling(x => x.reduce((sum, a) => {return sum + a}, 0), window, pv);
+    let anv = rolling(x => x.reduce((sum, a) => {return sum + a}, 0), window, nv);
+    let atr = rolling(x => x.reduce((sum, a) => {return sum + a}, 0), window, trueRange($high, $low, $close));
     return { plus : pointwise((a, b) => a / b, apv, atr), minus :   pointwise((a, b) => a / b, anv, atr) };
   }
 
@@ -255,25 +284,27 @@ var TA = (function () {
       /* technical analysy method defenition */
 
       return {
-        sma:    (window = 15)                           =>    sma(this.$.close, window),
-        ema:    (window = 10)                           =>    ema(this.$.close, window),
-        bb:     (window = 15, mult = 2)                 =>    bb(this.$.close, window, mult),
-        ebb:    (window = 10, mult = 2)                 =>    ebb(this.$.close, window, mult),
-        psar:   (factor = 0.02, maxfactor = 0.2)        =>    psar(this.$.high, this.$.low, factor, maxfactor),
-        vbp:    (zones = 12, left = 0, right = null)    =>    vbp(this.$.close, this.$.volume, zones, left, right),
-        keltner:(wmiddle = 20, wchannel = 10, mult = 2) =>    keltner(this.$.high, this.$.low, this.$.close, wmiddle, wchannel, mult),
-        zigzag: (percent = 15)                          =>    zigzag(this.$.time, this.$.high, this.$.low, percent),
+        sma:      (window = 15)                           =>    sma(this.$.close, window),
+        ema:      (window = 10)                           =>    ema(this.$.close, window),
+        bb:       (window = 15, mult = 2)                 =>    bb(this.$.close, window, mult),
+        ebb:      (window = 10, mult = 2)                 =>    ebb(this.$.close, window, mult),
+        psar:     (factor = 0.02, maxfactor = 0.2)        =>    psar(this.$.high, this.$.low, factor, maxfactor),
+        vbp:      (zones = 12, left = 0, right = null)    =>    vbp(this.$.close, this.$.volume, zones, left, right),
+        keltner:  (wmiddle = 20, wchannel = 10, mult = 2) =>    keltner(this.$.high, this.$.low, this.$.close, wmiddle, wchannel, mult),
+        zigzag:   (percent = 15)                          =>    zigzag(this.$.time, this.$.high, this.$.low, percent),
 
-        stddev: (window = 15)                           =>    stddev(this.$.close, window),
-        expdev: (window = 15)                           =>    expdev(this.$.close, window),
-        macd:   (wshort = 12, wlong = 26, wsig = 9)     =>    macd(this.$.close, wshort, wlong, wsig),
-        rsi:    (window = 14)                           =>    rsi(this.$.close, window),
-        stoch:  (window = 14, signal = 3, smooth = 1)   =>    stoch(this.$.high, this.$.low, this.$.close, window, signal, smooth),
-        stochRsi:(window = 14, signal = 3, smooth = 1)  =>    stochRsi(this.$.close, window, signal, smooth),
-        obv:    ()                                      =>    obv(this.$.close, this.$.volume),
-        adl:    ()                                      =>    adl(this.$.high, this.$.low, this.$.close, this.$.volume),
-        atr:    (window = 14)                           =>    atr(this.$.high, this.$.low, this.$.close, window),
-        vi:     (window = 14)                           =>    vi(this.$.high, this.$.low, this.$.close, window),
+        stddev:   (window = 15)                           =>    stddev(this.$.close, window),
+        madev:    (window = 15)                           =>    madev(this.$.close, window),
+        expdev:   (window = 15)                           =>    expdev(this.$.close, window),
+        macd:     (wshort = 12, wlong = 26, wsig = 9)     =>    macd(this.$.close, wshort, wlong, wsig),
+        rsi:      (window = 14)                           =>    rsi(this.$.close, window),
+        stoch:    (window = 14, signal = 3, smooth = 1)   =>    stoch(this.$.high, this.$.low, this.$.close, window, signal, smooth),
+        stochRsi: (window = 14, signal = 3, smooth = 1)   =>    stochRsi(this.$.close, window, signal, smooth),
+        cci:      (window = 20, mult = 0.015)             =>    cci(this.$.high, this.$.low, this.$.close, window, mult),
+        obv:      ()                                      =>    obv(this.$.close, this.$.volume),
+        adl:      ()                                      =>    adl(this.$.high, this.$.low, this.$.close, this.$.volume),
+        atr:      (window = 14)                           =>    atr(this.$.high, this.$.low, this.$.close, window),
+        vi:       (window = 14)                           =>    vi(this.$.high, this.$.low, this.$.close, window),
       }
     }
   }

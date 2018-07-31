@@ -1,4 +1,4 @@
-import { sd, pointwise, rolling, trueRange} from './core';
+import { sd, mad, pointwise, rolling, trueRange, typicalPrice} from './core';
 import { ema, sma } from './overlays';
 
 /* indicators */
@@ -10,6 +10,10 @@ export function stddev($close, window) {
 export function expdev($close, window, weight = null) {
   let sqrDiff = pointwise((a, b) => (a - b) * (a - b), $close, ema($close, window));
   return pointwise(x => Math.sqrt(x), ema(sqrDiff, window, weight));
+}
+
+export function madev($close, window) {
+  return rolling(x => mad(x), window, $close);
 }
 
 export function macd($close, wshort, wlong, wsig) {
@@ -39,10 +43,18 @@ export function stoch($high, $low, $close, window, signal, smooth) {
 
 export function stochRsi($close, window, signal, smooth) {
   let _rsi = rsi($close, window);
-  let extreme = rolling(x => {return {low:Math.min(...x), high:Math.max(...x)}}, window, _rsi);
-  let K = pointwise((r, e) => (r - e.low) / (e.high - e.low), _rsi, extreme);
-  if (smooth > 1) { K = sma(K, smooth) };
+  let extreme = rolling(x => {return {low: Math.min(...x), high: Math.max(...x)}}, window, _rsi);
+  let K = pointwise((rsi, e) => (rsi - e.low) / (e.high - e.low), _rsi, extreme);
+  K[0] = 0; if (smooth > 1) { K = sma(K, smooth) };
   return { line : K, signal : sma(K, signal) };
+}
+
+export function cci($high, $low, $close, window, mult) {
+  let tp = typicalPrice($high, $low, $close);
+  let tpsma = sma(tp, window);
+  let tpmad = madev(tp, window);
+  tpmad[0] = Infinity;
+  return pointwise((a, b, c) => (a - b) / (c * mult), tp, tpsma, tpmad);
 }
 
 export function obv($close, $volume) {
@@ -72,8 +84,8 @@ export function vi($high, $low, $close, window) {
     pv.push(Math.abs($high[i] - $low[i-1]));
     nv.push(Math.abs($high[i-1] - $low[i]));
   }
-  let apv = rolling(x => x.reduce((sum, a) => {return sum + a;}, 0), window, pv);
-  let anv = rolling(x => x.reduce((sum, a) => {return sum + a;}, 0), window, nv);
-  let atr = rolling(x => x.reduce((sum, a) => {return sum + a;}, 0), window, trueRange($high, $low, $close));
+  let apv = rolling(x => x.reduce((sum, a) => {return sum + a}, 0), window, pv);
+  let anv = rolling(x => x.reduce((sum, a) => {return sum + a}, 0), window, nv);
+  let atr = rolling(x => x.reduce((sum, a) => {return sum + a}, 0), window, trueRange($high, $low, $close));
   return { plus : pointwise((a, b) => a / b, apv, atr), minus :   pointwise((a, b) => a / b, anv, atr) };
 }
