@@ -6,32 +6,36 @@ Technical analysis math
 Tiny library for calculating indicators and overlays from price data in any format. You choose format and data by yourself and library return charts data.
 
 ### Technical Overlays
-
-* sma       -   √ Simple Moving Average
-* ema       -   √ Exponential Moving Average
-* bb        -   √ Bollinger Band
-* ebb       -     Exponential Bollinger Band 
-* psar      -   √ Parabolic SAR
-* vbp       -   √ Volume by Price
-* keltner   -     Keltner Channels
-* zigzag    -     ZigZag Indicator
+| Function  | Technical Overlay                     | Tested  |
+|:----------|:--------------------------------------|:-------:|
+| sma       | Simple Moving Average                 |    √    |
+| ema       | Exponential Moving Average            |    √    |
+| bb        | Bollinger Band                        |    √    |
+| ebb       | Exponential Bollinger Band            |         |
+| psar      | Parabolic SAR                         |    √    |
+| vbp       | Volume by Price                       |    √    |
+| keltner   | Keltner Channels                      |         |
+| zigzag    | ZigZag Indicator                      |         |
 
 ### Technical Indicators
-
-* stddev    -   √ Standard Deviation
-* expstd    -     Exponential Standard Deviation 
-* macd      -   √ Moving Average Convergence/Divergence
-* rsi       -   √ Relative Strength Index
-* stoch     -   √ Stochastic Oscillator (Full)
-* stochRsi  -   √ Combines Stochastics with the RSI indicator
-* obv       -   √ On Balance Volume
-* adl       -   √ Accumulation / Distribution line
-* atr       -   √ Average True Range
-* vi        -   √ Vortex Indicator
+| Function  | Technical Indicator                   | Tested  |
+|:----------|:--------------------------------------|:-------:|
+| stddev    | Standard Deviation                    |    √    |
+| expstd    | Exponential Standard Deviation        |         |
+| macd      | Moving Average Convergence/Divergence |    √    |
+| rsi       | Relative Strength Index               |    √    |
+| stoch     | Stochastic Oscillator (Full)          |    √    |
+| stochRsi  | Combines Stochastics with the RSI     |    √    |
+| obv       | On Balance Volume                     |    √    |
+| adl       | Accumulation / Distribution line      |    √    |
+| atr       | Average True Range                    |    √    |
+| vi        | Vortex Indicator                      |    √    |
 
 ### Error methods
-* rmsd      -   √ Root-Mean-Square Deviation
-* nrmsd     -   √ Normalized Root-Mean-Square Deviation
+| Function  | Error methods                         | Tested  |
+|:----------|:--------------------------------------|:-------:|
+| rmsd      | Root-Mean-Square Deviation            |    √    |
+| nrmsd     | Normalized Root-Mean-Square Deviation |    √    |
 
 ### Installation
 
