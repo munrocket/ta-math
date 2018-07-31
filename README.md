@@ -7,30 +7,31 @@ Tiny library for calculating indicators and overlays from price data in any form
 
 ### Technical Overlays
 
-* sma     -   Simple Moving Average √
-* ema     -   Exponential Moving Average √
-* bb      -   Bollinger Band √
-* ebb     -   Exponential Bollinger Band 
-* psar    -   Parabolic SAR √
-* vbp     -   Volume by Price √
-* keltner -   Keltner Channels
-* zigzag  -   ZigZag Indicator
+* sma       -   √ Simple Moving Average
+* ema       -   √ Exponential Moving Average
+* bb        -   √ Bollinger Band
+* ebb       -     Exponential Bollinger Band 
+* psar      -   √ Parabolic SAR
+* vbp       -   √ Volume by Price
+* keltner   -     Keltner Channels
+* zigzag    -     ZigZag Indicator
 
 ### Technical Indicators
 
-* stddev  -   Standard Deviation √
-* expstd  -   Exponential Standard Deviation 
-* macd    -   Moving Average Convergence/Divergence √
-* rsi     -   Relative Strength Index √
-* stoch   -   Stochastic Oscillator (Full) √
-* obv     -   On Balance Volume √
-* adl     -   Accumulation / Distribution line √
-* atr     -   Average True Range √
-* vi      -   Vortex Indicator √
+* stddev    -   √ Standard Deviation
+* expstd    -     Exponential Standard Deviation 
+* macd      -   √ Moving Average Convergence/Divergence
+* rsi       -   √ Relative Strength Index
+* stoch     -   √ Stochastic Oscillator (Full)
+* stochRsi  -   √ Combines Stochastics with the RSI indicator
+* obv       -   √ On Balance Volume
+* adl       -   √ Accumulation / Distribution line
+* atr       -   √ Average True Range
+* vi        -   √ Vortex Indicator
 
 ### Error methods
-* rmsd    -   Root-Mean-Square Deviation √
-* nrmsd   -   Normalized Root-Mean-Square Deviation √
+* rmsd      -   √ Root-Mean-Square Deviation
+* nrmsd     -   √ Normalized Root-Mean-Square Deviation
 
 ### Installation
 
@@ -55,7 +56,7 @@ You can see how to set new data format in `formats.mjs`, by default it uses exch
 - [X] different input formats
 - [ ] es5 with babel
 - [ ] typescript integration (.d.ts)
-- [ ] new indicators
+- [ ] new basic indicators (ROC, CCI, Money Flow, [etc](https://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:introduction_to_technical_indicators_and_oscillators#oscillator_types).)
 - [ ] good loking ui example
 
 ### Contributing

@@ -60,5 +60,6 @@ typings/
 # next.js build output
 .next
 
+test.js
 package-lock.json
 .code

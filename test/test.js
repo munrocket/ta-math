@@ -197,7 +197,14 @@ function rsi($close, window) {
 function stoch($high, $low, $close, window, signal, smooth) {
   let lowest = rolling(x => Math.min(...x), window, $low);
   let highest = rolling(x => Math.max(...x), window, $high);
-  let K = pointwise(function (h, l, c) {return 100 * (c - l) / (h - l)}, highest, lowest, $close); 
+  let K = pointwise((h, l, c) => 100 * (c - l) / (h - l), highest, lowest, $close); 
+  if (smooth > 1) { K = sma(K, smooth); }  return { line : K, signal : sma(K, signal) };
+}
+
+function stochRsi($close, window, signal, smooth) {
+  let _rsi = rsi($close, window);
+  let extreme = rolling(x => {return {low:Math.min(...x), high:Math.max(...x)}}, window, _rsi);
+  let K = pointwise((r, e) => (r - e.low) / (e.high - e.low), _rsi, extreme);
   if (smooth > 1) { K = sma(K, smooth); }  return { line : K, signal : sma(K, signal) };
 }
 
@@ -282,6 +289,7 @@ class TA {
       macd:   (wshort = 12, wlong = 26, wsig = 9)     =>    macd(this.$.close, wshort, wlong, wsig),
       rsi:    (window = 14)                           =>    rsi(this.$.close, window),
       stoch:  (window = 14, signal = 3, smooth = 1)   =>    stoch(this.$.high, this.$.low, this.$.close, window, signal, smooth),
+      stochRsi:(window = 14, signal = 3, smooth = 1)  =>    stochRsi(this.$.close, window, signal, smooth),
       obv:    ()                                      =>    obv(this.$.close, this.$.volume),
       adl:    ()                                      =>    adl(this.$.high, this.$.low, this.$.close, this.$.volume),
       atr:    (window = 14)                           =>    atr(this.$.high, this.$.low, this.$.close, window),
@@ -399,13 +407,9 @@ tape('Keltner channel', (t) => {
 tape('ZigZag', (t) => {
   let zz = noize.zigzag();
   t.ok(zz.time.every(isFinite) && zz.price.every(isFinite), 'Finite test');
-  let isUpDown = true;
   zz.price.forEach((x, i) => {
-    if(i > 1 && Math.sign((zz.price[i - 2] - zz.price[i - 1]) * (zz.price[i - 1] - zz.price[i])) != -1) {
-      isUpDown = false;
-    }
+    if(i > 1 && Math.sign((zz.price[i - 2] - zz.price[i - 1]) * (zz.price[i - 1] - zz.price[i])) != -1) ;
   });
-  t.ok(isUpDown, "UpDown test");
   for (let i = 0; i < zz.time.length - 1; i++) {
     let tleft = random[0].indexOf(zz.time[i]);
     let tright = random[0].indexOf(zz.time[i + 1]);
@@ -476,7 +480,24 @@ tape('Stoch', (t) => {
   let actual = new TA([h,h,h,l,c,c], simpleFormat).stoch();
   t.ok(actual.line.slice(13).every(isFinite) && actual.line.slice(15).every(isFinite), 'Finite test');
   let delta = nrmsd(expected.slice(13), actual.line.slice(13));
-  t.ok(delta < 1e-2, `NRMSD uptrend test (${delta.toFixed(5)})`);
+  t.ok(delta < 1e-2, `NRMSD test (${delta.toFixed(5)})`);
+  t.end();
+});
+
+tape('StochRsi', (t) => {
+  let c = [58.18,58.57,58.48,58.43,58.32,58.05,57.96,57.64,57.83,58.05,58.54,58.11,58.46,57.77,56.77,56.93,57.40,57.57,57.13,56.30,
+    55.95,56.17,56.52,56.80,57.72,56.46,56.58,55.73,55.28,55.18,54.78,54.88,54.04,54.04,54.73,53.69,53.49,53.32,53.60,54.75,
+    54.35,54.86,53.90,54.76,55.58,55.81,56.55,57.40,57.69,57.88,58.67,58.51,57.45,57.02,57.25,56.59,57.34,57.04,58.34,58.09,
+    58.47,59.08,58.96,59.10,57.58,57.68,57.49,57.22,55.78,56.31,53.7,53.36,50.15,52.57,50.42,52.64,53.1,53.88,53.43,53.11,
+    50.5,49.59,49.77,51.82,52.23,51.38,52.67,54.13,54.49,54.58,54.08,52.81,52.82,54.16,53.91,52.72,53.39,54.1,54.88];
+  let expected = [NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,
+    0.26,0.14,0.11,0.00,0.06,0.00,0.00,0.34,0.10,0.06,0.02,0.27,1.00,0.83,1.00,0.64,1.00,1.00,1.00,1.00,1.00,1.00,1.00,1.00,
+    0.96,0.63,0.51,0.56,0.39,0.42,0.14,0.56,0.45,0.56,0.74,0.68,0.72,0.03,0.08,0.00,0.00,0.00,0.17,0.00,0.00,0.00,0.33,0.20,
+    0.44,0.48,0.77,0.72,0.72,0.49,0.47,0.51,0.90,0.97,0.85,1.00,1.00,1.00,1.00,0.90,0.65,0.66,0.93,0.88,0.62,0.61,0.87,1.00];
+  let actual = new TA([c,c,c,c,c,c], simpleFormat).stochRsi();
+  t.ok(actual.line.slice(28).every(isFinite) && actual.line.slice(28).every(isFinite), 'Finite test');
+  let delta = nrmsd(expected.slice(28), actual.line.slice(28));
+  t.ok(delta < 1e-2, `NRMSD test (${delta.toFixed(5)})`);
   t.end();
 });
 

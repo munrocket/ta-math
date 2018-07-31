@@ -32,7 +32,15 @@ export function rsi($close, window) {
 export function stoch($high, $low, $close, window, signal, smooth) {
   let lowest = rolling(x => Math.min(...x), window, $low);
   let highest = rolling(x => Math.max(...x), window, $high);
-  let K = pointwise(function (h, l, c) {return 100 * (c - l) / (h - l)}, highest, lowest, $close); 
+  let K = pointwise((h, l, c) => 100 * (c - l) / (h - l), highest, lowest, $close); 
+  if (smooth > 1) { K = sma(K, smooth) };
+  return { line : K, signal : sma(K, signal) };
+}
+
+export function stochRsi($close, window, signal, smooth) {
+  let _rsi = rsi($close, window);
+  let extreme = rolling(x => {return {low:Math.min(...x), high:Math.max(...x)}}, window, _rsi);
+  let K = pointwise((r, e) => (r - e.low) / (e.high - e.low), _rsi, extreme);
   if (smooth > 1) { K = sma(K, smooth) };
   return { line : K, signal : sma(K, signal) };
 }

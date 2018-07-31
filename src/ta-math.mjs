@@ -50,6 +50,7 @@ export default class TA {
       macd:   (wshort = 12, wlong = 26, wsig = 9)     =>    indicators.macd(this.$.close, wshort, wlong, wsig),
       rsi:    (window = 14)                           =>    indicators.rsi(this.$.close, window),
       stoch:  (window = 14, signal = 3, smooth = 1)   =>    indicators.stoch(this.$.high, this.$.low, this.$.close, window, signal, smooth),
+      stochRsi:(window = 14, signal = 3, smooth = 1)  =>    indicators.stochRsi(this.$.close, window, signal, smooth),
       obv:    ()                                      =>    indicators.obv(this.$.close, this.$.volume),
       adl:    ()                                      =>    indicators.adl(this.$.high, this.$.low, this.$.close, this.$.volume),
       atr:    (window = 14)                           =>    indicators.atr(this.$.high, this.$.low, this.$.close, window),

@@ -163,7 +163,14 @@ var TA = (function () {
   function stoch($high, $low, $close, window, signal, smooth) {
     let lowest = rolling(x => Math.min(...x), window, $low);
     let highest = rolling(x => Math.max(...x), window, $high);
-    let K = pointwise(function (h, l, c) {return 100 * (c - l) / (h - l)}, highest, lowest, $close); 
+    let K = pointwise((h, l, c) => 100 * (c - l) / (h - l), highest, lowest, $close); 
+    if (smooth > 1) { K = sma(K, smooth); }  return { line : K, signal : sma(K, signal) };
+  }
+
+  function stochRsi($close, window, signal, smooth) {
+    let _rsi = rsi($close, window);
+    let extreme = rolling(x => {return {low:Math.min(...x), high:Math.max(...x)}}, window, _rsi);
+    let K = pointwise((r, e) => (r - e.low) / (e.high - e.low), _rsi, extreme);
     if (smooth > 1) { K = sma(K, smooth); }  return { line : K, signal : sma(K, signal) };
   }
 
@@ -262,6 +269,7 @@ var TA = (function () {
         macd:   (wshort = 12, wlong = 26, wsig = 9)     =>    macd(this.$.close, wshort, wlong, wsig),
         rsi:    (window = 14)                           =>    rsi(this.$.close, window),
         stoch:  (window = 14, signal = 3, smooth = 1)   =>    stoch(this.$.high, this.$.low, this.$.close, window, signal, smooth),
+        stochRsi:(window = 14, signal = 3, smooth = 1)  =>    stochRsi(this.$.close, window, signal, smooth),
         obv:    ()                                      =>    obv(this.$.close, this.$.volume),
         adl:    ()                                      =>    adl(this.$.high, this.$.low, this.$.close, this.$.volume),
         atr:    (window = 14)                           =>    atr(this.$.high, this.$.low, this.$.close, window),
