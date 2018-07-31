@@ -57,12 +57,12 @@ export function cci($high, $low, $close, window, mult) {
   return pointwise((a, b, c) => (a - b) / (c * mult), tp, tpsma, tpmad);
 }
 
-export function obv($close, $volume) {
+export function obv($close, $volume, signal) {
   let obv = [0];
   for (let i = 1; i < $close.length; i++) {
     obv.push(obv[i - 1] + Math.sign($close[i] - $close[i - 1]) * $volume[i]);
   }
-  return obv;
+  return {line: obv, signal: sma(obv, signal)};
 }
 
 export function adl($high, $low, $close, $volume) {

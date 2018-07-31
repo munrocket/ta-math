@@ -42,7 +42,7 @@ export default class TA {
       ebb:      (window = 10, mult = 2)                 =>    overlays.ebb(this.$.close, window, mult),
       psar:     (factor = 0.02, maxfactor = 0.2)        =>    overlays.psar(this.$.high, this.$.low, factor, maxfactor),
       vbp:      (zones = 12, left = 0, right = null)    =>    overlays.vbp(this.$.close, this.$.volume, zones, left, right),
-      keltner:  (wmiddle = 20, wchannel = 10, mult = 2) =>    overlays.keltner(this.$.high, this.$.low, this.$.close, wmiddle, wchannel, mult),
+      keltner:  (window = 14, mult = 2)                 =>    overlays.keltner(this.$.high, this.$.low, this.$.close, window, mult),
       zigzag:   (percent = 15)                          =>    overlays.zigzag(this.$.time, this.$.high, this.$.low, percent),
 
       stddev:   (window = 15)                           =>    indicators.stddev(this.$.close, window),
@@ -53,7 +53,7 @@ export default class TA {
       stoch:    (window = 14, signal = 3, smooth = 1)   =>    indicators.stoch(this.$.high, this.$.low, this.$.close, window, signal, smooth),
       stochRsi: (window = 14, signal = 3, smooth = 1)   =>    indicators.stochRsi(this.$.close, window, signal, smooth),
       cci:      (window = 20, mult = 0.015)             =>    indicators.cci(this.$.high, this.$.low, this.$.close, window, mult),
-      obv:      ()                                      =>    indicators.obv(this.$.close, this.$.volume),
+      obv:      (signal = 10)                           =>    indicators.obv(this.$.close, this.$.volume, signal),
       adl:      ()                                      =>    indicators.adl(this.$.high, this.$.low, this.$.close, this.$.volume),
       atr:      (window = 14)                           =>    indicators.atr(this.$.high, this.$.low, this.$.close, window),
       vi:       (window = 14)                           =>    indicators.vi(this.$.high, this.$.low, this.$.close, window),

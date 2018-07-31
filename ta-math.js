@@ -125,10 +125,10 @@ function vbp($close, $volume, zones, left, right) {
   return { bottom: bottom, top: top, volume: vbp.map((x) => { return x / total })};
 }
 
-function keltner($high, $low, $close, wmiddle, wchannel, mult) {
-  let middle = ema($close, wmiddle);
-  let upper = pointwise((a, b) => a + mult * b, middle, atr($high, $low, $close, wchannel));
-  let lower = pointwise((a, b) => a - mult * b, middle, atr($high, $low, $close, wchannel));
+function keltner($high, $low, $close, window, mult) {
+  let middle = ema($close, window);
+  let upper = pointwise((a, b) => a + mult * b, middle, atr($high, $low, $close, window));
+  let lower = pointwise((a, b) => a - mult * b, middle, atr($high, $low, $close, window));
   return { lower: lower, middle: middle, upper: upper };
 }
 
@@ -202,12 +202,12 @@ function cci($high, $low, $close, window, mult) {
   return pointwise((a, b, c) => (a - b) / (c * mult), tp, tpsma, tpmad);
 }
 
-function obv($close, $volume) {
+function obv($close, $volume, signal) {
   let obv = [0];
   for (let i = 1; i < $close.length; i++) {
     obv.push(obv[i - 1] + Math.sign($close[i] - $close[i - 1]) * $volume[i]);
   }
-  return obv;
+  return {line: obv, signal: sma(obv, signal)};
 }
 
 function adl($high, $low, $close, $volume) {
@@ -289,7 +289,7 @@ class TA {
       ebb:      (window = 10, mult = 2)                 =>    ebb(this.$.close, window, mult),
       psar:     (factor = 0.02, maxfactor = 0.2)        =>    psar(this.$.high, this.$.low, factor, maxfactor),
       vbp:      (zones = 12, left = 0, right = null)    =>    vbp(this.$.close, this.$.volume, zones, left, right),
-      keltner:  (wmiddle = 20, wchannel = 10, mult = 2) =>    keltner(this.$.high, this.$.low, this.$.close, wmiddle, wchannel, mult),
+      keltner:  (window = 14, mult = 2)                 =>    keltner(this.$.high, this.$.low, this.$.close, window, mult),
       zigzag:   (percent = 15)                          =>    zigzag(this.$.time, this.$.high, this.$.low, percent),
 
       stddev:   (window = 15)                           =>    stddev(this.$.close, window),
@@ -300,7 +300,7 @@ class TA {
       stoch:    (window = 14, signal = 3, smooth = 1)   =>    stoch(this.$.high, this.$.low, this.$.close, window, signal, smooth),
       stochRsi: (window = 14, signal = 3, smooth = 1)   =>    stochRsi(this.$.close, window, signal, smooth),
       cci:      (window = 20, mult = 0.015)             =>    cci(this.$.high, this.$.low, this.$.close, window, mult),
-      obv:      ()                                      =>    obv(this.$.close, this.$.volume),
+      obv:      (signal = 10)                           =>    obv(this.$.close, this.$.volume, signal),
       adl:      ()                                      =>    adl(this.$.high, this.$.low, this.$.close, this.$.volume),
       atr:      (window = 14)                           =>    atr(this.$.high, this.$.low, this.$.close, window),
       vi:       (window = 14)                           =>    vi(this.$.high, this.$.low, this.$.close, window),

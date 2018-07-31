@@ -1,37 +1,37 @@
 
 Technical analysis math
 =========
-![PRs Welcome](https://egghead.io/courses/how-to-contribute-to-an-open-source-project-on-github) ![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg) ![Travis](https://img.shields.io/travis/munrocket/ta-math.svg) [![dependencies Status](https://david-dm.org/munrocket/ta-math/status.svg)](https://david-dm.org/munrocket/ta-math)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat)](https://egghead.io/courses/how-to-contribute-to-an-open-source-project-on-github) ![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg) ![Travis](https://img.shields.io/travis/munrocket/ta-math.svg) [![dependencies Status](https://david-dm.org/munrocket/ta-math/status.svg)](https://david-dm.org/munrocket/ta-math)
 
-Tiny library for calculating indicators and overlays from price data in any format. You choose format and data by yourself and library return charts data.
+Tiny library for calculating technical indicators and overlays from price data in any format. You choose format and data by yourself and library return charts data.
 
 ### Technical Overlays
-| Function  | Technical Overlay                     | Tested  |
-|:----------|:--------------------------------------|:-------:|
-| sma       | Simple Moving Average                 |    √    |
-| ema       | Exponential Moving Average            |    √    |
-| bb        | Bollinger Band                        |    √    |
-| ebb       | Exponential Bollinger Band            |         |
-| psar      | Parabolic SAR                         |    √    |
-| vbp       | Volume by Price                       |    √    |
-| keltner   | Keltner Channels                      |         |
-| zigzag    | ZigZag Indicator                      |         |
+| Function  | Technical Overlay                     | Tested  | Developed by     | Year |
+|:----------|:--------------------------------------|:-------:|:----------------:|:----:|
+| sma       | Simple Moving Average                 |    √    |                  |      |
+| ema       | Exponential Moving Average            |    √    |                  |      |
+| bb        | Bollinger Band                        |    √    | John Bollinger   | 1980s|
+| ebb       | Exponential Bollinger Band            |         |                  |      |
+| psar      | Parabolic SAR                         |    √    | Welles Wilder    | 1978 |
+| vbp       | Volume by Price                       |    √    |                  |      |
+| keltner   | Keltner Channels                      |    √    | Chester Keltner  | 1960 |
+| zigzag    | ZigZag Indicator                      |         |                  |      |
 
 ### Technical Indicators
-| Function  | Technical Indicator                   | Tested  |
-|:----------|:--------------------------------------|:-------:|
-| stddev    | Standard Deviation                    |    √    |
-| madev     | Mean Absolute Deviation               |    √    |
-| expdev    | Exponential Weighted Deviation        |         |
-| macd      | Moving Average Convergence/Divergence |    √    |
-| rsi       | Relative Strength Index               |    √    |
-| stoch     | Stochastic Oscillator (Full)          |    √    |
-| stochRsi  | Combines Stochastics with the RSI     |    √    |
-| cci       | Commodity Channel Index               |    √    |
-| obv       | On Balance Volume                     |    √    |
-| adl       | Accumulation / Distribution line      |    √    |
-| atr       | Average True Range                    |    √    |
-| vi        | Vortex Indicator                      |    √    |
+| Function  | Technical Indicator                   | Tested  | Developed by     | Year |
+|:----------|:--------------------------------------|:-------:|:----------------:|:----:|
+| stddev    | Standard Deviation                    |    √    |                  |      |
+| madev     | Mean Absolute Deviation               |    √    |                  |      |
+| expdev    | Exponential Weighted Deviation        |         |                  |      |
+| macd      | Moving Average Convergence/Divergence |    √    | Gerald Appel     | 1979 |
+| rsi       | Relative Strength Index               |    √    | Welles Wilder    | 1978 |
+| stoch     | Stochastic Oscillator (Full)          |    √    | George Lane      | 1950s|
+| stochRsi  | Combines Stochastics with the RSI     |    √    | Welles Wilder    | 1994 |
+| cci       | Commodity Channel Index               |    √    | Donald Lambert   | 1980 |
+| obv       | On Balance Volume                     |    √    | Joseph Granville | 1963 |
+| adl       | Accumulation / Distribution line      |    √    | Marc Chaikin     |      |
+| atr       | Average True Range                    |    √    | Welles Wilder    | 1978 |
+| vi        | Vortex Indicator                      |    √    | Etienne Botes    | 2010 |
 
 ### Error methods
 | Function  | Error methods                         | Tested  |
@@ -66,7 +66,7 @@ You can see how to set new data format in `formats.mjs`, by default it uses exch
 - [X] different input formats
 - [ ] es5 with babel
 - [ ] typescript integration (.d.ts)
-- [ ] new basic indicators (ROC, Money Flow, Williams %R [etc](https://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:introduction_to_technical_indicators_and_oscillators).)
+- [ ] new basic indicators (ROC, Money Flow, Williams %R, [ref1](https://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:introduction_to_technical_indicators_and_oscillators), [ref2](https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/bulls_power), [ref3](http://www.visualcapitalist.com/12-types-technical-indicators-stocks/))
 - [ ] good loking ui example
 
 ### Contributing

@@ -64,10 +64,10 @@ export function vbp($close, $volume, zones, left, right) {
   return { bottom: bottom, top: top, volume: vbp.map((x) => { return x / total })};
 }
 
-export function keltner($high, $low, $close, wmiddle, wchannel, mult) {
-  let middle = ema($close, wmiddle);
-  let upper = pointwise((a, b) => a + mult * b, middle, atr($high, $low, $close, wchannel));
-  let lower = pointwise((a, b) => a - mult * b, middle, atr($high, $low, $close, wchannel));
+export function keltner($high, $low, $close, window, mult) {
+  let middle = ema($close, window);
+  let upper = pointwise((a, b) => a + mult * b, middle, atr($high, $low, $close, window));
+  let lower = pointwise((a, b) => a - mult * b, middle, atr($high, $low, $close, window));
   return { lower: lower, middle: middle, upper: upper };
 }
 
