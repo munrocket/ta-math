@@ -1,5 +1,6 @@
 import builtins from 'rollup-plugin-node-builtins';
 import babel from 'rollup-plugin-babel';
+import istanbul from 'rollup-plugin-istanbul';
 import pkg from './package.json';
 
 export default [
@@ -10,7 +11,8 @@ export default [
 		],
 		plugins: [
 			babel({
-				exclude: 'node_modules/**'
+				exclude: 'node_modules/**',
+				plugins: "external-helpers"
 			})
 		]
 	},
@@ -28,7 +30,10 @@ export default [
 			{ file: 'test/test.js', format: 'cjs' }
 		],
 		plugins: [
-			builtins()
+			builtins(),
+			istanbul({
+				exclude: ['test/*.js']
+			})
 		]
 	}
 ];

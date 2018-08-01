@@ -1,7 +1,7 @@
 
 Technical analysis math
 =========
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat)](https://egghead.io/courses/how-to-contribute-to-an-open-source-project-on-github) ![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg) ![Travis](https://img.shields.io/travis/munrocket/ta-math.svg) [![dependencies Status](https://david-dm.org/munrocket/ta-math/status.svg)](https://david-dm.org/munrocket/ta-math)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat)](https://egghead.io/courses/how-to-contribute-to-an-open-source-project-on-github) ![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg) ![Travis](https://img.shields.io/travis/munrocket/ta-math.svg) [![Coverage Status](https://coveralls.io/repos/github/munrocket/ta-math/badge.svg?branch=master)](https://coveralls.io/github/munrocket/ta-math?branch=master) [![dependencies Status](https://david-dm.org/munrocket/ta-math/status.svg)](https://david-dm.org/munrocket/ta-math)
 
 Tiny library for calculating technical indicators and overlays from price data in any format. You choose format and data by yourself and library return charts data.
 
@@ -60,13 +60,13 @@ You can see how to set new data format in `formats.mjs`, by default it uses exch
 
 ### 2do list
 
-- [X] popular indicators and overlays
+- [X] basic indicators and overlays
 - [X] unit tests
 - [X] proxy for ohlcv
-- [X] different input formats
 - [X] es5 with babel
+- [X] coverage
 - [ ] typescript integration (.d.ts)
-- [ ] new basic indicators (ROC, Money Flow, Williams %R, [etc.](https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/bulls_power))
+- [ ] new indicators (ROC, Money Flow, Williams %R, [etc.](https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/bulls_power))
 - [ ] good loking ui example
 
 ### Contributing

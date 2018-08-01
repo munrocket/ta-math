@@ -62,3 +62,4 @@ typings/
 
 .code
 dist
+test

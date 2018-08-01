@@ -11,8 +11,21 @@
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "test": "npm run build && mocha test",
-    "test:ui": "start ./examples/page.html"
+    "browser": "start ./examples/page.html",
+    "prepublish": "npm run build",
+    "test": "cross-env NODE_ENV=test nyc mocha",
+    "coverage": "cross-env NODE_ENV=test nyc report --reporter=text-lcov | coveralls"
+  },
+  "nyc": {
+    "require": [
+      "babel-register"
+    ],
+    "reporter": [
+      "lcov",
+      "text"
+    ],
+    "sourceMap": false,
+    "instrument": false
   },
   "repository": {
     "type": "git",
@@ -35,12 +48,19 @@
   "homepage": "https://github.com/munrocket/ta-math#readme",
   "dependencies": {},
   "devDependencies": {
+    "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
     "babel-plugin-external-helpers": "^6.22.0",
+    "babel-plugin-istanbul": "^4.1.6",
     "babel-preset-env": "^1.7.0",
+    "babel-register": "^6.26.0",
+    "coveralls": "^3.0.2",
+    "cross-env": "^5.2.0",
     "mocha": "^5.2.0",
+    "nyc": "^12.0.2",
     "rollup": "^0.63.5",
     "rollup-plugin-babel": "^3.0.7",
+    "rollup-plugin-istanbul": "^2.0.1",
     "rollup-plugin-node-builtins": "^2.1.2"
   }
 }
