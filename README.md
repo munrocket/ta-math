@@ -5,40 +5,42 @@ Technical analysis math
 
 Tiny library for calculating technical indicators and overlays from price data in any format. You choose format and data by yourself and library return charts data.
 
+[//]: # (used emoji ✔️️❔❌)
+
 ### Technical Overlays
 | Function  | Technical Overlay                     | Tested  | Developed by     | Year |
 |:----------|:--------------------------------------|:-------:|:----------------:|:----:|
-| sma       | Simple Moving Average                 |    √    |                  |      |
-| ema       | Exponential Moving Average            |    √    |                  |      |
-| bb        | Bollinger Band                        |    √    | John Bollinger   | 198x |
-| ebb       | Exponential Bollinger Band            |         |                  |      |
-| psar      | Parabolic SAR                         |    √    | Welles Wilder    | 1978 |
-| vbp       | Volume by Price                       |    √    |                  |      |
-| keltner   | Keltner Channels                      |    √    | Chester Keltner  | 1960 |
-| zigzag    | ZigZag Indicator                      |         |                  |      |
+| sma       | Simple Moving Average                 |    ✔️️    |                  |      |
+| ema       | Exponential Moving Average            |    ✔️️    |                  |      |
+| bb        | Bollinger Band                        |    ✔️️    | John Bollinger   | 1980s |
+| ebb       | Exponential Bollinger Band            |    ❔     |                  |      |
+| psar      | Parabolic SAR                         |    ❌    | Welles Wilder    | 1978 |
+| vbp       | Volume by Price                       |    ✔️️    |                  |      |
+| keltner   | Keltner Channels                      |    ✔️️    | Chester Keltner  | 1960 |
+| zigzag    | ZigZag Indicator                      |    ❔    |                  |      |
 
 ### Technical Indicators
 | Function  | Technical Indicator                   | Tested  | Developed by     | Year |
 |:----------|:--------------------------------------|:-------:|:----------------:|:----:|
-| stddev    | Standard Deviation                    |    √    |                  |      |
-| madev     | Mean Absolute Deviation               |    √    |                  |      |
-| expdev    | Exponential Weighted Deviation        |         |                  |      |
-| macd      | Moving Average Convergence/Divergence |    √    | Gerald Appel     | 1979 |
-| rsi       | Relative Strength Index               |    √    | Welles Wilder    | 1978 |
-| stoch     | Stochastic Oscillator (Full)          |    √    | George Lane      | 195x |
-| stochRsi  | Combines Stochastics with the RSI     |    √    | Welles Wilder    | 1994 |
-| cci       | Commodity Channel Index               |    √    | Donald Lambert   | 1980 |
-| obv       | On Balance Volume                     |    √    | Joseph Granville | 1963 |
-| adl       | Accumulation / Distribution line      |    √    | Marc Chaikin     |      |
-| atr       | Average True Range                    |    √    | Welles Wilder    | 1978 |
-| vi        | Vortex Indicator                      |    √    | Etienne Botes    | 2010 |
+| stddev    | Standard Deviation                    |   ✔️️    |                  |      |
+| madev     | Mean Absolute Deviation               |   ✔️    |                  |      |
+| expdev    | Exponential Weighted Deviation        |   ❔    |                  |      |
+| macd      | Moving Average Convergence/Divergence |   ✔️    | Gerald Appel     | 1979 |
+| rsi       | Relative Strength Index               |   ✔️    | Welles Wilder    | 1978 |
+| stoch     | Stochastic Oscillator (Full)          |   ✔️    | George Lane      | 1950s |
+| stochRsi  | Combines Stochastics with the RSI     |   ✔️    | Welles Wilder    | 1994 |
+| cci       | Commodity Channel Index               |   ✔️    | Donald Lambert   | 1980 |
+| obv       | On Balance Volume                     |   ✔️    | Joseph Granville | 1963 |
+| adl       | Accumulation / Distribution line      |   ✔️    | Marc Chaikin     |      |
+| atr       | Average True Range                    |   ✔️    | Welles Wilder    | 1978 |
+| vi        | Vortex Indicator                      |   ✔️    | Etienne Botes    | 2010 |
 
 ### Error methods
 | Function  | Error methods                         | Tested  |
 |:----------|:--------------------------------------|:-------:|
-| mae       | Mean Absolute Error                   |    √    |
-| rmse      | Root-Mean-Square Error                |    √    |
-| nrmse     | Normalized Root-Mean-Square Error     |    √    |
+| mae       | Mean Absolute Error                   |    ✔️    |
+| rmse      | Root-Mean-Square Error                |    ✔️    |
+| nrmse     | Normalized Root-Mean-Square Error     |    ✔️    |
 
 ### Installation
 

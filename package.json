@@ -11,9 +11,9 @@
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "browser": "start ./examples/page.html",
-    "prepublish": "npm run build",
-    "test": "cross-env NODE_ENV=test nyc mocha",
+    "test": "npm run build && npm run test-test",
+    "test-ui": "start ./examples/page.html",
+    "test-test": "cross-env NODE_ENV=test nyc mocha",
     "coverage": "cross-env NODE_ENV=test nyc report --reporter=text-lcov | coveralls"
   },
   "nyc": {
