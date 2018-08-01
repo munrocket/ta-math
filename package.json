@@ -1,13 +1,17 @@
 {
   "name": "ta-math",
-  "version": "0.2.6",
+  "version": "0.3.0",
   "description": "Technical analysis library in javascript. Calculates indicators and overlays from ohlcv data",
-  "main": "ta-math.js",
+  "main": "dist/ta-math.cjs.js",
+  "module": "dist/ta-math.esm.js",
+  "browser": "dist/ta-math.umd.js",
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "build": "npm run build:node && npm run build:bro",
-    "build:node": "rollup src/ta-math.mjs -f cjs > ta-math.js --silent && rollup test/test.mjs -f cjs > test.js --silent",
-    "build:bro": "rollup src/ta-math.mjs -f iife --name=TA > dist/ta-math.browser.js --silent",
-    "test": "npm run build && node test.js",
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "test": "npm run build && mocha test",
     "test:ui": "start ./examples/page.html"
   },
   "repository": {
@@ -31,8 +35,12 @@
   "homepage": "https://github.com/munrocket/ta-math#readme",
   "dependencies": {},
   "devDependencies": {
-    "rollup": "^0.63.4",
-    "tap-spec": "^5.0.0",
-    "tape": "^4.9.1"
+    "babel-core": "^6.26.3",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-preset-env": "^1.7.0",
+    "mocha": "^5.2.0",
+    "rollup": "^0.63.5",
+    "rollup-plugin-babel": "^3.0.7",
+    "rollup-plugin-node-builtins": "^2.1.2"
   }
 }

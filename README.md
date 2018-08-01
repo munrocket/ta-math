@@ -10,7 +10,7 @@ Tiny library for calculating technical indicators and overlays from price data i
 |:----------|:--------------------------------------|:-------:|:----------------:|:----:|
 | sma       | Simple Moving Average                 |    √    |                  |      |
 | ema       | Exponential Moving Average            |    √    |                  |      |
-| bb        | Bollinger Band                        |    √    | John Bollinger   | 1980s|
+| bb        | Bollinger Band                        |    √    | John Bollinger   | 198x |
 | ebb       | Exponential Bollinger Band            |         |                  |      |
 | psar      | Parabolic SAR                         |    √    | Welles Wilder    | 1978 |
 | vbp       | Volume by Price                       |    √    |                  |      |
@@ -25,7 +25,7 @@ Tiny library for calculating technical indicators and overlays from price data i
 | expdev    | Exponential Weighted Deviation        |         |                  |      |
 | macd      | Moving Average Convergence/Divergence |    √    | Gerald Appel     | 1979 |
 | rsi       | Relative Strength Index               |    √    | Welles Wilder    | 1978 |
-| stoch     | Stochastic Oscillator (Full)          |    √    | George Lane      | 1950s|
+| stoch     | Stochastic Oscillator (Full)          |    √    | George Lane      | 195x |
 | stochRsi  | Combines Stochastics with the RSI     |    √    | Welles Wilder    | 1994 |
 | cci       | Commodity Channel Index               |    √    | Donald Lambert   | 1980 |
 | obv       | On Balance Volume                     |    √    | Joseph Granville | 1963 |
@@ -64,9 +64,9 @@ You can see how to set new data format in `formats.mjs`, by default it uses exch
 - [X] unit tests
 - [X] proxy for ohlcv
 - [X] different input formats
-- [ ] es5 with babel
+- [X] es5 with babel
 - [ ] typescript integration (.d.ts)
-- [ ] new basic indicators (ROC, Money Flow, Williams %R, [ref1](https://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:introduction_to_technical_indicators_and_oscillators), [ref2](https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/bulls_power), [ref3](http://www.visualcapitalist.com/12-types-technical-indicators-stocks/))
+- [ ] new basic indicators (ROC, Money Flow, Williams %R, [etc.](https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/bulls_power))
 - [ ] good loking ui example
 
 ### Contributing

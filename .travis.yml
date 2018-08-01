@@ -3,12 +3,6 @@ language: node_js
 node_js:  
   - node
   - 6
-cache:
-  directories:
-    - node_modules
-branches:
-  only:
-    - master
 script:
   - npm run test
 

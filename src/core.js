@@ -30,6 +30,8 @@ export function nrmse(f, g) {
   return rmse(f, g) / (Math.max(...f) - Math.min(...f));
 }
 
+/* functional programming */
+
 export function pointwise(operation, ...args) {
   let result = [];
   for (let i = 0; i < args[0].length; i++) {
@@ -39,8 +41,6 @@ export function pointwise(operation, ...args) {
   return result;
 }
 
-/* rolling or price specific functions */
-
 export function rolling(operation, window, array) {
   let result = [];
   for (let i = 0; i < array.length; i++) {
@@ -48,6 +48,39 @@ export function rolling(operation, window, array) {
     result.push(operation(array.slice((j > 0) ? j : 0, i + 1)));
   }
   return result;
+}
+
+/* basic indicators & overlays */
+
+export function stddev($close, window) {
+  return rolling(x => sd(x), window, $close);
+}
+
+export function expdev($close, window, weight = null) {
+  let sqrDiff = pointwise((a, b) => (a - b) * (a - b), $close, ema($close, window));
+  return pointwise(x => Math.sqrt(x), ema(sqrDiff, window, weight));
+}
+
+export function sma($close, window) {
+  return rolling(x => mean(x), window, $close);
+}
+
+export function ema($close, window, weight = null, start = null) {
+  weight = weight ? weight : 2 / (window + 1);
+  let ema = [ start ? start : mean($close.slice(0, window)) ];
+  for (let i = 1; i < $close.length; i++) {
+    ema.push($close[i] * weight + ema[i - 1] * (1 - weight));
+  };
+  return ema;
+}
+
+export function madev($close, window) {
+  return rolling(x => mad(x), window, $close);
+}
+
+export function atr($high, $low, $close, window) {
+  let tr = trueRange($high, $low, $close);
+  return ema(tr, window, 1 / window);
 }
 
 export function trueRange($high, $low, $close) {
