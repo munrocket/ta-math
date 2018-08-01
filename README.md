@@ -12,12 +12,12 @@ Tiny library for calculating technical indicators and overlays from price data i
 |:----------|:--------------------------------------|:-------:|:----------------:|:----:|
 | sma       | Simple Moving Average                 |    ✔️️    |                  |      |
 | ema       | Exponential Moving Average            |    ✔️️    |                  |      |
-| bb        | Bollinger Band                        |    ✔️️    | John Bollinger   | 1980s |
-| ebb       | Exponential Bollinger Band            |    ❔     |                  |      |
+| bb        | Bollinger Band                        |    ✔️️    | John Bollinger   | 1980s|
+| ebb       | Exponential Bollinger Band            |    ❔    |                  |      |
 | psar      | Parabolic SAR                         |    ❌    | Welles Wilder    | 1978 |
 | vbp       | Volume by Price                       |    ✔️️    |                  |      |
 | keltner   | Keltner Channels                      |    ✔️️    | Chester Keltner  | 1960 |
-| zigzag    | ZigZag Indicator                      |    ❔    |                  |      |
+| zigzag    | ZigZag Indicator                      |    ❔    | Arthur Merrill   | 1977 |
 
 ### Technical Indicators
 | Function  | Technical Indicator                   | Tested  | Developed by     | Year |
@@ -27,11 +27,11 @@ Tiny library for calculating technical indicators and overlays from price data i
 | expdev    | Exponential Weighted Deviation        |   ❔    |                  |      |
 | macd      | Moving Average Convergence/Divergence |   ✔️    | Gerald Appel     | 1979 |
 | rsi       | Relative Strength Index               |   ✔️    | Welles Wilder    | 1978 |
-| stoch     | Stochastic Oscillator (Full)          |   ✔️    | George Lane      | 1950s |
+| stoch     | Stochastic Oscillator (Full)          |   ✔️    | George Lane      | 1950s|
 | stochRsi  | Combines Stochastics with the RSI     |   ✔️    | Welles Wilder    | 1994 |
 | cci       | Commodity Channel Index               |   ✔️    | Donald Lambert   | 1980 |
 | obv       | On Balance Volume                     |   ✔️    | Joseph Granville | 1963 |
-| adl       | Accumulation / Distribution line      |   ✔️    | Marc Chaikin     |      |
+| adl       | Accumulation / Distribution line      |   ✔️    | Marc Chaikin     | 1970s|
 | atr       | Average True Range                    |   ✔️    | Welles Wilder    | 1978 |
 | vi        | Vortex Indicator                      |   ✔️    | Etienne Botes    | 2010 |
 
