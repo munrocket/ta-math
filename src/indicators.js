@@ -1,20 +1,6 @@
-import { sd, mad, pointwise, rolling, trueRange, typicalPrice} from './core';
-import { ema, sma } from './overlays';
+import { ema, sma, madev, pointwise, rolling, trueRange, typicalPrice} from './core';
 
 /* indicators */
-
-export function stddev($close, window) {
-  return rolling(x => sd(x), window, $close);
-}
-
-export function expdev($close, window, weight = null) {
-  let sqrDiff = pointwise((a, b) => (a - b) * (a - b), $close, ema($close, window));
-  return pointwise(x => Math.sqrt(x), ema(sqrDiff, window, weight));
-}
-
-export function madev($close, window) {
-  return rolling(x => mad(x), window, $close);
-}
 
 export function macd($close, wshort, wlong, wsig) {
   const line = pointwise((a, b) => a - b, ema($close, wshort), ema($close, wlong));
@@ -71,11 +57,6 @@ export function adl($high, $low, $close, $volume) {
     adl[i] = adl[i - 1] + $volume[i] * (2*$close[i] - $low[i] - $high[i]) / ($high[i] - $low[i]);
   }
   return adl;
-}
-
-export function atr($high, $low, $close, window) {
-  let tr = trueRange($high, $low, $close);
-  return ema(tr, window, 1 / window);
 }
 
 export function vi($high, $low, $close, window) {

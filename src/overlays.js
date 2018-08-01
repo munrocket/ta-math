@@ -1,20 +1,6 @@
-import { rolling, mean, pointwise } from './core';
-import { stddev, expdev, atr } from './indicators';
+import { sma, ema, stddev, expdev, pointwise, atr} from './core';
 
 /* overlays */
-
-export function sma($close, window) {
-  return rolling(x => mean(x), window, $close);
-}
-
-export function ema($close, window, weight = null, start = null) {
-  weight = weight ? weight : 2 / (window + 1);
-  let ema = [ start ? start : mean($close.slice(0, window)) ];
-  for (let i = 1; i < $close.length; i++) {
-    ema.push($close[i] * weight + ema[i - 1] * (1 - weight));
-  };
-  return ema;
-}
 
 export function bb($close, window, mult) {
   const middle = sma($close, window);
