@@ -1,11 +1,11 @@
-import { sma, ema, stddev, expdev, pointwise, atr} from './core';
+import { sma, ema, stdev, expdev, pointwise, atr} from './core';
 
 /* overlays */
 
 export function bb($close, window, mult) {
   const middle = sma($close, window);
-  const upper = pointwise((a, b) => a + b * mult, middle, stddev($close, window));
-  const lower = pointwise((a, b) => a - b * mult, middle, stddev($close, window));
+  const upper = pointwise((a, b) => a + b * mult, middle, stdev($close, window));
+  const lower = pointwise((a, b) => a - b * mult, middle, stdev($close, window));
   return { lower : lower, middle : middle, upper : upper};
 }
 

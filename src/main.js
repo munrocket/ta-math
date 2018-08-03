@@ -46,7 +46,7 @@ export default class TA {
       keltner:  (window = 14, mult = 2)                 =>    overlays.keltner(this.$.high, this.$.low, this.$.close, window, mult),
       zigzag:   (percent = 15)                          =>    overlays.zigzag(this.$.time, this.$.high, this.$.low, percent),
 
-      stddev:   (window = 15)                           =>    core.stddev(this.$.close, window),
+      stdev:   (window = 15)                           =>    core.stdev(this.$.close, window),
       madev:    (window = 15)                           =>    core.madev(this.$.close, window),
       expdev:   (window = 15)                           =>    core.expdev(this.$.close, window),
       macd:     (wshort = 12, wlong = 26, wsig = 9)     =>    indicators.macd(this.$.close, wshort, wlong, wsig),

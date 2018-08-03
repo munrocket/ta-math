@@ -52,7 +52,7 @@ export function rolling(operation, window, array) {
 
 /* basic indicators & overlays */
 
-export function stddev($close, window) {
+export function stdev($close, window) {
   return rolling(x => sd(x), window, $close);
 }
 
