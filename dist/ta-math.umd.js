@@ -197,32 +197,6 @@
     }  return { line: K, signal: sma(K, signal) };
   }
 
-  function cci($high, $low, $close, window, mult) {
-    var tp = typicalPrice($high, $low, $close);
-    var tpsma = sma(tp, window);
-    var tpmad = madev(tp, window);
-    tpmad[0] = Infinity;
-    return pointwise(function (a, b, c) {
-      return (a - b) / (c * mult);
-    }, tp, tpsma, tpmad);
-  }
-
-  function obv($close, $volume, signal) {
-    var obv = [0];
-    for (var i = 1; i < $close.length; i++) {
-      obv.push(obv[i - 1] + Math.sign($close[i] - $close[i - 1]) * $volume[i]);
-    }
-    return { line: obv, signal: sma(obv, signal) };
-  }
-
-  function adl($high, $low, $close, $volume) {
-    var adl = [$volume[0] * (2 * $close[0] - $low[0] - $high[0]) / ($high[0] - $low[0])];
-    for (var i = 1; i < $high.length; i++) {
-      adl[i] = adl[i - 1] + $volume[i] * (2 * $close[i] - $low[i] - $high[i]) / ($high[i] - $low[i]);
-    }
-    return adl;
-  }
-
   function vi($high, $low, $close, window) {
     var pv = [($high[0] - $low[0]) / 2],
         nv = [pv[0]];
@@ -250,6 +224,38 @@
       }, apv, atr$$1), minus: pointwise(function (a, b) {
         return a / b;
       }, anv, atr$$1) };
+  }
+
+  function cci($high, $low, $close, window, mult) {
+    var tp = typicalPrice($high, $low, $close);
+    var tpsma = sma(tp, window);
+    var tpmad = madev(tp, window);
+    tpmad[0] = Infinity;
+    return pointwise(function (a, b, c) {
+      return (a - b) / (c * mult);
+    }, tp, tpsma, tpmad);
+  }
+
+  function obv($close, $volume, signal) {
+    var obv = [0];
+    for (var i = 1; i < $close.length; i++) {
+      obv.push(obv[i - 1] + Math.sign($close[i] - $close[i - 1]) * $volume[i]);
+    }
+    return { line: obv, signal: sma(obv, signal) };
+  }
+
+  function adl($high, $low, $close, $volume) {
+    var adl = [$volume[0] * (2 * $close[0] - $low[0] - $high[0]) / ($high[0] - $low[0])];
+    for (var i = 1; i < $high.length; i++) {
+      adl[i] = adl[i - 1] + $volume[i] * (2 * $close[i] - $low[i] - $high[i]) / ($high[i] - $low[i]);
+    }
+    return adl;
+  }
+
+  function williams($high, $low, $close, window) {
+    return pointwise(function (x) {
+      return x - 100;
+    }, stoch($high, $low, $close, window, 1, 1).line);
   }
 
   /* overlays */
@@ -494,6 +500,10 @@
         var smooth = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;
         return stochRsi(_this.$.close, window, signal, smooth);
       },
+      vi: function vi$$1() {
+        var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 14;
+        return vi(_this.$.high, _this.$.low, _this.$.close, window);
+      },
       cci: function cci$$1() {
         var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 20;
         var mult = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0.015;
@@ -510,9 +520,9 @@
         var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 14;
         return atr(_this.$.high, _this.$.low, _this.$.close, window);
       },
-      vi: function vi$$1() {
+      williams: function williams$$1() {
         var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 14;
-        return vi(_this.$.high, _this.$.low, _this.$.close, window);
+        return williams(_this.$.high, _this.$.low, _this.$.close, window);
       }
     };
   };

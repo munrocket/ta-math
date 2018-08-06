@@ -46,18 +46,19 @@ export default class TA {
       keltner:  (window = 14, mult = 2)                 =>    overlays.keltner(this.$.high, this.$.low, this.$.close, window, mult),
       zigzag:   (percent = 15)                          =>    overlays.zigzag(this.$.time, this.$.high, this.$.low, percent),
 
-      stdev:   (window = 15)                           =>    core.stdev(this.$.close, window),
+      stdev:    (window = 15)                           =>    core.stdev(this.$.close, window),
       madev:    (window = 15)                           =>    core.madev(this.$.close, window),
       expdev:   (window = 15)                           =>    core.expdev(this.$.close, window),
       macd:     (wshort = 12, wlong = 26, wsig = 9)     =>    indicators.macd(this.$.close, wshort, wlong, wsig),
       rsi:      (window = 14)                           =>    indicators.rsi(this.$.close, window),
       stoch:    (window = 14, signal = 3, smooth = 1)   =>    indicators.stoch(this.$.high, this.$.low, this.$.close, window, signal, smooth),
       stochRsi: (window = 14, signal = 3, smooth = 1)   =>    indicators.stochRsi(this.$.close, window, signal, smooth),
+      vi:       (window = 14)                           =>    indicators.vi(this.$.high, this.$.low, this.$.close, window),
       cci:      (window = 20, mult = 0.015)             =>    indicators.cci(this.$.high, this.$.low, this.$.close, window, mult),
       obv:      (signal = 10)                           =>    indicators.obv(this.$.close, this.$.volume, signal),
       adl:      ()                                      =>    indicators.adl(this.$.high, this.$.low, this.$.close, this.$.volume),
       atr:      (window = 14)                           =>    core.atr(this.$.high, this.$.low, this.$.close, window),
-      vi:       (window = 14)                           =>    indicators.vi(this.$.high, this.$.low, this.$.close, window),
+      williams: (window = 14)                           =>    indicators.williams(this.$.high, this.$.low, this.$.close, window) 
     }
   }
 }

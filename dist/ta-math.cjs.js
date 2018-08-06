@@ -129,6 +129,18 @@ function stochRsi($close, window, signal, smooth) {
   K[0] = 0; if (smooth > 1) { K = sma(K, smooth); }  return { line : K, signal : sma(K, signal) };
 }
 
+function vi($high, $low, $close, window) {
+  let pv = [($high[0] - $low[0]) / 2], nv = [pv[0]];
+  for(let i = 1; i < $high.length; i++) {
+    pv.push(Math.abs($high[i] - $low[i-1]));
+    nv.push(Math.abs($high[i-1] - $low[i]));
+  }
+  let apv = rolling(x => x.reduce((sum, a) => {return sum + a}, 0), window, pv);
+  let anv = rolling(x => x.reduce((sum, a) => {return sum + a}, 0), window, nv);
+  let atr$$1 = rolling(x => x.reduce((sum, a) => {return sum + a}, 0), window, trueRange($high, $low, $close));
+  return { plus : pointwise((a, b) => a / b, apv, atr$$1), minus :   pointwise((a, b) => a / b, anv, atr$$1) };
+}
+
 function cci($high, $low, $close, window, mult) {
   let tp = typicalPrice($high, $low, $close);
   let tpsma = sma(tp, window);
@@ -153,16 +165,8 @@ function adl($high, $low, $close, $volume) {
   return adl;
 }
 
-function vi($high, $low, $close, window) {
-  let pv = [($high[0] - $low[0]) / 2], nv = [pv[0]];
-  for(let i = 1; i < $high.length; i++) {
-    pv.push(Math.abs($high[i] - $low[i-1]));
-    nv.push(Math.abs($high[i-1] - $low[i]));
-  }
-  let apv = rolling(x => x.reduce((sum, a) => {return sum + a}, 0), window, pv);
-  let anv = rolling(x => x.reduce((sum, a) => {return sum + a}, 0), window, nv);
-  let atr$$1 = rolling(x => x.reduce((sum, a) => {return sum + a}, 0), window, trueRange($high, $low, $close));
-  return { plus : pointwise((a, b) => a / b, apv, atr$$1), minus :   pointwise((a, b) => a / b, anv, atr$$1) };
+function williams($high, $low, $close, window) {
+  return pointwise(x => x - 100, stoch($high, $low, $close, window, 1, 1).line);
 }
 
 /* overlays */
@@ -302,11 +306,12 @@ class TA {
       rsi:      (window = 14)                           =>    rsi(this.$.close, window),
       stoch:    (window = 14, signal = 3, smooth = 1)   =>    stoch(this.$.high, this.$.low, this.$.close, window, signal, smooth),
       stochRsi: (window = 14, signal = 3, smooth = 1)   =>    stochRsi(this.$.close, window, signal, smooth),
+      vi:       (window = 14)                           =>    vi(this.$.high, this.$.low, this.$.close, window),
       cci:      (window = 20, mult = 0.015)             =>    cci(this.$.high, this.$.low, this.$.close, window, mult),
       obv:      (signal = 10)                           =>    obv(this.$.close, this.$.volume, signal),
       adl:      ()                                      =>    adl(this.$.high, this.$.low, this.$.close, this.$.volume),
       atr:      (window = 14)                           =>    atr(this.$.high, this.$.low, this.$.close, window),
-      vi:       (window = 14)                           =>    vi(this.$.high, this.$.low, this.$.close, window),
+      williams: (window = 14)                           =>    williams(this.$.high, this.$.low, this.$.close, window) 
     }
   }
 }

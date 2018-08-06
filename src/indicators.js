@@ -35,6 +35,18 @@ export function stochRsi($close, window, signal, smooth) {
   return { line : K, signal : sma(K, signal) };
 }
 
+export function vi($high, $low, $close, window) {
+  let pv = [($high[0] - $low[0]) / 2], nv = [pv[0]];
+  for(let i = 1; i < $high.length; i++) {
+    pv.push(Math.abs($high[i] - $low[i-1]));
+    nv.push(Math.abs($high[i-1] - $low[i]));
+  }
+  let apv = rolling(x => x.reduce((sum, a) => {return sum + a}, 0), window, pv);
+  let anv = rolling(x => x.reduce((sum, a) => {return sum + a}, 0), window, nv);
+  let atr = rolling(x => x.reduce((sum, a) => {return sum + a}, 0), window, trueRange($high, $low, $close));
+  return { plus : pointwise((a, b) => a / b, apv, atr), minus :   pointwise((a, b) => a / b, anv, atr) };
+}
+
 export function cci($high, $low, $close, window, mult) {
   let tp = typicalPrice($high, $low, $close);
   let tpsma = sma(tp, window);
@@ -59,14 +71,6 @@ export function adl($high, $low, $close, $volume) {
   return adl;
 }
 
-export function vi($high, $low, $close, window) {
-  let pv = [($high[0] - $low[0]) / 2], nv = [pv[0]];
-  for(let i = 1; i < $high.length; i++) {
-    pv.push(Math.abs($high[i] - $low[i-1]));
-    nv.push(Math.abs($high[i-1] - $low[i]));
-  }
-  let apv = rolling(x => x.reduce((sum, a) => {return sum + a}, 0), window, pv);
-  let anv = rolling(x => x.reduce((sum, a) => {return sum + a}, 0), window, nv);
-  let atr = rolling(x => x.reduce((sum, a) => {return sum + a}, 0), window, trueRange($high, $low, $close));
-  return { plus : pointwise((a, b) => a / b, apv, atr), minus :   pointwise((a, b) => a / b, anv, atr) };
+export function williams($high, $low, $close, window) {
+  return pointwise(x => x - 100, stoch($high, $low, $close, window, 1, 1).line);
 }
