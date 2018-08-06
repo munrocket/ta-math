@@ -20,21 +20,23 @@ Well tested library for calculating technical indicators and overlays from price
 | vbp       | Volume by Price                       |    ✔️️    |                 |      |
 
 ### Technical Indicators
-| Function  | Technical Indicator                   | Tested  | Developed by     | Year |
-|:----------|:--------------------------------------|:-------:|:----------------:|:----:|
-| stdev     | Standard Deviation                    |   ✔️️    |                  |      |
-| madev     | Mean Absolute Deviation               |   ✔️    |                  |      |
-| expdev    | Exponential Weighted Deviation        |   ❔     |                  |      |
-| macd      | Moving Average Convergence/Divergence |   ✔️    | Gerald Appel     | 1979 |
-| rsi       | Relative Strength Index               |   ✔️    | Welles Wilder    | 1978 |
-| stoch     | Stochastic Oscillator (Full)          |   ✔️    | George Lane      | 1950s|
-| stochRsi  | Combines Stochastics with the RSI     |   ✔️    | Welles Wilder    | 1994 |
-| vi        | Vortex Indicator                      |   ✔️    | Etienne Botes    | 2010 |
-| cci       | Commodity Channel Index               |   ✔️    | Donald Lambert   | 1980 |
-| obv       | On Balance Volume                     |   ✔️    | Joseph Granville | 1963 |
-| adl       | Accumulation / Distribution line      |   ✔️    | Marc Chaikin     | 1970s|
-| atr       | Average True Range                    |   ✔️    | Welles Wilder    | 1978 |
-| williams  | Williams %R                           |   ✔️    | Williams         |      |
+| Function  | Technical Indicator                   | Tested  | Developed by                      | Year |
+|:----------|:--------------------------------------|:-------:|:---------------------------------:|:----:|
+| stdev     | Standard Deviation                    |   ✔️️    |                                   |      |
+| madev     | Mean Absolute Deviation               |   ✔️    |                                   |      |
+| expdev    | Exponential Weighted Deviation        |   ❔     |                                   |      |
+| macd      | Moving Average Convergence/Divergence |   ✔️    | Gerald Appel                      | 1979 |
+| rsi       | Relative Strength Index               |   ✔️    | Welles Wilder                     | 1978 |
+| mfi       | Money Flow Index, Volume-Weighted RSI |   ✔️    | Gene Quong and Avrum Soudack      | 1989 |
+| stoch     | Stochastic Oscillator (Full)          |   ✔️    | George Lane                       | 1950s|
+| stochRsi  | Combines Stochastics with the RSI     |   ✔️    | Welles Wilder                     | 1994 |
+| vi        | Vortex Indicator                      |   ✔️    | Etienne Botes and Douglas Siepman | 2010 |
+| cci       | Commodity Channel Index               |   ✔️    | Donald Lambert                    | 1980 |
+| obv       | On Balance Volume                     |   ✔️    | Joseph Granville                  | 1963 |
+| adl       | Accumulation / Distribution line      |   ✔️    | Marc Chaikin                      | 1970s|
+| atr       | Average True Range                    |   ✔️    | Welles Wilder                     | 1978 |
+| williams  | Williams %R                           |   ✔️    |                                   |      |
+| roc       | Rate-of-Change                        |   ✔️    |                                   |      |
 
 ### Error methods
 | Function  | Error methods                         | Tested  |
@@ -69,7 +71,7 @@ You can see how to set new data format in `formats.mjs`, by default it uses exch
 - [X] es5 with babel
 - [X] coverage
 - [ ] typescript integration (.d.ts)
-- [ ] new indicators (ROC, Money Flow [etc.](https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/bulls_power))
+- [ ] [new indicators](https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators))
 - [ ] good loking ui example
 
 ### Contributing

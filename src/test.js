@@ -236,6 +236,19 @@ describe('StochRsi', () => {
   it(`NRMSE test (${delta.toFixed(5)})`, () => assert.ok(delta < 1e-2));
 })
 
+describe('MFI', () => {
+  let t = [24.63,24.69,24.99,25.36,25.19,25.17,25.01,24.96,25.08,25.25,25.21,25.37,25.61,25.58,25.46,
+    25.33,25.09,25.03,24.91,24.89,25.13,24.64,24.51,24.15,23.98,24.07,24.36,24.35,24.14,24.81];
+  let v = [18.730,12.272,24.691,18.358,22.964,15.919,16.067,16.568,16.019,9.774,22.573,12.987,10.907,5.799,
+    7.395,5.818,7.165,5.673,5.625,5.023,7.457,11.798,12.366,13.295,9.257,9.691,8.870,7.169,11.356,13.379];
+  let expected = [NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,49.47,45.11,36.27,28.41,31.53,
+    33.87,41.30,42.80,31.83,23.76,26.51,24.07,22.38,22.18,21.53,30.84];
+  let actual = new TA([t,t,t,t,t,v], simpleFormat).mfi();
+  it('Finite test', () => assert.ok(actual.slice(14).every(isFinite)));
+  let delta = nrmse(expected.slice(14), actual.slice(14));
+  it(`NRMSE test (${delta.toFixed(5)})`, () => assert.ok(delta < 1e-2));
+})
+
 describe('VI', () => {
   let h = [1380.39,1376.51,1362.34,1351.53,1343.98,1363.13,1389.19,1391.74,1387.16,1385.03,1375.13,1394.16,1399.63,1407.14,1404.14,
     1405.95,1405.98,1405.87,1410.03,1407.73,1417.44,1418.71,1418.13,1426.68,1416.12,1413.49,1413.46,1416.17,1413.63,1413.95];
@@ -328,7 +341,17 @@ describe('Williams', () => {
   let expected = [NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,-29.46,-32.30,-10.85,-34.11,
     -18.09,-35.40,-25.34,-1.43,-30.02,-26.91,-26.55,-38.80,-39.08,-59.42,-59.42,-33.09,-43.24];
   let actual = new TA([h,h,h,l,c,c], simpleFormat).williams();
-  it('Finite test', () => assert.ok(actual.slice(14).every(isFinite)));
-  let delta = nrmse(expected.slice(14), actual.slice(14));
+  it('Finite test', () => assert.ok(actual.slice(13).every(isFinite)));
+  let delta = nrmse(expected.slice(13), actual.slice(13));
+  it(`NRMSE test (${delta.toFixed(5)})`, () => assert.ok(delta < 1e-2));
+})
+
+describe('ROC', () => {
+  let c = [11045.27,11167.32,11008.61,11151.83,10926.77,10868.12,10520.32,10380.43,10785.14,10748.26,
+    10896.91,10782.95,10620.16,10625.83,10510.95,10444.37,10068.01,10193.39,10066.57,10043.75];
+  let expected = [NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,-3.85,-4.85,-4.52,-6.34,-7.86,-6.21,-4.31,-3.24];
+  let actual = new TA([c,c,c,c,c,c], simpleFormat).roc(13);
+  it('Finite test', () => assert.ok(actual.slice(12).every(isFinite)));
+  let delta = nrmse(expected.slice(12), actual.slice(12));
   it(`NRMSE test (${delta.toFixed(5)})`, () => assert.ok(delta < 1e-2));
 })

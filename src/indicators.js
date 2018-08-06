@@ -19,6 +19,19 @@ export function rsi($close, window) {
   return pointwise((a, b) => 100 - 100 / (1 + a / b), ema(gains, window, 1 / window), ema(loss, window, 1 / window));
 }
 
+export function mfi($high, $low, $close, $volume, window) {
+  let pmf = [0], nmf = [0];
+  let tp = typicalPrice($high, $low, $close);
+  for (let i = 1; i < $close.length; i++) {
+    let diff = tp[i] - tp[i - 1];
+    pmf.push(diff >= 0 ? tp[i] * $volume[i] : 0);
+    nmf.push(diff < 0 ? tp[i] * $volume[i] : 0);
+  }
+  pmf = rolling(x => x.reduce((sum, x) => {return sum + x}, 0), window, pmf);
+  nmf = rolling(x => x.reduce((sum, x) => {return sum + x}, 0), window, nmf);
+  return pointwise((a, b) => 100 - 100 / (1 + a / b), pmf, nmf);
+}
+
 export function stoch($high, $low, $close, window, signal, smooth) {
   let lowest = rolling(x => Math.min(...x), window, $low);
   let highest = rolling(x => Math.max(...x), window, $high);
@@ -41,9 +54,9 @@ export function vi($high, $low, $close, window) {
     pv.push(Math.abs($high[i] - $low[i-1]));
     nv.push(Math.abs($high[i-1] - $low[i]));
   }
-  let apv = rolling(x => x.reduce((sum, a) => {return sum + a}, 0), window, pv);
-  let anv = rolling(x => x.reduce((sum, a) => {return sum + a}, 0), window, nv);
-  let atr = rolling(x => x.reduce((sum, a) => {return sum + a}, 0), window, trueRange($high, $low, $close));
+  let apv = rolling(x => x.reduce((sum, x) => {return sum + x}, 0), window, pv);
+  let anv = rolling(x => x.reduce((sum, x) => {return sum + x}, 0), window, nv);
+  let atr = rolling(x => x.reduce((sum, x) => {return sum + x}, 0), window, trueRange($high, $low, $close));
   return { plus : pointwise((a, b) => a / b, apv, atr), minus :   pointwise((a, b) => a / b, anv, atr) };
 }
 
@@ -69,6 +82,10 @@ export function adl($high, $low, $close, $volume) {
     adl[i] = adl[i - 1] + $volume[i] * (2*$close[i] - $low[i] - $high[i]) / ($high[i] - $low[i]);
   }
   return adl;
+}
+
+export function roc($close, window) {
+  return rolling(x => 100 * (x[x.length - 1] - x[0]) / x[0], window, $close);
 }
 
 export function williams($high, $low, $close, window) {

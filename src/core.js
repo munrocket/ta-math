@@ -32,11 +32,11 @@ export function nrmse(f, g) {
 
 /* functional programming */
 
-export function pointwise(operation, ...args) {
+export function pointwise(operation, ...arrays) {
   let result = [];
-  for (let i = 0; i < args[0].length; i++) {
-    let iargs = (i) => args.map(array => array[i]);
-    result[i] = operation(...iargs(i));
+  for (let i = 0; i < arrays[0].length; i++) {
+    let iarray = (i) => arrays.map(x => x[i]);
+    result[i] = operation(...iarray(i));
   }
   return result;
 }
@@ -57,7 +57,7 @@ export function stdev($close, window) {
 }
 
 export function expdev($close, window, weight = null) {
-  let sqrDiff = pointwise((a, b) => (a - b) * (a - b), $close, ema($close, window));
+  let sqrDiff = pointwise((a, b) => (a - b) * (a - b), $close, sma($close, window));
   return pointwise(x => Math.sqrt(x), ema(sqrDiff, window, weight));
 }
 

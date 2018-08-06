@@ -31,7 +31,7 @@ export function psar($high, $low, stepfactor, maxfactor) {
       newsar = (isUp) ? Math.min($low.slice(-3)) : Math.max($high.slice(-3));
       extreme = (isUp) ? $high[i] : $low[i];
     }
-    console.log("sar=" + newsar + "extreme=" + extreme +" factor=" + factor + "dir=" + isUp);
+    //console.log("sar=" + newsar + "extreme=" + extreme +" factor=" + factor + "dir=" + isUp);
     psar.push(newsar);
   }
   return psar;

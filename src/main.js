@@ -51,6 +51,7 @@ export default class TA {
       expdev:   (window = 15)                           =>    core.expdev(this.$.close, window),
       macd:     (wshort = 12, wlong = 26, wsig = 9)     =>    indicators.macd(this.$.close, wshort, wlong, wsig),
       rsi:      (window = 14)                           =>    indicators.rsi(this.$.close, window),
+      mfi:      (window = 14)                           =>    indicators.mfi(this.$.high, this.$.low, this.$.close, this.$.volume, window),
       stoch:    (window = 14, signal = 3, smooth = 1)   =>    indicators.stoch(this.$.high, this.$.low, this.$.close, window, signal, smooth),
       stochRsi: (window = 14, signal = 3, smooth = 1)   =>    indicators.stochRsi(this.$.close, window, signal, smooth),
       vi:       (window = 14)                           =>    indicators.vi(this.$.high, this.$.low, this.$.close, window),
@@ -58,7 +59,8 @@ export default class TA {
       obv:      (signal = 10)                           =>    indicators.obv(this.$.close, this.$.volume, signal),
       adl:      ()                                      =>    indicators.adl(this.$.high, this.$.low, this.$.close, this.$.volume),
       atr:      (window = 14)                           =>    core.atr(this.$.high, this.$.low, this.$.close, window),
-      williams: (window = 14)                           =>    indicators.williams(this.$.high, this.$.low, this.$.close, window) 
+      williams: (window = 14)                           =>    indicators.williams(this.$.high, this.$.low, this.$.close, window),
+      roc:      (window = 14)                           =>    indicators.roc(this.$.close, window) 
     }
   }
 }

@@ -55,18 +55,18 @@
   /* functional programming */
 
   function pointwise(operation) {
-    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-      args[_key - 1] = arguments[_key];
+    for (var _len = arguments.length, arrays = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      arrays[_key - 1] = arguments[_key];
     }
 
     var result = [];
-    for (var i = 0; i < args[0].length; i++) {
-      var iargs = function iargs(i) {
-        return args.map(function (array) {
-          return array[i];
+    for (var i = 0; i < arrays[0].length; i++) {
+      var iarray = function iarray(i) {
+        return arrays.map(function (x) {
+          return x[i];
         });
       };
-      result[i] = operation.apply(undefined, toConsumableArray(iargs(i)));
+      result[i] = operation.apply(undefined, toConsumableArray(iarray(i)));
     }
     return result;
   }
@@ -169,6 +169,30 @@
     }, ema(gains, window, 1 / window), ema(loss, window, 1 / window));
   }
 
+  function mfi($high, $low, $close, $volume, window) {
+    var pmf = [0],
+        nmf = [0];
+    var tp = typicalPrice($high, $low, $close);
+    for (var i = 1; i < $close.length; i++) {
+      var diff = tp[i] - tp[i - 1];
+      pmf.push(diff >= 0 ? tp[i] * $volume[i] : 0);
+      nmf.push(diff < 0 ? tp[i] * $volume[i] : 0);
+    }
+    pmf = rolling(function (x) {
+      return x.reduce(function (sum, x) {
+        return sum + x;
+      }, 0);
+    }, window, pmf);
+    nmf = rolling(function (x) {
+      return x.reduce(function (sum, x) {
+        return sum + x;
+      }, 0);
+    }, window, nmf);
+    return pointwise(function (a, b) {
+      return 100 - 100 / (1 + a / b);
+    }, pmf, nmf);
+  }
+
   function stoch($high, $low, $close, window, signal, smooth) {
     var lowest = rolling(function (x) {
       return Math.min.apply(Math, toConsumableArray(x));
@@ -205,18 +229,18 @@
       nv.push(Math.abs($high[i - 1] - $low[i]));
     }
     var apv = rolling(function (x) {
-      return x.reduce(function (sum, a) {
-        return sum + a;
+      return x.reduce(function (sum, x) {
+        return sum + x;
       }, 0);
     }, window, pv);
     var anv = rolling(function (x) {
-      return x.reduce(function (sum, a) {
-        return sum + a;
+      return x.reduce(function (sum, x) {
+        return sum + x;
       }, 0);
     }, window, nv);
     var atr$$1 = rolling(function (x) {
-      return x.reduce(function (sum, a) {
-        return sum + a;
+      return x.reduce(function (sum, x) {
+        return sum + x;
       }, 0);
     }, window, trueRange($high, $low, $close));
     return { plus: pointwise(function (a, b) {
@@ -250,6 +274,12 @@
       adl[i] = adl[i - 1] + $volume[i] * (2 * $close[i] - $low[i] - $high[i]) / ($high[i] - $low[i]);
     }
     return adl;
+  }
+
+  function roc($close, window) {
+    return rolling(function (x) {
+      return 100 * (x[x.length - 1] - x[0]) / x[0];
+    }, window, $close);
   }
 
   function williams($high, $low, $close, window) {
@@ -298,7 +328,7 @@
         newsar = isUp ? Math.min($low.slice(-3)) : Math.max($high.slice(-3));
         extreme = isUp ? $high[i] : $low[i];
       }
-      console.log("sar=" + newsar + "extreme=" + extreme + " factor=" + factor + "dir=" + isUp);
+      //console.log("sar=" + newsar + "extreme=" + extreme +" factor=" + factor + "dir=" + isUp);
       psar.push(newsar);
     }
     return psar;
@@ -488,6 +518,10 @@
         var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 14;
         return rsi(_this.$.close, window);
       },
+      mfi: function mfi$$1() {
+        var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 14;
+        return mfi(_this.$.high, _this.$.low, _this.$.close, _this.$.volume, window);
+      },
       stoch: function stoch$$1() {
         var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 14;
         var signal = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 3;
@@ -523,6 +557,10 @@
       williams: function williams$$1() {
         var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 14;
         return williams(_this.$.high, _this.$.low, _this.$.close, window);
+      },
+      roc: function roc$$1() {
+        var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 14;
+        return roc(_this.$.close, window);
       }
     };
   };

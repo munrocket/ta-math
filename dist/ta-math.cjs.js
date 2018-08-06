@@ -30,11 +30,11 @@ function rmse(f, g) {
 
 /* functional programming */
 
-function pointwise(operation, ...args) {
+function pointwise(operation, ...arrays) {
   let result = [];
-  for (let i = 0; i < args[0].length; i++) {
-    let iargs = (i) => args.map(array => array[i]);
-    result[i] = operation(...iargs(i));
+  for (let i = 0; i < arrays[0].length; i++) {
+    let iarray = (i) => arrays.map(x => x[i]);
+    result[i] = operation(...iarray(i));
   }
   return result;
 }
@@ -115,6 +115,19 @@ function rsi($close, window) {
   return pointwise((a, b) => 100 - 100 / (1 + a / b), ema(gains, window, 1 / window), ema(loss, window, 1 / window));
 }
 
+function mfi($high, $low, $close, $volume, window) {
+  let pmf = [0], nmf = [0];
+  let tp = typicalPrice($high, $low, $close);
+  for (let i = 1; i < $close.length; i++) {
+    let diff = tp[i] - tp[i - 1];
+    pmf.push(diff >= 0 ? tp[i] * $volume[i] : 0);
+    nmf.push(diff < 0 ? tp[i] * $volume[i] : 0);
+  }
+  pmf = rolling(x => x.reduce((sum, x) => {return sum + x}, 0), window, pmf);
+  nmf = rolling(x => x.reduce((sum, x) => {return sum + x}, 0), window, nmf);
+  return pointwise((a, b) => 100 - 100 / (1 + a / b), pmf, nmf);
+}
+
 function stoch($high, $low, $close, window, signal, smooth) {
   let lowest = rolling(x => Math.min(...x), window, $low);
   let highest = rolling(x => Math.max(...x), window, $high);
@@ -135,9 +148,9 @@ function vi($high, $low, $close, window) {
     pv.push(Math.abs($high[i] - $low[i-1]));
     nv.push(Math.abs($high[i-1] - $low[i]));
   }
-  let apv = rolling(x => x.reduce((sum, a) => {return sum + a}, 0), window, pv);
-  let anv = rolling(x => x.reduce((sum, a) => {return sum + a}, 0), window, nv);
-  let atr$$1 = rolling(x => x.reduce((sum, a) => {return sum + a}, 0), window, trueRange($high, $low, $close));
+  let apv = rolling(x => x.reduce((sum, x) => {return sum + x}, 0), window, pv);
+  let anv = rolling(x => x.reduce((sum, x) => {return sum + x}, 0), window, nv);
+  let atr$$1 = rolling(x => x.reduce((sum, x) => {return sum + x}, 0), window, trueRange($high, $low, $close));
   return { plus : pointwise((a, b) => a / b, apv, atr$$1), minus :   pointwise((a, b) => a / b, anv, atr$$1) };
 }
 
@@ -163,6 +176,10 @@ function adl($high, $low, $close, $volume) {
     adl[i] = adl[i - 1] + $volume[i] * (2*$close[i] - $low[i] - $high[i]) / ($high[i] - $low[i]);
   }
   return adl;
+}
+
+function roc($close, window) {
+  return rolling(x => 100 * (x[x.length - 1] - x[0]) / x[0], window, $close);
 }
 
 function williams($high, $low, $close, window) {
@@ -199,7 +216,7 @@ function psar($high, $low, stepfactor, maxfactor) {
       newsar = (isUp) ? Math.min($low.slice(-3)) : Math.max($high.slice(-3));
       extreme = (isUp) ? $high[i] : $low[i];
     }
-    console.log("sar=" + newsar + "extreme=" + extreme +" factor=" + factor + "dir=" + isUp);
+    //console.log("sar=" + newsar + "extreme=" + extreme +" factor=" + factor + "dir=" + isUp);
     psar.push(newsar);
   }
   return psar;
@@ -299,11 +316,12 @@ class TA {
       keltner:  (window = 14, mult = 2)                 =>    keltner(this.$.high, this.$.low, this.$.close, window, mult),
       zigzag:   (percent = 15)                          =>    zigzag(this.$.time, this.$.high, this.$.low, percent),
 
-      stdev:   (window = 15)                           =>    stdev(this.$.close, window),
+      stdev:    (window = 15)                           =>    stdev(this.$.close, window),
       madev:    (window = 15)                           =>    madev(this.$.close, window),
       expdev:   (window = 15)                           =>    expdev(this.$.close, window),
       macd:     (wshort = 12, wlong = 26, wsig = 9)     =>    macd(this.$.close, wshort, wlong, wsig),
       rsi:      (window = 14)                           =>    rsi(this.$.close, window),
+      mfi:      (window = 14)                           =>    mfi(this.$.high, this.$.low, this.$.close, this.$.volume, window),
       stoch:    (window = 14, signal = 3, smooth = 1)   =>    stoch(this.$.high, this.$.low, this.$.close, window, signal, smooth),
       stochRsi: (window = 14, signal = 3, smooth = 1)   =>    stochRsi(this.$.close, window, signal, smooth),
       vi:       (window = 14)                           =>    vi(this.$.high, this.$.low, this.$.close, window),
@@ -311,7 +329,8 @@ class TA {
       obv:      (signal = 10)                           =>    obv(this.$.close, this.$.volume, signal),
       adl:      ()                                      =>    adl(this.$.high, this.$.low, this.$.close, this.$.volume),
       atr:      (window = 14)                           =>    atr(this.$.high, this.$.low, this.$.close, window),
-      williams: (window = 14)                           =>    williams(this.$.high, this.$.low, this.$.close, window) 
+      williams: (window = 14)                           =>    williams(this.$.high, this.$.low, this.$.close, window),
+      roc:      (window = 14)                           =>    roc(this.$.close, window) 
     }
   }
 }
