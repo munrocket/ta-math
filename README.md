@@ -14,7 +14,7 @@ Well tested library for calculating technical indicators and overlays from price
 | ema       | Exponential Moving Average            |    ✔️️    |                 |      |
 | bb        | Bollinger Band                        |    ✔️️    | John Bollinger  | 1980s|
 | ebb       | Exponential Bollinger Band            |    ✔️️    |                 |      |
-| psar      | Parabolic SAR                         |    ❌    | Welles Wilder   | 1978 |
+| psar      | Parabolic SAR                         | :suspect:| Welles Wilder   | 1978 |
 | keltner   | Keltner Channels                      |    ✔️️    | Chester Keltner | 1960 |
 | zigzag    | ZigZag Indicator                      |    ❔     | Arthur Merrill  | 1977 |
 | vbp       | Volume by Price                       |    ✔️️    |                 |      |

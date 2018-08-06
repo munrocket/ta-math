@@ -311,32 +311,33 @@
   }
 
   function psar($high, $low, stepfactor, maxfactor) {
-    var extreme = $low[0],
-        factor = 0;
-    var isUp = true,
-        psar = [extreme];
-    for (var i = 1; i < $high.length; i++) {
-      var newsar = psar[i - 1] + factor * (extreme - psar[i - 1]);
-      if (isUp && newsar < $low[i] || !isUp && newsar > $high[i]) {
-        if (isUp && $high[i] > extreme || !isUp && $low[i] < extreme) {
-          extreme = isUp ? $high[i] : $low[i];
-          factor = factor <= maxfactor ? factor + stepfactor : maxfactor;
-        }    } else {
-        isUp = !isUp;factor = stepfactor;
-        newsar = isUp ? Math.min($low.slice(-3)) : Math.max($high.slice(-3));
+    var isUp = true;
+    var factor = stepfactor;
+    var extreme = Math.max($high[0], $high[1]);
+    var psar = [$low[0], Math.min($low[0], $low[1])];
+    var cursar = psar[1];
+    for (var i = 2; i < $high.length; i++) {
+      cursar = cursar + factor * (extreme - cursar);
+      if (isUp && $high[i] > extreme || !isUp && $low[i] < extreme) {
+        factor = factor <= maxfactor ? factor + stepfactor : maxfactor;
         extreme = isUp ? $high[i] : $low[i];
+      }    if (isUp && $low[i] < cursar || !isUp && cursar > $high[i]) {
+        isUp = !isUp;
+        factor = stepfactor;
+        cursar = isUp ? Math.min.apply(Math, toConsumableArray($low.slice(i - 2, i + 1))) : Math.max.apply(Math, toConsumableArray($high.slice(i - 2, i + 1)));
+        //extreme = (isUp) ? $high[i] : $low[i];
       }
-      //console.log("sar=" + newsar + "extreme=" + extreme +" factor=" + factor + "dir=" + isUp);
-      psar.push(newsar);
+      //console.log(`isUp=${isUp}, c=${$low[i]}, extreme=${extreme.toFixed(2)}, factor=${factor}, sar=${cursar.toFixed(2)}`);
+      psar.push(cursar);
     }
     return psar;
   }
 
   function vbp($close, $volume, zones, left, right) {
+    var total = 0;
+    var bottom = Infinity;
+    var top = -Infinity;
     var vbp = new Array(zones).fill(0);
-    var bottom = Infinity,
-        top = -Infinity,
-        total = 0;
     for (var i = left; i < (right ? right : $close.length); i++) {
       total += $volume[i];
       top = top < $close[i] ? $close[i] : top;
@@ -345,7 +346,7 @@
     for (var _i = left; _i < (right ? right : $close.length); _i++) {
       vbp[Math.floor(($close[_i] - bottom + 1e-14) / (top - bottom + 2e-14) * (zones - 1))] += $volume[_i];
     }
-    return { bottom: bottom, top: top, volume: vbp.map(function (x) {
+    return { bottom: bottom, top: top, volumes: vbp.map(function (x) {
         return x / total;
       }) };
   }
@@ -364,7 +365,7 @@
   function zigzag($time, $high, $low, percent) {
     var lowest = $low[0],
         thattime = $time[0],
-        isUp = true;
+        isUp = false;
     var highest = $high[0],
         time = [],
         zigzag = [];

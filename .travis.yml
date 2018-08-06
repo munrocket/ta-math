@@ -4,6 +4,6 @@ node_js:
   - node
   - 6
 script:
-  - npm run test
+  - npm run build-coverage
 after_success: 
   - npm run coverage

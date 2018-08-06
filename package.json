@@ -1,6 +1,6 @@
 {
   "name": "ta-math",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Technical analysis library in javascript. Calculates indicators and overlays from ohlcv data",
   "main": "dist/ta-math.cjs.js",
   "module": "dist/ta-math.esm.js",
@@ -11,9 +11,9 @@
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -c -w",
-    "test": "npm run build && npm run test-dev",
+    "test": "mocha",
     "test-ui": "start ./examples/page.html",
-    "test-dev": "cross-env NODE_ENV=test nyc mocha",
+    "build-coverage": "npm run build && cross-env NODE_ENV=test nyc mocha",
     "coverage": "cross-env NODE_ENV=test nyc report --reporter=text-lcov | coveralls"
   },
   "nyc": {

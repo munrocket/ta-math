@@ -203,28 +203,33 @@ function ebb($close, window, mult) {
 }
 
 function psar($high, $low, stepfactor, maxfactor) {
-  let extreme = $low[0],  factor = 0;
-  let isUp = true,   psar = [extreme];
-  for (let i = 1; i < $high.length; i++) {
-    let newsar = psar[i - 1] + factor * (extreme - psar[i - 1]);
-    if ((isUp && newsar < $low[i]) || (!isUp && newsar > $high[i])) {
-      if ((isUp && $high[i] > extreme) || (!isUp && $low[i] < extreme)) {
-        extreme = (isUp) ? $high[i] : $low[i];
-        factor = (factor <= maxfactor) ? factor + stepfactor : maxfactor;
-      }    } else {
-      isUp = !isUp;   factor = stepfactor;
-      newsar = (isUp) ? Math.min($low.slice(-3)) : Math.max($high.slice(-3));
+  let isUp = true;
+  let factor = stepfactor;
+  let extreme = Math.max($high[0], $high[1]);
+  let psar = [$low[0], Math.min($low[0],  $low[1])];
+  let cursar = psar[1];
+  for (let i = 2; i < $high.length; i++) {
+    cursar = cursar + factor * (extreme - cursar);
+    if ((isUp && $high[i] > extreme) || (!isUp && $low[i] < extreme)) {
+      factor = ((factor <= maxfactor) ? factor + stepfactor : maxfactor);
       extreme = (isUp) ? $high[i] : $low[i];
+    }    if ((isUp && $low[i] < cursar) || (!isUp && cursar > $high[i])) {
+      isUp = !isUp;
+      factor = stepfactor;
+      cursar = (isUp) ? Math.min(...$low.slice(i - 2, i + 1)) : Math.max(...$high.slice(i - 2, i + 1));
+      //extreme = (isUp) ? $high[i] : $low[i];
     }
-    //console.log("sar=" + newsar + "extreme=" + extreme +" factor=" + factor + "dir=" + isUp);
-    psar.push(newsar);
+    //console.log(`isUp=${isUp}, c=${$low[i]}, extreme=${extreme.toFixed(2)}, factor=${factor}, sar=${cursar.toFixed(2)}`);
+    psar.push(cursar);
   }
   return psar;
 }
 
 function vbp($close, $volume, zones, left, right) {
+  let total = 0;
+  let bottom = Infinity;
+  let top = -Infinity;
   let vbp = new Array(zones).fill(0);
-  let bottom = Infinity, top = -Infinity, total = 0;
   for (let i = left; i < (right ? right : $close.length); i++) {
     total += $volume[i];
     top = (top < $close[i]) ? $close[i] : top;
@@ -233,7 +238,7 @@ function vbp($close, $volume, zones, left, right) {
   for (let i = left; i < (right ? right : $close.length); i++) {
     vbp[Math.floor(($close[i] - bottom + 1e-14) / (top - bottom + 2e-14) * (zones - 1))] += $volume[i];
   }
-  return { bottom: bottom, top: top, volume: vbp.map((x) => { return x / total })};
+  return { bottom: bottom, top: top, volumes: vbp.map((x) => { return x / total })};
 }
 
 function keltner($high, $low, $close, window, mult) {
@@ -244,7 +249,7 @@ function keltner($high, $low, $close, window, mult) {
 }
 
 function zigzag($time, $high, $low, percent) {
-  let lowest = $low[0],         thattime = $time[0],    isUp = true;
+  let lowest = $low[0],         thattime = $time[0],    isUp = false;
   let highest = $high[0],       time = [],              zigzag = [];
   for (let i = 1; i < $time.length; i++) {
     if (isUp) {
