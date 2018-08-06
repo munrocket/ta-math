@@ -48,15 +48,6 @@ function rolling(operation, window, array) {
 
 /* basic indicators & overlays */
 
-function stdev($close, window) {
-  return rolling(x => sd(x), window, $close);
-}
-
-function expdev($close, window, weight = null) {
-  let sqrDiff = pointwise((a, b) => (a - b) * (a - b), $close, ema($close, window));
-  return pointwise(x => Math.sqrt(x), ema(sqrDiff, window, weight));
-}
-
 function sma($close, window) {
   return rolling(x => mean(x), window, $close);
 }
@@ -65,12 +56,21 @@ function ema($close, window, weight = null, start = null) {
   weight = weight ? weight : 2 / (window + 1);
   let ema = [ start ? start : mean($close.slice(0, window)) ];
   for (let i = 1; i < $close.length; i++) {
-    ema.push($close[i] * weight + ema[i - 1] * (1 - weight));
+    ema.push($close[i] * weight + (1 - weight) * ema[i - 1]);
   }  return ema;
+}
+
+function stdev($close, window) {
+  return rolling(x => sd(x), window, $close);
 }
 
 function madev($close, window) {
   return rolling(x => mad(x), window, $close);
+}
+
+function expdev($close, window) {
+  let sqrDiff = pointwise((a, b) => (a - b) * (a - b), $close, ema($close, window));
+  return pointwise(x => Math.sqrt(x), ema(sqrDiff, window));
 }
 
 function atr($high, $low, $close, window) {

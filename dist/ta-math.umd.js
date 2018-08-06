@@ -82,23 +82,6 @@
 
   /* basic indicators & overlays */
 
-  function stdev($close, window) {
-    return rolling(function (x) {
-      return sd(x);
-    }, window, $close);
-  }
-
-  function expdev($close, window) {
-    var weight = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-
-    var sqrDiff = pointwise(function (a, b) {
-      return (a - b) * (a - b);
-    }, $close, ema($close, window));
-    return pointwise(function (x) {
-      return Math.sqrt(x);
-    }, ema(sqrDiff, window, weight));
-  }
-
   function sma($close, window) {
     return rolling(function (x) {
       return mean(x);
@@ -112,14 +95,29 @@
     weight = weight ? weight : 2 / (window + 1);
     var ema = [start ? start : mean($close.slice(0, window))];
     for (var i = 1; i < $close.length; i++) {
-      ema.push($close[i] * weight + ema[i - 1] * (1 - weight));
+      ema.push($close[i] * weight + (1 - weight) * ema[i - 1]);
     }  return ema;
+  }
+
+  function stdev($close, window) {
+    return rolling(function (x) {
+      return sd(x);
+    }, window, $close);
   }
 
   function madev($close, window) {
     return rolling(function (x) {
       return mad(x);
     }, window, $close);
+  }
+
+  function expdev($close, window) {
+    var sqrDiff = pointwise(function (a, b) {
+      return (a - b) * (a - b);
+    }, $close, ema($close, window));
+    return pointwise(function (x) {
+      return Math.sqrt(x);
+    }, ema(sqrDiff, window));
   }
 
   function atr($high, $low, $close, window) {

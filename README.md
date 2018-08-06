@@ -1,7 +1,7 @@
 
 Technical analysis math
 =========
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat)](https://egghead.io/courses/how-to-contribute-to-an-open-source-project-on-github) ![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg) [![Build Status](https://travis-ci.org/munrocket/ta-math.svg?branch=master)](https://travis-ci.org/munrocket/ta-math) [![Coverage Status](https://coveralls.io/repos/github/munrocket/ta-math/badge.svg?branch=master)](https://coveralls.io/github/munrocket/ta-math?branch=master) [![dependencies Status](https://david-dm.org/munrocket/ta-math/status.svg)](https://david-dm.org/munrocket/ta-math)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat)](https://egghead.io/courses/how-to-contribute-to-an-open-source-project-on-github) [![dependencies Status](https://david-dm.org/munrocket/ta-math/status.svg)](https://david-dm.org/munrocket/ta-math) [![Build Status](https://travis-ci.org/munrocket/ta-math.svg?branch=master)](https://travis-ci.org/munrocket/ta-math) [![Coverage Status](https://coveralls.io/repos/github/munrocket/ta-math/badge.svg?branch=master)](https://coveralls.io/github/munrocket/ta-math?branch=master) [![dependencies Status](https://david-dm.org/munrocket/ta-math/status.svg)](https://david-dm.org/munrocket/ta-math)
 
 Well tested library for calculating technical indicators and overlays from price data in any format. You choose format and data by yourself and library return charts data. Written in es6 javascript, but also distributed in es5.
 
@@ -13,7 +13,7 @@ Well tested library for calculating technical indicators and overlays from price
 | sma       | Simple Moving Average                 |    ✔️️    |                 |      |
 | ema       | Exponential Moving Average            |    ✔️️    |                 |      |
 | bb        | Bollinger Band                        |    ✔️️    | John Bollinger  | 1980s|
-| ebb       | Exponential Bollinger Band            |    ❔     |                 |      |
+| ebb       | Exponential Bollinger Band            |    ✔️️    |                 |      |
 | psar      | Parabolic SAR                         |    ❌    | Welles Wilder   | 1978 |
 | keltner   | Keltner Channels                      |    ✔️️    | Chester Keltner | 1960 |
 | zigzag    | ZigZag Indicator                      |    ❔     | Arthur Merrill  | 1977 |
@@ -24,10 +24,10 @@ Well tested library for calculating technical indicators and overlays from price
 |:----------|:--------------------------------------|:-------:|:---------------------------------:|:----:|
 | stdev     | Standard Deviation                    |   ✔️️    |                                   |      |
 | madev     | Mean Absolute Deviation               |   ✔️    |                                   |      |
-| expdev    | Exponential Weighted Deviation        |   ❔     |                                   |      |
+| expdev    | Exponential Weighted Deviation        |   ✔️    |                                   |      |
 | macd      | Moving Average Convergence/Divergence |   ✔️    | Gerald Appel                      | 1979 |
 | rsi       | Relative Strength Index               |   ✔️    | Welles Wilder                     | 1978 |
-| mfi       | Money Flow Index, Volume-Weighted RSI |   ✔️    | Gene Quong and Avrum Soudack      | 1989 |
+| mfi       | Money Flow Index, volume-weighted RSI |   ✔️    | Gene Quong and Avrum Soudack      | 1989 |
 | stoch     | Stochastic Oscillator (Full)          |   ✔️    | George Lane                       | 1950s|
 | stochRsi  | Combines Stochastics with the RSI     |   ✔️    | Welles Wilder                     | 1994 |
 | vi        | Vortex Indicator                      |   ✔️    | Etienne Botes and Douglas Siepman | 2010 |
@@ -71,7 +71,7 @@ You can see how to set new data format in `formats.mjs`, by default it uses exch
 - [X] es5 with babel
 - [X] coverage
 - [ ] typescript integration (.d.ts)
-- [ ] [new indicators](https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators))
+- [ ] [new indicators](https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators)
 - [ ] good loking ui example
 
 ### Contributing
