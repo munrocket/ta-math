@@ -68,13 +68,13 @@ export function zigzag($time, $high, $low, percent) {
   let highest = $high[0],       time = [],              zigzag = [];
   for (let i = 1; i < $time.length; i++) {
     if (isUp) {
-      if ($high[i] > highest) { thattime = $time[i];    highest = $high[i]; };
-      if ($low[i] < lowest + (highest - lowest) * (100 - percent) / 100) {
+      if ($high[i] > highest) { thattime = $time[i];    highest = $high[i]; }
+      else if ($low[i] < lowest + (highest - lowest) * (100 - percent) / 100) {
         isUp = false;           time.push(thattime);    zigzag.push(highest);   lowest = $low[i];
       }
     } else {
-      if ($low[i] < lowest) {   thattime = $time[i];    lowest = $low[i]; };
-      if ($high[i] > lowest + (highest - lowest) * percent / 100) {
+      if ($low[i] < lowest)   { thattime = $time[i];    lowest = $low[i]; }
+      else if ($high[i] > lowest + (highest - lowest) * percent / 100) {
         isUp = true;            time.push(thattime);    zigzag.push(lowest);    highest = $high[i];
       }
     }

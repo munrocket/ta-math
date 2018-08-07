@@ -20,7 +20,7 @@
     }
   };
 
-  /* basic functions */
+  /* basic math */
 
   function mean(array) {
     var sum = 0;
@@ -80,7 +80,7 @@
     return result;
   }
 
-  /* basic indicators & overlays */
+  /* core indicators & overlays */
 
   function sma($close, window) {
     return rolling(function (x) {
@@ -125,20 +125,24 @@
     return ema(tr, window, 1 / window);
   }
 
+  /* price transformations */
+
+  function typicalPrice($high, $low, $close) {
+    return pointwise(function (a, b, c) {
+      return (a + b + c) / 3;
+    }, $high, $low, $close);
+  }
+
+  // export function meanPrice($high, $low) {
+  //   return pointwise((a, b) => (a + b) / 2, $high, $low);
+  // }
+
   function trueRange($high, $low, $close) {
     var tr = [$high[0] - $low[0]];
     for (var i = 1; i < $low.length; i++) {
       tr.push(Math.max($high[i] - $low[i], Math.abs($high[i] - $close[i - 1]), Math.abs($low[i] - $close[i - 1])));
     }
     return tr;
-  }
-
-  function typicalPrice($high, $low, $close) {
-    var tp = [];
-    for (var i = 0; i < $low.length; i++) {
-      tp.push(($high[i] + $low[i] + $close[i]) / 3);
-    }
-    return tp;
   }
 
   /* indicators */
@@ -203,7 +207,8 @@
     }, highest, lowest, $close);
     if (smooth > 1) {
       K = sma(K, smooth);
-    }  return { line: K, signal: sma(K, signal) };
+    }
+    return { line: K, signal: sma(K, signal) };
   }
 
   function stochRsi($close, window, signal, smooth) {
@@ -216,7 +221,8 @@
     }, _rsi, extreme);
     K[0] = 0;if (smooth > 1) {
       K = sma(K, smooth);
-    }  return { line: K, signal: sma(K, signal) };
+    }
+    return { line: K, signal: sma(K, signal) };
   }
 
   function vi($high, $low, $close, window) {
@@ -373,20 +379,20 @@
       if (isUp) {
         if ($high[i] > highest) {
           thattime = $time[i];highest = $high[i];
-        }      if ($low[i] < lowest + (highest - lowest) * (100 - percent) / 100) {
+        } else if ($low[i] < lowest + (highest - lowest) * (100 - percent) / 100) {
           isUp = false;time.push(thattime);zigzag.push(highest);lowest = $low[i];
         }
       } else {
         if ($low[i] < lowest) {
           thattime = $time[i];lowest = $low[i];
-        }      if ($high[i] > lowest + (highest - lowest) * percent / 100) {
+        } else if ($high[i] > lowest + (highest - lowest) * percent / 100) {
           isUp = true;time.push(thattime);zigzag.push(lowest);highest = $high[i];
         }
       }
     }  return { time: time, price: zigzag };
   }
 
-  /* formats */
+  /* data formats */
 
   var exchangeFormat = function exchangeFormat(x) {
     return {
@@ -438,11 +444,9 @@
               return result;
             };
           } else {
-            try {
-              if (key === parseInt(key).toString()) {
-                return obj(key);
-              }
-            } catch (er) {}
+            if (key === parseInt(key).toString()) {
+              return obj(key);
+            }
           }
         }
       });
@@ -453,7 +457,7 @@
       return _this.$[prop] = proxy(prop);
     });
 
-    /* technical analysy method defenition */
+    /* defenition of technical analysis methods */
 
     return {
       sma: function sma$$1() {

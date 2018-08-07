@@ -1,6 +1,6 @@
 'use strict';
 
-/* basic functions */
+/* basic math */
 
 function mean(array) {
   let sum = 0;
@@ -48,7 +48,7 @@ function rolling(operation, window, array) {
   return result;
 }
 
-/* basic indicators & overlays */
+/* core indicators & overlays */
 
 function sma($close, window) {
   return rolling(x => mean(x), window, $close);
@@ -80,20 +80,22 @@ function atr($high, $low, $close, window) {
   return ema(tr, window, 1 / window);
 }
 
+/* price transformations */
+
+function typicalPrice($high, $low, $close) {
+  return pointwise((a, b, c) => (a + b + c) / 3, $high, $low, $close);
+}
+
+// export function meanPrice($high, $low) {
+//   return pointwise((a, b) => (a + b) / 2, $high, $low);
+// }
+
 function trueRange($high, $low, $close) {
   let tr = [$high[0] - $low[0]];
   for (let i = 1; i < $low.length; i++) {
     tr.push(Math.max($high[i] - $low[i], Math.abs($high[i] - $close[i - 1]), Math.abs($low[i] - $close[i - 1])));
   }
   return tr;
-}
-
-function typicalPrice($high, $low, $close) {
-  let tp = [];
-  for (let i = 0; i < $low.length; i++) {
-    tp.push(($high[i] + $low[i] + $close[i]) / 3);
-  }
-  return tp;
 }
 
 /* indicators */
@@ -132,14 +134,16 @@ function stoch($high, $low, $close, window, signal, smooth) {
   let lowest = rolling(x => Math.min(...x), window, $low);
   let highest = rolling(x => Math.max(...x), window, $high);
   let K = pointwise((h, l, c) => 100 * (c - l) / (h - l), highest, lowest, $close); 
-  if (smooth > 1) { K = sma(K, smooth); }  return { line : K, signal : sma(K, signal) };
+  if (smooth > 1) { K = sma(K, smooth); }
+  return { line : K, signal : sma(K, signal) };
 }
 
 function stochRsi($close, window, signal, smooth) {
   let _rsi = rsi($close, window);
   let extreme = rolling(x => {return {low: Math.min(...x), high: Math.max(...x)}}, window, _rsi);
   let K = pointwise((rsi, e) => (rsi - e.low) / (e.high - e.low), _rsi, extreme);
-  K[0] = 0; if (smooth > 1) { K = sma(K, smooth); }  return { line : K, signal : sma(K, signal) };
+  K[0] = 0; if (smooth > 1) { K = sma(K, smooth); }
+  return { line : K, signal : sma(K, signal) };
 }
 
 function vi($high, $low, $close, window) {
@@ -253,18 +257,20 @@ function zigzag($time, $high, $low, percent) {
   let highest = $high[0],       time = [],              zigzag = [];
   for (let i = 1; i < $time.length; i++) {
     if (isUp) {
-      if ($high[i] > highest) { thattime = $time[i];    highest = $high[i]; }      if ($low[i] < lowest + (highest - lowest) * (100 - percent) / 100) {
+      if ($high[i] > highest) { thattime = $time[i];    highest = $high[i]; }
+      else if ($low[i] < lowest + (highest - lowest) * (100 - percent) / 100) {
         isUp = false;           time.push(thattime);    zigzag.push(highest);   lowest = $low[i];
       }
     } else {
-      if ($low[i] < lowest) {   thattime = $time[i];    lowest = $low[i]; }      if ($high[i] > lowest + (highest - lowest) * percent / 100) {
+      if ($low[i] < lowest)   { thattime = $time[i];    lowest = $low[i]; }
+      else if ($high[i] > lowest + (highest - lowest) * percent / 100) {
         isUp = true;            time.push(thattime);    zigzag.push(lowest);    highest = $high[i];
       }
     }
   }  return { time : time, price : zigzag};
 }
 
-/* formats */
+/* data formats */
 
 let exchangeFormat = (x) => {
   return {
@@ -291,16 +297,12 @@ class TA {
           return this.format(ohlcv).length;
         } else if (key == 'slice') {
           return (start, end) => {
-            var result = [];
-            for (var i = start; i < end; i++) { result.push(obj(i)); }
+            let result = [];
+            for (let i = start; i < end; i++) { result.push(obj(i)); }
             return result;
           }
         } else {
-          try {
-            if (key === parseInt(key).toString()) {
-              return obj(key);
-            }
-          } catch(er) {}
+          if (key === parseInt(key).toString()) { return obj(key); }
         }
       }
     });
@@ -309,7 +311,7 @@ class TA {
     this.$.forEach(prop => this.$[prop] = proxy(prop));
 
 
-    /* technical analysy method defenition */
+    /* defenition of technical analysis methods */
 
     return {
       sma:      (window = 15)                           =>    sma(this.$.close, window),

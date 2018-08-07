@@ -1,4 +1,4 @@
-/* basic functions */
+/* basic math */
 
 export function mean(array) {
   let sum = 0;
@@ -50,7 +50,7 @@ export function rolling(operation, window, array) {
   return result;
 }
 
-/* basic indicators & overlays */
+/* core indicators & overlays */
 
 export function sma($close, window) {
   return rolling(x => mean(x), window, $close);
@@ -83,18 +83,20 @@ export function atr($high, $low, $close, window) {
   return ema(tr, window, 1 / window);
 }
 
+/* price transformations */
+
+export function typicalPrice($high, $low, $close) {
+  return pointwise((a, b, c) => (a + b + c) / 3, $high, $low, $close);
+}
+
+// export function meanPrice($high, $low) {
+//   return pointwise((a, b) => (a + b) / 2, $high, $low);
+// }
+
 export function trueRange($high, $low, $close) {
   let tr = [$high[0] - $low[0]];
   for (let i = 1; i < $low.length; i++) {
     tr.push(Math.max($high[i] - $low[i], Math.abs($high[i] - $close[i - 1]), Math.abs($low[i] - $close[i - 1])));
   }
   return tr;
-}
-
-export function typicalPrice($high, $low, $close) {
-  let tp = [];
-  for (let i = 0; i < $low.length; i++) {
-    tp.push(($high[i] + $low[i] + $close[i]) / 3);
-  }
-  return tp;
 }

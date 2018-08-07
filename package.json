@@ -1,6 +1,6 @@
 {
   "name": "ta-math",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Technical analysis library in javascript. Calculates indicators and overlays from ohlcv data",
   "main": "dist/ta-math.cjs.js",
   "module": "dist/ta-math.esm.js",
@@ -32,13 +32,14 @@
     "url": "git+https://github.com/munrocket/ta-math.git"
   },
   "keywords": [
-    "technical-analysis",
-    "quantitative-finance",
+    "technical",
     "indicators",
     "overlays",
+    "ohlcv",
+    "quantitative-finance",
+    "technical-analysis",
     "finance",
-    "library",
-    "ohlcv"
+    "library"
   ],
   "author": "munrocket",
   "license": "MIT",

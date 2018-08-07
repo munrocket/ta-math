@@ -5,7 +5,7 @@ Technical analysis math
 
 Well tested library for calculating technical indicators and overlays from price data in any format. You choose format and data by yourself and library return charts data. Written in es6 javascript, but also distributed in es5.
 
-[//]: # (used emoji ✔️️❔❌)
+[//]: # (used emoji ✔️️❔❌:suspect:)
 
 ### Technical Overlays
 | Function  | Technical Overlay                     | Tested  | Developed by     | Year |
@@ -16,7 +16,7 @@ Well tested library for calculating technical indicators and overlays from price
 | ebb       | Exponential Bollinger Band            |    ✔️️    |                 |      |
 | psar      | Parabolic SAR                         | :suspect:| Welles Wilder   | 1978 |
 | keltner   | Keltner Channels                      |    ✔️️    | Chester Keltner | 1960 |
-| zigzag    | ZigZag Indicator                      |    ❔     | Arthur Merrill  | 1977 |
+| zigzag    | ZigZag Indicator                      |    ✔️️    | Arthur Merrill  | 1977 |
 | vbp       | Volume by Price                       |    ✔️️    |                 |      |
 
 ### Technical Indicators
@@ -71,7 +71,7 @@ You can see how to set new data format in `formats.mjs`, by default it uses exch
 - [X] es5 with babel
 - [X] coverage
 - [ ] typescript integration (.d.ts)
-- [ ] [new indicators](https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators)
+- [ ] new indicators (ADX, [etc](https://github.com/joshuaulrich/TTR/tree/master/R))
 - [ ] good loking ui example
 
 ### Contributing

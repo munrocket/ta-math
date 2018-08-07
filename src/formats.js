@@ -1,4 +1,4 @@
-/* formats */
+/* data formats */
 
 export let exchangeFormat = (x) => {
   return {

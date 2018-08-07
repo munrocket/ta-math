@@ -16,16 +16,12 @@ export default class TA {
           return this.format(ohlcv).length;
         } else if (key == 'slice') {
           return (start, end) => {
-            var result = [];
-            for (var i = start; i < end; i++) { result.push(obj(i)); }
+            let result = [];
+            for (let i = start; i < end; i++) { result.push(obj(i)); }
             return result;
           }
         } else {
-          try {
-            if (key === parseInt(key).toString()) {
-              return obj(key);
-            }
-          } catch(er) {}
+          if (key === parseInt(key).toString()) { return obj(key); }
         }
       }
     });
@@ -34,7 +30,7 @@ export default class TA {
     this.$.forEach(prop => this.$[prop] = proxy(prop));
 
 
-    /* technical analysy method defenition */
+    /* defenition of technical analysis methods */
 
     return {
       sma:      (window = 15)                           =>    core.sma(this.$.close, window),
