@@ -3,32 +3,23 @@ import { simpleFormat, exchangeFormat } from './formats';
 import TA from './main';
 import assert from 'assert';
 
-let randomize = (tleft, right) => {
-  return (right - tleft) * Math.random() + tleft;
-}
-
-// random ohlcv
-let random = [];
-for (let i = 0; i < 50; i++) {
-  let tick = [];
-  tick.push(new Date('2018-01-01').getTime() + i * 60000); //t
-  let lcoh = [randomize(5000, 20000),randomize(5000, 20000),randomize(5000, 20000),randomize(5000, 20000)].sort();
-  if(randomize(0,1)) { let temp = lcoh[1]; lcoh[1] = lcoh[2]; lcoh[2] = temp; };
-  tick.push(lcoh[1]);             //o
-  tick.push(lcoh[0]);             //h
-  tick.push(lcoh[3]);             //l
-  tick.push(lcoh[2]);             //c
-  tick.push(randomize(5, 1000));  //v
-  random.push(tick);
-}
-let noize = new TA(random, exchangeFormat);
+describe('Exchange format getters', () => {
+  let ta = new TA([[0],[1],[2],[3],[4],[5]], simpleFormat);
+  let delta = Math.abs(0 - ta.$time[0]) + Math.abs(1 - ta.$open[0]) + Math.abs(2 - ta.$high[0]) +
+              Math.abs(3 - ta.$low[0]) + Math.abs(4 - ta.$close[0]) + Math.abs(5 - ta.$volume[0]);
+  it(`simpleFormat`, () => assert.ok(delta < 1e-2));
+  ta = new TA([[0,1,2,3,4,5]], exchangeFormat);
+  delta = Math.abs(0 - ta.$time[0]) + Math.abs(1 - ta.$open[0]) + Math.abs(2 - ta.$high[0]) +
+          Math.abs(3 - ta.$low[0]) + Math.abs(4 - ta.$close[0]) + Math.abs(5 - ta.$volume[0]);
+  it(`exchangeFormat`, () => assert.ok(delta < 1e-2));
+})
 
 describe('Mean, SD', () => {
   let data = [53.73,53.87,53.85,53.88,54.08,54.14,54.50,54.30,54.40,54.16];
   let delta = Math.abs(mean(data) - 54.09);
   it(`Direct mean test (${delta.toFixed(5)})`, () => assert.ok(delta < 1e-2));
   delta = Math.abs(sd(data) - 0.24);
-  it(`Direct sd test (${delta.toFixed(5)})`, () => assert.ok(delta < 1e-2));1
+  it(`Direct sd test (${delta.toFixed(5)})`, () => assert.ok(delta < 1e-2));
 })
 
 describe('MAE', () => {
@@ -117,11 +108,13 @@ describe('PSAR', () => {
 })
 
 describe('VBP', () => {
-  let actual = noize.vbp();
-  let delta = sd(actual.volumes)
-  it('Bottom lower than top', () => assert.ok(actual.bottom < actual.top));
+  let c = [0,1,2,2,4, 5,5,7,9,9];
+  let v = [10,10,10,10,10, 10,10,10,10,10];
+  let expected = [0.1, 0.1, 0.2, 0, 0.1, 0.2, 0, 0.1, 0, 0.2];
+  let actual = new TA([c,c,c,c,c,v], simpleFormat).vbp(10);
+  let delta = nrmse(expected, actual.volumes) + Math.abs(actual.bottom) + Math.abs(actual.top - 9);
   it('Finite test', () => assert.ok([actual.bottom, actual.top].every(isFinite) && actual.volumes.every(isFinite)));
-  it(`SD of uniform distribution (${delta.toFixed(5)})`, () => assert.ok(delta < 0.1));
+  it(`NRMSE test (${delta.toFixed(5)})`, () => assert.ok(delta < 0.1));
 })
 
 describe('Keltner channel', () => {
@@ -154,13 +147,12 @@ describe('Keltner channel', () => {
 })
 
 describe('ZigZag', () => {
-  let zz = noize.zigzag();
   let t = [-3,-2,-1,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27];
-  it('Finite test', () => assert.ok(zz.time.every(isFinite) && zz.price.every(isFinite)));
   let h = [-8,-4,-1,9,8,7,6,5,4,3,2,1,11,22,33,44,55,66,77,88,88,71,61,51,41,51,61,71,81,91,11];
   let l = [-9,-5,-2,8,7,6,5,4,3,2,1,0,10,20,30,40,50,60,70,80,85,70,60,50,40,50,60,70,80,90,10];
   let expected = [ -9, 9, 0, 88, 40, 91];
   let actual = new TA([t,h,h,l,l,l], simpleFormat).zigzag();
+  it('Finite test', () => assert.ok(actual.time.every(isFinite) && actual.price.every(isFinite)));
   let delta = nrmse(expected, actual.price);
   it(`NRMSE test (${delta.toFixed(5)})`, () => assert.ok(delta < 1e-2));
 })

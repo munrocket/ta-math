@@ -22,7 +22,7 @@ export function psar($high, $low, stepfactor, maxfactor) {
   let extreme = Math.max($high[0], $high[1]);
   let psar = [$low[0], Math.min($low[0],  $low[1])];
   let cursar = psar[1];
-  for (let i = 2; i < $high.length; i++) {
+  for (let i = 2, len = $high.length; i < len; i++) {
     cursar = cursar + factor * (extreme - cursar);
     if ((isUp && $high[i] > extreme) || (!isUp && $low[i] < extreme)) {
       factor = ((factor <= maxfactor) ? factor + stepfactor : maxfactor);
@@ -45,13 +45,14 @@ export function vbp($close, $volume, zones, left, right) {
   let bottom = Infinity;
   let top = -Infinity;
   let vbp = new Array(zones).fill(0);
-  for (let i = left; i < (right ? right : $close.length); i++) {
+  right = !isNaN(right) ? right : $close.length;
+  for (let i = left; i < right; i++) {
     total += $volume[i];
     top = (top < $close[i]) ? $close[i] : top;
     bottom = (bottom > $close[i]) ? $close[i] : bottom;
   }
-  for (let i = left; i < (right ? right : $close.length); i++) {
-    vbp[Math.floor(($close[i] - bottom + 1e-14) / (top - bottom + 2e-14) * (zones - 1))] += $volume[i];
+  for (let i = left; i < right; i++) {
+    vbp[Math.floor(($close[i] - bottom) / (top - bottom) * (zones - 1))] += $volume[i];
   }
   return { bottom: bottom, top: top, volumes: vbp.map((x) => { return x / total })};
 }
@@ -66,7 +67,7 @@ export function keltner($high, $low, $close, window, mult) {
 export function zigzag($time, $high, $low, percent) {
   let lowest = $low[0],         thattime = $time[0],    isUp = false;
   let highest = $high[0],       time = [],              zigzag = [];
-  for (let i = 1; i < $time.length; i++) {
+  for (let i = 1, len = $time.length; i < len; i++) {
     if (isUp) {
       if ($high[i] > highest) { thattime = $time[i];    highest = $high[i]; }
       else if ($low[i] < lowest + (highest - lowest) * (100 - percent) / 100) {

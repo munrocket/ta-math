@@ -11,7 +11,7 @@ export function macd($close, wshort, wlong, wsig) {
 
 export function rsi($close, window) {
   let gains = [0], loss = [1e-14];
-  for (let i = 1; i < $close.length; i++) {
+  for (let i = 1, len = $close.length; i < len; i++) {
     let diff = $close[i] - $close[i - 1];
     gains.push(diff >= 0 ? diff : 0);
     loss.push(diff < 0 ? -diff : 0);
@@ -22,7 +22,7 @@ export function rsi($close, window) {
 export function mfi($high, $low, $close, $volume, window) {
   let pmf = [0], nmf = [0];
   let tp = typicalPrice($high, $low, $close);
-  for (let i = 1; i < $close.length; i++) {
+  for (let i = 1, len = $close.length; i < len; i++) {
     let diff = tp[i] - tp[i - 1];
     pmf.push(diff >= 0 ? tp[i] * $volume[i] : 0);
     nmf.push(diff < 0 ? tp[i] * $volume[i] : 0);
@@ -50,7 +50,7 @@ export function stochRsi($close, window, signal, smooth) {
 
 export function vi($high, $low, $close, window) {
   let pv = [($high[0] - $low[0]) / 2], nv = [pv[0]];
-  for(let i = 1; i < $high.length; i++) {
+  for(let i = 1, len = $high.length; i < len; i++) {
     pv.push(Math.abs($high[i] - $low[i-1]));
     nv.push(Math.abs($high[i-1] - $low[i]));
   }
@@ -70,7 +70,7 @@ export function cci($high, $low, $close, window, mult) {
 
 export function obv($close, $volume, signal) {
   let obv = [0];
-  for (let i = 1; i < $close.length; i++) {
+  for (let i = 1, len = $close.length; i < len; i++) {
     obv.push(obv[i - 1] + Math.sign($close[i] - $close[i - 1]) * $volume[i]);
   }
   return {line: obv, signal: sma(obv, signal)};
@@ -78,7 +78,7 @@ export function obv($close, $volume, signal) {
 
 export function adl($high, $low, $close, $volume) {
   let adl = [$volume[0] * (2*$close[0] - $low[0] - $high[0]) / ($high[0] - $low[0])];
-  for (let i = 1; i < $high.length; i++) {
+  for (let i = 1, len = $high.length; i < len; i++) {
     adl[i] = adl[i - 1] + $volume[i] * (2*$close[i] - $low[i] - $high[i]) / ($high[i] - $low[i]);
   }
   return adl;

@@ -34,7 +34,7 @@ export function nrmse(f, g) {
 
 export function pointwise(operation, ...arrays) {
   let result = [];
-  for (let i = 0; i < arrays[0].length; i++) {
+  for (let i = 0, len = arrays[0].length; i < len; i++) {
     let iarray = (i) => arrays.map(x => x[i]);
     result[i] = operation(...iarray(i));
   }
@@ -43,7 +43,7 @@ export function pointwise(operation, ...arrays) {
 
 export function rolling(operation, window, array) {
   let result = [];
-  for (let i = 0; i < array.length; i++) {
+  for (let i = 0, len = array.length; i < len; i++) {
     let j = i + 1 - window;
     result.push(operation(array.slice((j > 0) ? j : 0, i + 1)));
   }
@@ -59,7 +59,7 @@ export function sma($close, window) {
 export function ema($close, window, weight = null, start = null) {
   weight = weight ? weight : 2 / (window + 1);
   let ema = [ start ? start : mean($close.slice(0, window)) ];
-  for (let i = 1; i < $close.length; i++) {
+  for (let i = 1, len = $close.length; i < len; i++) {
     ema.push($close[i] * weight + (1 - weight) * ema[i - 1]);
   };
   return ema;
@@ -95,7 +95,7 @@ export function typicalPrice($high, $low, $close) {
 
 export function trueRange($high, $low, $close) {
   let tr = [$high[0] - $low[0]];
-  for (let i = 1; i < $low.length; i++) {
+  for (let i = 1, len = $low.length; i < len; i++) {
     tr.push(Math.max($high[i] - $low[i], Math.abs($high[i] - $close[i - 1]), Math.abs($low[i] - $close[i - 1])));
   }
   return tr;
