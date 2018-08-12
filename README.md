@@ -53,14 +53,14 @@ Install npm package by `npm i ta-math` or copy `ta-math.umd.js` script file in w
 
 You can see how to set new data format in `formats.mjs`, by default it uses exchangeFromat. Library does not craete new arrays and uses getters through proxy. You can find additional example with bitcoin prices that fetched from ccxt library in source.
 ```
-  import TA from 'ta-math';
-  let ohlcv = [[t0,o0,h0,l0,c0,v0],  ...  ,[tN,oN,hN,lN,cN,vN]];
-  let ta = new TA(ohlcv, exchangeFormat);
-  let ema_short = ta.ema(10);
-  let ema_long = ta.ema(21);
-  let bband = ta.bb(15, 2);
-  let bb_upper = bband.upper;
-  let bb_lower = bband.lower;
+  var TA = require('ta-math');
+  var ohlcv = [[t0,o0,h0,l0,c0,v0],  ...  ,[tN,oN,hN,lN,cN,vN]];
+  var ta = new TA(ohlcv, exchangeFormat);
+  var emaShort = ta.ema(10);
+  var emaLong = ta.ema(21);
+  var bband = ta.bb(15, 2);
+  var bbUpper = bband.upper;
+  var bbLower = bband.lower;
 ```
 
 ### 2do list

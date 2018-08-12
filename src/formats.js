@@ -1,5 +1,17 @@
 /* data formats */
 
+export let simpleFormat = (x) => {
+  return {
+    length: x[4].length,
+    time: (i) => x[0][i],
+    open: (i) => x[1][i],
+    high: (i) => x[2][i],
+    low: (i) => x[3][i],
+    close: (i) => x[4][i],
+    volume: (i) => x[5][i]
+  }
+}
+
 export let exchangeFormat = (x) => {
   return {
     length: x.length,
@@ -12,14 +24,14 @@ export let exchangeFormat = (x) => {
   }
 };
 
-export let simpleFormat = (x) => {
+export let objectFormat = (x) => {
   return {
-    length: x[0].length,
-    time: (i) => x[0][i],
-    open: (i) => x[1][i],
-    high: (i) => x[2][i],
-    low: (i) => x[3][i],
-    close: (i) => x[4][i],
-    volume: (i) => x[5][i]
+    length: x.close.length,
+    time: (i) => x.time[i],
+    open: (i) => x.open[i],
+    high: (i) => x.high[i],
+    low: (i) => x.low[i],
+    close: (i) => x.close[i],
+    volume: (i) => x.volume[i]
   }
 }

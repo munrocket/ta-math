@@ -7,13 +7,10 @@ export default [
 	{
 		input: 'src/main.js',
 		output: [
-			{ name: 'ta-math', file: pkg.browser, format: 'umd' }
+			{ name: 'IIFE', file: pkg.browser, format: 'iife' }
 		],
 		plugins: [
-			babel({
-				exclude: 'node_modules/**',
-				plugins: "external-helpers"
-			})
+			babel({ exclude: 'node_modules/**' })
 		]
 	},
 	{
@@ -25,7 +22,6 @@ export default [
 	},
 	{
 		input: 'src/test.js',
-		external: ['tape', 'tape-spec'],
 		output: [
 			{ file: 'test/test.js', format: 'cjs' }
 		],

@@ -6,14 +6,14 @@ export function bb($close, window, mult) {
   const middle = sma($close, window);
   const upper = pointwise((a, b) => a + b * mult, middle, stdev($close, window));
   const lower = pointwise((a, b) => a - b * mult, middle, stdev($close, window));
-  return { lower : lower, middle : middle, upper : upper};
+  return { lower : lower, middle : middle, upper : upper };
 }
 
 export function ebb($close, window, mult) {
   const middle = ema($close, window);
   const upper = pointwise((a, b) => a + b * mult, middle, expdev($close, window));
   const lower = pointwise((a, b) => a - b * mult, middle, expdev($close, window));
-  return { lower : lower, middle : middle, upper : upper};
+  return { lower : lower, middle : middle, upper : upper };
 }
 
 export function psar($high, $low, stepfactor, maxfactor) {
@@ -54,7 +54,7 @@ export function vbp($close, $volume, zones, left, right) {
   for (let i = left; i < right; i++) {
     vbp[Math.floor(($close[i] - bottom) / (top - bottom) * (zones - 1))] += $volume[i];
   }
-  return { bottom: bottom, top: top, volumes: vbp.map((x) => { return x / total })};
+  return { bottom: bottom, top: top, volumes: vbp.map((x) => { return x / total }) };
 }
 
 export function keltner($high, $low, $close, window, mult) {
@@ -80,5 +80,5 @@ export function zigzag($time, $high, $low, percent) {
       }
     }
   };
-  return { time : time, price : zigzag};
+  return { time : time, price : zigzag };
 }

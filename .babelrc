@@ -4,11 +4,5 @@
       "modules": false
     }]
   ],
-  "env": {
-    "test": {
-      "plugins": [
-        "istanbul"
-      ]
-    }
-  }
+  "plugins" : ["external-helpers"]
 }

@@ -1,17 +1,21 @@
 import { mean, sd, mae, rmse, nrmse } from './core';
-import { simpleFormat, exchangeFormat } from './formats';
+import { simpleFormat, exchangeFormat, objectFormat } from './formats';
 import TA from './main';
 import assert from 'assert';
 
-describe('Exchange format getters', () => {
-  let ta = new TA([[0],[1],[2],[3],[4],[5]], simpleFormat);
+describe('Getters formats', () => {
+  let ta = new TA([[0],[1],[2],[3],[4],[5]], TA.simpleFormat());
   let delta = Math.abs(0 - ta.$time[0]) + Math.abs(1 - ta.$open[0]) + Math.abs(2 - ta.$high[0]) +
               Math.abs(3 - ta.$low[0]) + Math.abs(4 - ta.$close[0]) + Math.abs(5 - ta.$volume[0]);
   it(`simpleFormat`, () => assert.ok(delta < 1e-2));
-  ta = new TA([[0,1,2,3,4,5]], exchangeFormat);
+  ta = new TA([[0,1,2,3,4,5]], TA.exchangeFormat());
   delta = Math.abs(0 - ta.$time[0]) + Math.abs(1 - ta.$open[0]) + Math.abs(2 - ta.$high[0]) +
           Math.abs(3 - ta.$low[0]) + Math.abs(4 - ta.$close[0]) + Math.abs(5 - ta.$volume[0]);
   it(`exchangeFormat`, () => assert.ok(delta < 1e-2));
+  ta = new TA({time:[0], open:[1], high:[2], low:[3], close:[4],volume:[5]}, TA.objectFormat());
+  delta = Math.abs(0 - ta.$time[0]) + Math.abs(1 - ta.$open[0]) + Math.abs(2 - ta.$high[0]) +
+          Math.abs(3 - ta.$low[0]) + Math.abs(4 - ta.$close[0]) + Math.abs(5 - ta.$volume[0]);
+  it(`objectFormat`, () => assert.ok(delta < 1e-2));
 })
 
 describe('Mean, SD', () => {

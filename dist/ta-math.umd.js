@@ -1,8 +1,5 @@
-(function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-  typeof define === 'function' && define.amd ? define(factory) :
-  (global['ta-math'] = factory());
-}(this, (function () { 'use strict';
+var IIFE = (function () {
+  'use strict';
 
   var classCallCheck = function (instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -413,6 +410,30 @@
 
   /* data formats */
 
+  var simpleFormat = function simpleFormat(x) {
+    return {
+      length: x[4].length,
+      time: function time(i) {
+        return x[0][i];
+      },
+      open: function open(i) {
+        return x[1][i];
+      },
+      high: function high(i) {
+        return x[2][i];
+      },
+      low: function low(i) {
+        return x[3][i];
+      },
+      close: function close(i) {
+        return x[4][i];
+      },
+      volume: function volume(i) {
+        return x[5][i];
+      }
+    };
+  };
+
   var exchangeFormat = function exchangeFormat(x) {
     return {
       length: x.length,
@@ -437,6 +458,30 @@
     };
   };
 
+  var objectFormat = function objectFormat(x) {
+    return {
+      length: x.close.length,
+      time: function time(i) {
+        return x.time[i];
+      },
+      open: function open(i) {
+        return x.open[i];
+      },
+      high: function high(i) {
+        return x.high[i];
+      },
+      low: function low(i) {
+        return x.low[i];
+      },
+      close: function close(i) {
+        return x.close[i];
+      },
+      volume: function volume(i) {
+        return x.volume[i];
+      }
+    };
+  };
+
   /**
    * Class for calculating technical analysis indicators and overlays
    */
@@ -448,7 +493,7 @@
       var format = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
       classCallCheck(this, TA);
 
-      this.format = format == null ? exchangeFormat : format;
+      this.format = format == null ? objectFormat : format;
 
       var proxy = function proxy(prop) {
         return new Proxy(_this.format(ohlcv)[prop], {
@@ -478,7 +523,7 @@
       });
     }
 
-    /* price getters */
+    /* formats */
 
 
     createClass(TA, [{
@@ -636,6 +681,9 @@
       }
     }, {
       key: '$time',
+
+
+      /* price getters */
       get: function get$$1() {
         return this.$.time;
       }
@@ -664,10 +712,25 @@
       get: function get$$1() {
         return this.$.volume;
       }
+    }], [{
+      key: 'simpleFormat',
+      value: function simpleFormat$$1() {
+        return simpleFormat;
+      }
+    }, {
+      key: 'exchangeFormat',
+      value: function exchangeFormat$$1() {
+        return exchangeFormat;
+      }
+    }, {
+      key: 'objectFormat',
+      value: function objectFormat$$1() {
+        return objectFormat;
+      }
     }]);
     return TA;
   }();
 
   return TA;
 
-})));
+}());

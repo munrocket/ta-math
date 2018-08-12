@@ -196,14 +196,14 @@ function bb($close, window, mult) {
   const middle = sma($close, window);
   const upper = pointwise((a, b) => a + b * mult, middle, stdev($close, window));
   const lower = pointwise((a, b) => a - b * mult, middle, stdev($close, window));
-  return { lower : lower, middle : middle, upper : upper};
+  return { lower : lower, middle : middle, upper : upper };
 }
 
 function ebb($close, window, mult) {
   const middle = ema($close, window);
   const upper = pointwise((a, b) => a + b * mult, middle, expdev($close, window));
   const lower = pointwise((a, b) => a - b * mult, middle, expdev($close, window));
-  return { lower : lower, middle : middle, upper : upper};
+  return { lower : lower, middle : middle, upper : upper };
 }
 
 function psar($high, $low, stepfactor, maxfactor) {
@@ -243,7 +243,7 @@ function vbp($close, $volume, zones, left, right) {
   for (let i = left; i < right; i++) {
     vbp[Math.floor(($close[i] - bottom) / (top - bottom) * (zones - 1))] += $volume[i];
   }
-  return { bottom: bottom, top: top, volumes: vbp.map((x) => { return x / total })};
+  return { bottom: bottom, top: top, volumes: vbp.map((x) => { return x / total }) };
 }
 
 function keltner($high, $low, $close, window, mult) {
@@ -268,10 +268,22 @@ function zigzag($time, $high, $low, percent) {
         isUp = true;            time.push(thattime);    zigzag.push(lowest);    highest = $high[i];
       }
     }
-  }  return { time : time, price : zigzag};
+  }  return { time : time, price : zigzag };
 }
 
 /* data formats */
+
+let simpleFormat = (x) => {
+  return {
+    length: x[4].length,
+    time: (i) => x[0][i],
+    open: (i) => x[1][i],
+    high: (i) => x[2][i],
+    low: (i) => x[3][i],
+    close: (i) => x[4][i],
+    volume: (i) => x[5][i]
+  }
+};
 
 let exchangeFormat = (x) => {
   return {
@@ -285,12 +297,24 @@ let exchangeFormat = (x) => {
   }
 };
 
+let objectFormat = (x) => {
+  return {
+    length: x.close.length,
+    time: (i) => x.time[i],
+    open: (i) => x.open[i],
+    high: (i) => x.high[i],
+    low: (i) => x.low[i],
+    close: (i) => x.close[i],
+    volume: (i) => x.volume[i]
+  }
+};
+
 /**
  * Class for calculating technical analysis indicators and overlays
  */
 class TA {
   constructor(ohlcv, format = null) {
-    this.format = (format == null) ? exchangeFormat : format;
+    this.format = (format == null) ? objectFormat : format;
 
     let proxy = (prop) => new Proxy(this.format(ohlcv)[prop], {
       get: (obj, key) => {
@@ -311,39 +335,44 @@ class TA {
     this.$ = ['time', 'open', 'high', 'low', 'close', 'volume'];
     this.$.forEach(prop => this.$[prop] = proxy(prop));
   }
+  
+  /* formats */
+  static simpleFormat()                             { return simpleFormat }
+  static exchangeFormat()                           { return exchangeFormat }
+  static objectFormat()                             { return objectFormat }
 
   /* price getters */
-  get $time()                                       {return this.$.time};
-  get $open()                                       {return this.$.open};
-  get $high()                                       {return this.$.high};
-  get $low()                                        {return this.$.low};
-  get $close()                                      {return this.$.close};
-  get $volume()                                     {return this.$.volume};
+  get $time()                                       { return this.$.time }
+  get $open()                                       { return this.$.open }
+  get $high()                                       { return this.$.high }
+  get $low()                                        { return this.$.low }
+  get $close()                                      { return this.$.close }
+  get $volume()                                     { return this.$.volume }
 
   /* defenition of technical analysis methods */
-  sma(window = 15)                                  {return sma(this.$close, window)};
-  ema(window = 10)                                  {return ema(this.$close, window)}
-  bb(window = 15, mult = 2)                         {return bb(this.$close, window, mult)}
-  ebb(window = 10, mult = 2)                        {return ebb(this.$close, window, mult)}
-  psar(factor = 0.02, maxfactor = 0.2)              {return psar(this.$high, this.$low, factor, maxfactor)}
-  vbp(zones = 12, left = 0, right = NaN)            {return vbp(this.$close, this.$volume, zones, left, right)}
-  keltner(window = 14, mult = 2)                    {return keltner(this.$high, this.$low, this.$close, window, mult)}
-  zigzag(percent = 15)                              {return zigzag(this.$time, this.$high, this.$low, percent)}    
-  stdev(window = 15)                                {return stdev(this.$close, window)}
-  madev(window = 15)                                {return madev(this.$close, window)}
-  expdev(window = 15)                               {return expdev(this.$close, window)}
-  macd(wshort = 12, wlong = 26, wsig = 9)           {return macd(this.$close, wshort, wlong, wsig)}
-  rsi(window = 14)                                  {return rsi(this.$close, window)}
-  mfi(window = 14)                                  {return mfi(this.$high, this.$low, this.$close, this.$volume, window)}
-  stoch(window = 14, signal = 3, smooth = 1)        {return stoch(this.$high, this.$low, this.$close, window, signal, smooth)}
-  stochRsi(window = 14, signal = 3, smooth = 1)     {return stochRsi(this.$close, window, signal, smooth)}
-  vi(window = 14)                                   {return vi(this.$high, this.$low, this.$close, window)}
-  cci(window = 20, mult = 0.015)                    {return cci(this.$high, this.$low, this.$close, window, mult)}
-  obv(signal = 10)                                  {return obv(this.$close, this.$volume, signal)}
-  adl()                                             {return adl(this.$high, this.$low, this.$close, this.$volume)}
-  atr(window = 14)                                  {return atr(this.$high, this.$low, this.$close, window)}
-  williams(window = 14)                             {return williams(this.$high, this.$low, this.$close, window)}
-  roc(window = 14)                                  {return roc(this.$close, window)}
+  sma(window = 15)                                  { return sma(this.$close, window) }
+  ema(window = 10)                                  { return ema(this.$close, window) }
+  bb(window = 15, mult = 2)                         { return bb(this.$close, window, mult) }
+  ebb(window = 10, mult = 2)                        { return ebb(this.$close, window, mult) }
+  psar(factor = 0.02, maxfactor = 0.2)              { return psar(this.$high, this.$low, factor, maxfactor) }
+  vbp(zones = 12, left = 0, right = NaN)            { return vbp(this.$close, this.$volume, zones, left, right) }
+  keltner(window = 14, mult = 2)                    { return keltner(this.$high, this.$low, this.$close, window, mult) }
+  zigzag(percent = 15)                              { return zigzag(this.$time, this.$high, this.$low, percent) }    
+  stdev(window = 15)                                { return stdev(this.$close, window) }
+  madev(window = 15)                                { return madev(this.$close, window) }
+  expdev(window = 15)                               { return expdev(this.$close, window) }
+  macd(wshort = 12, wlong = 26, wsig = 9)           { return macd(this.$close, wshort, wlong, wsig) }
+  rsi(window = 14)                                  { return rsi(this.$close, window) }
+  mfi(window = 14)                                  { return mfi(this.$high, this.$low, this.$close, this.$volume, window) }
+  stoch(window = 14, signal = 3, smooth = 1)        { return stoch(this.$high, this.$low, this.$close, window, signal, smooth) }
+  stochRsi(window = 14, signal = 3, smooth = 1)     { return stochRsi(this.$close, window, signal, smooth) }
+  vi(window = 14)                                   { return vi(this.$high, this.$low, this.$close, window) }
+  cci(window = 20, mult = 0.015)                    { return cci(this.$high, this.$low, this.$close, window, mult) }
+  obv(signal = 10)                                  { return obv(this.$close, this.$volume, signal) }
+  adl()                                             { return adl(this.$high, this.$low, this.$close, this.$volume) }
+  atr(window = 14)                                  { return atr(this.$high, this.$low, this.$close, window) }
+  williams(window = 14)                             { return williams(this.$high, this.$low, this.$close, window) }
+  roc(window = 14)                                  { return roc(this.$close, window) }
 }
 
 module.exports = TA;
