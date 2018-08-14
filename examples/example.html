@@ -5,7 +5,7 @@
 </head>
 <body>
 <!-- Plotly chart will be drawn inside this div -->
-<div id="plotly-div" style="width: 900px; height: 600px;"></div>
+<div id="plotly-div" style="width: 600px; height: 400px;"></div>
 <script>
 
 var promise = new ccxt.binance({'proxy': 'https://cors-anywhere.herokuapp.com/'}).fetchOHLCV ('BTC/USDT', '1d', Date.now() - 1000*60*60*24*30*5);
@@ -70,10 +70,18 @@ promise.then(
 	    legend: {"orientation": "h"},
       dragmode: 'zoom',
       margin: {
-        r: 10, 
-        t: 10, 
-        b: 10, 
-        l: 10
+        r: 5, 
+        t: 5, 
+        b: 50, 
+        l: 5
+      }, 
+      xaxis: {
+        autorange: true,
+        type: 'date'
+      }, 
+      yaxis: {
+        autorange: true,
+        type: 'linear'
       }
     };
     var defaultPlotlyConfiguration = { modeBarButtonsToRemove: ['sendDataToCloud', 'autoScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian', 'lasso2d', 'select2d'], displaylogo: false, showTips: true };

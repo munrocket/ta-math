@@ -45,9 +45,9 @@ Well tested library for calculating technical indicators and overlays from price
 | rmse      | Root-Mean-Square Error                |    ✔️    |
 | nrmse     | Normalized Root-Mean-Square Error     |    ✔️    |
 
-### Example
+### Screenshot example
 Bollinger bands with plotly visualization, ccxt data provider and BTC price from Binance.
-![](https://i.imgur.com/uLgUto6.png)
+![](https://i.imgur.com/1wE0AJO.png)
 
 ### Installation
 
