@@ -36,7 +36,6 @@ export default class TA {
   static objectFormat()                             { return formats.objectFormat }
 
   /* price getters */
-  get $length()                                     { return this.$.close.length }
   get $time()                                       { return this.$.time }
   get $open()                                       { return this.$.open }
   get $high()                                       { return this.$.high }
@@ -47,6 +46,8 @@ export default class TA {
   /* defenition of technical analysis methods */
   sma(window = 15)                                  { return core.sma(this.$close, window) }
   ema(window = 10)                                  { return core.ema(this.$close, window) }
+  dema(window = 10)                                 { return overlays.dema(this.$close, window) }
+  tema(window = 10)                                 { return overlays.tema(this.$close, window) }
   bb(window = 15, mult = 2)                         { return overlays.bb(this.$close, window, mult) }
   ebb(window = 10, mult = 2)                        { return overlays.ebb(this.$close, window, mult) }
   psar(factor = 0.02, maxfactor = 0.2)              { return overlays.psar(this.$high, this.$low, factor, maxfactor) }

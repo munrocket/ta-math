@@ -1,5 +1,5 @@
-import { mean, sd, mae, rmse, nrmse } from './core';
-import TA from './main';
+import { mean, sd, mae, rmse, nrmse } from '../src/core';
+import TA from '../src/main';
 import assert from 'assert';
 
 /* eslint-env mocha */

@@ -1,3 +1,7 @@
+# Stuff
+.code
+build
+
 # Logs
 logs
 *.log
@@ -59,6 +63,3 @@ typings/
 
 # next.js build output
 .next
-
-.code
-test

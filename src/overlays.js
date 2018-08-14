@@ -2,6 +2,17 @@ import { sma, ema, stdev, expdev, pointwise, atr} from './core';
 
 /* overlays */
 
+export function dema($close, window) {
+  let ema1 = ema($close, window);
+  return pointwise((a, b) => 2 * a - b, ema1, ema(ema1, window));
+}
+
+export function tema($close, window) {
+  let ema1 = ema($close, window);
+  let ema2 = ema(ema1, window);
+  return pointwise((a, b, c) => 3 * a - 3 * b + c, ema1, ema2, ema(ema2, window));
+}
+
 export function bb($close, window, mult) {
   const middle = sma($close, window);
   const upper = pointwise((a, b) => a + b * mult, middle, stdev($close, window));

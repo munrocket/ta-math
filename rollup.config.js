@@ -22,12 +22,12 @@ export default [
 		]
 	},
 	{
-		input: 'src/test.js',
-		output: { file: 'test/test.js', format: 'cjs' },
+		input: 'test/test.js',
+		output: { file: 'coverage/test.js', format: 'cjs' },
 		plugins: [
 			builtins(),
 			istanbul({
-				exclude: ['test/*.js']
+				exclude: ['dist']
 			})
 		]
 	}

@@ -149,10 +149,6 @@ var TA = (function () {
     }, $high, $low, $close);
   }
 
-  // export function meanPrice($high, $low) {
-  //   return pointwise((a, b) => (a + b) / 2, $high, $low);
-  // }
-
   function trueRange($high, $low, $close) {
     var tr = [$high[0] - $low[0]];
     for (var i = 1, len = $low.length; i < len; i++) {
@@ -309,6 +305,21 @@ var TA = (function () {
   }
 
   /* overlays */
+
+  function dema($close, window) {
+    var ema1 = ema($close, window);
+    return pointwise(function (a, b) {
+      return 2 * a - b;
+    }, ema1, ema(ema1, window));
+  }
+
+  function tema($close, window) {
+    var ema1 = ema($close, window);
+    var ema2 = ema(ema1, window);
+    return pointwise(function (a, b, c) {
+      return 3 * a - 3 * b + c;
+    }, ema1, ema2, ema(ema2, window));
+  }
 
   function bb($close, window, mult) {
     var middle = sma($close, window);
@@ -541,6 +552,18 @@ var TA = (function () {
       value: function ema$$1() {
         var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 10;
         return ema(this.$close, window);
+      }
+    }, {
+      key: 'dema',
+      value: function dema$$1() {
+        var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 10;
+        return dema(this.$close, window);
+      }
+    }, {
+      key: 'tema',
+      value: function tema$$1() {
+        var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 10;
+        return tema(this.$close, window);
       }
     }, {
       key: 'bb',

@@ -12,9 +12,11 @@ Well tested library for calculating technical indicators and overlays from price
 |:----------|:--------------------------------------|:-------:|:----------------:|:----:|
 | sma       | Simple Moving Average                 |    ✔️️    |                 |      |
 | ema       | Exponential Moving Average            |    ✔️️    |                 |      |
+| dema      | Double Exponential Moving Average     |   ️ ❔     | Patrick  Mulloy | 1994 |
+| tema      | Triple Exponential Moving Average     |   ️ ❔     | Patrick  Mulloy | 1994 |
 | bb        | Bollinger Band                        |    ✔️️    | John Bollinger  | 1980s|
 | ebb       | Exponential Bollinger Band            |    ✔️️    |                 |      |
-| psar      | Parabolic SAR                         | :suspect:| Welles Wilder   | 1978 |
+| psar      | Parabolic SAR                         | :suspect: | Welles Wilder   | 1978 |
 | keltner   | Keltner Channels                      |    ✔️️    | Chester Keltner | 1960 |
 | zigzag    | ZigZag Indicator                      |    ✔️️    | Arthur Merrill  | 1977 |
 | vbp       | Volume by Price                       |    ✔️️    |                 |      |
@@ -51,7 +53,7 @@ Bollinger bands with plotly visualization, ccxt data provider and BTC price from
 
 ### Installation
 
-Install npm package in node environment by `npm i ta-math` or add `ta-math.umd.js` script file in web page.
+Install npm package in node environment by `npm i ta-math` or add `ta-math.iife.js` script file in web page.
 
 ### Usage
 ```
@@ -72,9 +74,10 @@ Install npm package in node environment by `npm i ta-math` or add `ta-math.umd.j
 - [X] es5 with babel
 - [X] coverage
 - [X] good looking example
-- [ ] typescript integration (.d.ts)
-- [ ] new indicators (ADX, [etc](https://github.com/joshuaulrich/TTR/tree/master/R))
+- [ ] new indicators (ADX, VWAP [etc](https://github.com/joshuaulrich/TTR/tree/master/R))
+- [ ] forecasting and strategies (Holt-Winters, ARIMA, FFT [etc](https://www.quantstart.com/articles#time-series-analysis))
+- [ ] other languages (typescript, python, r)
 
 ### Contributing
 
-Feel free to contribute. Here [reference](http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators) how to implement new indicators. There are test samples in the xls files, you can use this [tool](https://www.browserling.com/tools/text-columns-to-rows) to convert columns into rows.
+Feel free to contribute. Here [reference](http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators) how to implement new indicators. There are test samples in the .xls files, also you can use this [tool](https://www.browserling.com/tools/text-columns-to-rows) to convert columns into rows.

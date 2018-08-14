@@ -1,11 +1,11 @@
 <head>
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script src="./ccxt.mini.js"></script>
-<script src="../dist/ta-math.umd.js"></script>
+<script src="../dist/ta-math.iife.js"></script>
 </head>
 <body>
 <!-- Plotly chart will be drawn inside this div -->
-<div id="plotly-div" style="width: 600px; height: 400px;"></div>
+<div id="plotly-div" style="width: 600px; height: 500px;"></div>
 <script>
 
 var promise = new ccxt.binance({'proxy': 'https://cors-anywhere.herokuapp.com/'}).fetchOHLCV ('BTC/USDT', '1d', Date.now() - 1000*60*60*24*30*5);

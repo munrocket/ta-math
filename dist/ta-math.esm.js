@@ -85,10 +85,6 @@ function typicalPrice($high, $low, $close) {
   return pointwise((a, b, c) => (a + b + c) / 3, $high, $low, $close);
 }
 
-// export function meanPrice($high, $low) {
-//   return pointwise((a, b) => (a + b) / 2, $high, $low);
-// }
-
 function trueRange($high, $low, $close) {
   let tr = [$high[0] - $low[0]];
   for (let i = 1, len = $low.length; i < len; i++) {
@@ -190,6 +186,17 @@ function williams($high, $low, $close, window) {
 }
 
 /* overlays */
+
+function dema($close, window) {
+  let ema1 = ema($close, window);
+  return pointwise((a, b) => 2 * a - b, ema1, ema(ema1, window));
+}
+
+function tema($close, window) {
+  let ema1 = ema($close, window);
+  let ema2 = ema(ema1, window);
+  return pointwise((a, b, c) => 3 * a - 3 * b + c, ema1, ema2, ema(ema2, window));
+}
 
 function bb($close, window, mult) {
   const middle = sma($close, window);
@@ -353,6 +360,8 @@ class TA {
   /* defenition of technical analysis methods */
   sma(window = 15)                                  { return sma(this.$close, window) }
   ema(window = 10)                                  { return ema(this.$close, window) }
+  dema(window = 10)                                 { return dema(this.$close, window) }
+  tema(window = 10)                                 { return tema(this.$close, window) }
   bb(window = 15, mult = 2)                         { return bb(this.$close, window, mult) }
   ebb(window = 10, mult = 2)                        { return ebb(this.$close, window, mult) }
   psar(factor = 0.02, maxfactor = 0.2)              { return psar(this.$high, this.$low, factor, maxfactor) }
