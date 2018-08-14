@@ -59,7 +59,8 @@ function ema($close, window, weight = null, start = null) {
   let ema = [ start ? start : mean($close.slice(0, window)) ];
   for (let i = 1, len = $close.length; i < len; i++) {
     ema.push($close[i] * weight + (1 - weight) * ema[i - 1]);
-  }  return ema;
+  }
+  return ema;
 }
 
 function stdev($close, window) {
@@ -217,7 +218,8 @@ function psar($high, $low, stepfactor, maxfactor) {
     if ((isUp && $high[i] > extreme) || (!isUp && $low[i] < extreme)) {
       factor = ((factor <= maxfactor) ? factor + stepfactor : maxfactor);
       extreme = (isUp) ? $high[i] : $low[i];
-    }    if ((isUp && $low[i] < cursar) || (!isUp && cursar > $high[i])) {
+    }
+    if ((isUp && $low[i] < cursar) || (!isUp && cursar > $high[i])) {
       isUp = !isUp;
       factor = stepfactor;
       cursar = (isUp) ? Math.min(...$low.slice(i - 2, i + 1)) : Math.max(...$high.slice(i - 2, i + 1));
@@ -268,7 +270,8 @@ function zigzag($time, $high, $low, percent) {
         isUp = true;            time.push(thattime);    zigzag.push(lowest);    highest = $high[i];
       }
     }
-  }  return { time : time, price : zigzag };
+  }
+  return { time : time, price : zigzag };
 }
 
 /* data formats */
@@ -314,7 +317,7 @@ let objectFormat = (x) => {
  */
 class TA {
   constructor(ohlcv, format = null) {
-    this.format = (format == null) ? objectFormat : format;
+    this.format = (format == null) ? exchangeFormat : format;
 
     let proxy = (prop) => new Proxy(this.format(ohlcv)[prop], {
       get: (obj, key) => {
@@ -327,8 +330,8 @@ class TA {
             return result;
           }
         } else {
-          if (key === parseInt(key).toString()) { return obj(key); }
-        }
+          return obj(key);
+        } 
       }
     });
 

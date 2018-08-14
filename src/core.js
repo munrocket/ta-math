@@ -61,7 +61,7 @@ export function ema($close, window, weight = null, start = null) {
   let ema = [ start ? start : mean($close.slice(0, window)) ];
   for (let i = 1, len = $close.length; i < len; i++) {
     ema.push($close[i] * weight + (1 - weight) * ema[i - 1]);
-  };
+  }
   return ema;
 }
 

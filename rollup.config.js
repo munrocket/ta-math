@@ -6,11 +6,12 @@ import pkg from './package.json';
 export default [
 	{
 		input: 'src/main.js',
-		output: [
-			{ name: 'IIFE', file: pkg.browser, format: 'iife' }
-		],
+		output: { name: 'TA', file: pkg.browser, format: 'iife' },
 		plugins: [
-			babel({ exclude: 'node_modules/**' })
+			babel({
+				exclude: 'node_modules/**',
+				plugins: "external-helpers"
+			})
 		]
 	},
 	{
@@ -22,9 +23,7 @@ export default [
 	},
 	{
 		input: 'src/test.js',
-		output: [
-			{ file: 'test/test.js', format: 'cjs' }
-		],
+		output: { file: 'test/test.js', format: 'cjs' },
 		plugins: [
 			builtins(),
 			istanbul({

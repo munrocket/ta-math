@@ -12,15 +12,21 @@
     "build": "rollup -c",
     "watch": "rollup -c -w",
     "test": "nyc mocha",
-    "test-ui": "start ./examples/example.html",
+    "browser": "start ./examples/example.html",
     "build-test": "npm run build && npm run test",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
+  "eslintIgnore": [
+    "dist",
+    "test"
+  ],
   "nyc": {
     "reporter": [
       "lcov",
       "text"
-    ]
+    ],
+    "sourceMap": false,
+    "instrument": false
   },
   "repository": {
     "type": "git",
@@ -46,14 +52,15 @@
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-plugin-external-helpers": "^6.22.0",
-    "babel-plugin-proxy": "^1.1.0",
     "babel-preset-env": "^1.7.0",
     "coveralls": "^3.0.2",
     "mocha": "^5.2.0",
     "nyc": "^12.0.2",
+    "proxy-polyfill": "^0.3.0",
     "rollup": "^0.63.5",
     "rollup-plugin-babel": "^3.0.7",
     "rollup-plugin-istanbul": "^2.0.1",
-    "rollup-plugin-node-builtins": "^2.1.2"
+    "rollup-plugin-node-builtins": "^2.1.2",
+    "rollup-plugin-node-resolve": "^3.3.0"
   }
 }

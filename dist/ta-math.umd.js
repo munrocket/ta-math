@@ -1,4 +1,4 @@
-var IIFE = (function () {
+var TA = (function () {
   'use strict';
 
   var classCallCheck = function (instance, Constructor) {
@@ -111,7 +111,8 @@ var IIFE = (function () {
     var ema = [start ? start : mean($close.slice(0, window))];
     for (var i = 1, len = $close.length; i < len; i++) {
       ema.push($close[i] * weight + (1 - weight) * ema[i - 1]);
-    }  return ema;
+    }
+    return ema;
   }
 
   function stdev($close, window) {
@@ -342,7 +343,8 @@ var IIFE = (function () {
       if (isUp && $high[i] > extreme || !isUp && $low[i] < extreme) {
         factor = factor <= maxfactor ? factor + stepfactor : maxfactor;
         extreme = isUp ? $high[i] : $low[i];
-      }    if (isUp && $low[i] < cursar || !isUp && cursar > $high[i]) {
+      }
+      if (isUp && $low[i] < cursar || !isUp && cursar > $high[i]) {
         isUp = !isUp;
         factor = stepfactor;
         cursar = isUp ? Math.min.apply(Math, toConsumableArray($low.slice(i - 2, i + 1))) : Math.max.apply(Math, toConsumableArray($high.slice(i - 2, i + 1)));
@@ -405,7 +407,8 @@ var IIFE = (function () {
           isUp = true;time.push(thattime);zigzag.push(lowest);highest = $high[i];
         }
       }
-    }  return { time: time, price: zigzag };
+    }
+    return { time: time, price: zigzag };
   }
 
   /* data formats */
@@ -493,7 +496,7 @@ var IIFE = (function () {
       var format = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
       classCallCheck(this, TA);
 
-      this.format = format == null ? objectFormat : format;
+      this.format = format == null ? exchangeFormat : format;
 
       var proxy = function proxy(prop) {
         return new Proxy(_this.format(ohlcv)[prop], {
@@ -509,9 +512,7 @@ var IIFE = (function () {
                 return result;
               };
             } else {
-              if (key === parseInt(key).toString()) {
-                return obj(key);
-              }
+              return obj(key);
             }
           }
         });

@@ -8,7 +8,7 @@ import * as formats from './formats';
  */
 export default class TA {
   constructor(ohlcv, format = null) {
-    this.format = (format == null) ? formats.objectFormat : format;
+    this.format = (format == null) ? formats.exchangeFormat : format;
 
     let proxy = (prop) => new Proxy(this.format(ohlcv)[prop], {
       get: (obj, key) => {
@@ -21,8 +21,8 @@ export default class TA {
             return result;
           }
         } else {
-          if (key === parseInt(key).toString()) { return obj(key); }
-        }
+          return obj(key);
+        } 
       }
     });
 
@@ -36,6 +36,7 @@ export default class TA {
   static objectFormat()                             { return formats.objectFormat }
 
   /* price getters */
+  get $length()                                     { return this.$.close.length }
   get $time()                                       { return this.$.time }
   get $open()                                       { return this.$.open }
   get $high()                                       { return this.$.high }

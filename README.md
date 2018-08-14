@@ -45,15 +45,16 @@ Well tested library for calculating technical indicators and overlays from price
 | rmse      | Root-Mean-Square Error                |    ✔️    |
 | nrmse     | Normalized Root-Mean-Square Error     |    ✔️    |
 
+### Example
+Bollinger bands with plotly visualization, ccxt data provider and BTC price from Binance.
+![](https://i.imgur.com/uLgUto6.png)
+
 ### Installation
 
-Install npm package by `npm i ta-math` or copy `ta-math.umd.js` script file in web page.
+Install npm package in node environment by `npm i ta-math` or add `ta-math.umd.js` script file in web page.
 
 ### Usage
-
-You can see how to set new data format in `formats.mjs`, by default it uses exchangeFromat. Library does not craete new arrays and uses getters through proxy. You can find additional example with bitcoin prices that fetched from ccxt library in source.
 ```
-  var TA = require('ta-math');
   var ohlcv = [[t0,o0,h0,l0,c0,v0],  ...  ,[tN,oN,hN,lN,cN,vN]];
   var ta = new TA(ohlcv, exchangeFormat);
   var emaShort = ta.ema(10);
@@ -70,9 +71,9 @@ You can see how to set new data format in `formats.mjs`, by default it uses exch
 - [X] proxy for ohlcv
 - [X] es5 with babel
 - [X] coverage
+- [X] good looking example
 - [ ] typescript integration (.d.ts)
 - [ ] new indicators (ADX, [etc](https://github.com/joshuaulrich/TTR/tree/master/R))
-- [ ] good loking ui example
 
 ### Contributing
 

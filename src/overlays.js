@@ -27,7 +27,7 @@ export function psar($high, $low, stepfactor, maxfactor) {
     if ((isUp && $high[i] > extreme) || (!isUp && $low[i] < extreme)) {
       factor = ((factor <= maxfactor) ? factor + stepfactor : maxfactor);
       extreme = (isUp) ? $high[i] : $low[i];
-    };
+    }
     if ((isUp && $low[i] < cursar) || (!isUp && cursar > $high[i])) {
       isUp = !isUp;
       factor = stepfactor;
@@ -79,6 +79,6 @@ export function zigzag($time, $high, $low, percent) {
         isUp = true;            time.push(thattime);    zigzag.push(lowest);    highest = $high[i];
       }
     }
-  };
+  }
   return { time : time, price : zigzag };
 }
