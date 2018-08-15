@@ -397,6 +397,19 @@ var TA = (function () {
     return { lower: lower, middle: middle, upper: upper };
   }
 
+  function vwap($high, $low, $close, $volume) {
+    var tp = typicalPrice($high, $low, $close),
+        cumulVTP = [$volume[0] * tp[0]],
+        cumulV = [$volume[0]];
+    for (var i = 1, len = $close.length; i < len; i++) {
+      cumulVTP[i] = cumulVTP[i - 1] + $volume[i] * tp[i];
+      cumulV[i] = cumulV[i - 1] + $volume[i];
+    }
+    return pointwise(function (a, b) {
+      return a / b;
+    }, cumulVTP, cumulV);
+  }
+
   function zigzag($time, $high, $low, percent) {
     var lowest = $low[0],
         thattime = $time[0],
@@ -600,6 +613,11 @@ var TA = (function () {
         var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 14;
         var mult = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 2;
         return keltner(this.$high, this.$low, this.$close, window, mult);
+      }
+    }, {
+      key: 'vwap',
+      value: function vwap$$1() {
+        return vwap(this.$high, this.$low, this.$close, this.$volume);
       }
     }, {
       key: 'zigzag',

@@ -18,8 +18,9 @@ Well tested library for calculating technical indicators and overlays from price
 | ebb       | Exponential Bollinger Band            |    ✔️️    |                 |      |
 | psar      | Parabolic SAR                         | :suspect: | Welles Wilder   | 1978 |
 | keltner   | Keltner Channels                      |    ✔️️    | Chester Keltner | 1960 |
-| zigzag    | ZigZag Indicator                      |    ✔️️    | Arthur Merrill  | 1977 |
 | vbp       | Volume by Price                       |    ✔️️    |                 |      |
+| vwap      | Volume Weighted Average Price         |    ✔️️    | James Elkins    | 1984 |
+| zigzag    | ZigZag Indicator                      |    ✔️️    | Arthur Merrill  | 1977 |
 
 ### Technical Indicators
 | Function  | Technical Indicator                   | Tested  | Developed by                      | Year |
@@ -74,10 +75,10 @@ Install npm package in node environment by `npm i ta-math` or add `ta-math.iife.
 - [X] es5 with babel
 - [X] coverage
 - [X] good looking example
-- [ ] new indicators (ADX, VWAP [etc](https://github.com/joshuaulrich/TTR/tree/master/R))
+- [ ] new indicators (ADX, PPSR [etc](https://github.com/joshuaulrich/TTR/tree/master/R))
 - [ ] forecasting and strategies (Holt-Winters, ARIMA, FFT [etc](https://www.quantstart.com/articles#time-series-analysis))
 - [ ] other languages (typescript, python, r)
 
 ### Contributing
 
-Feel free to contribute. Here [reference](http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators) how to implement new indicators. There are test samples in the .xls files, also you can use this [tool](https://www.browserling.com/tools/text-columns-to-rows) to convert columns into rows.
+Feel free to contribute. Here [reference](http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators) how to implement new indicators. There are test samples in the .xls files, also you can use this tools([1](https://www.browserling.com/tools/text-columns-to-rows),[2](https://online2pdf.com/convert-jpg-to-excel)) to convert columns into rows.

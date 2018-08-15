@@ -2,6 +2,25 @@ import { mean, sd, mae, rmse, nrmse } from '../src/core';
 import TA from '../src/main';
 import assert from 'assert';
 
+// random ohlcv
+let randomize = (tleft, right) => {
+  return (right - tleft) * Math.random() + tleft;
+}
+let random = [];
+for (let i = 0; i < 50; i++) {
+  let tick = [];
+  tick.push(new Date('2018-01-01').getTime() + i * 60000); //t
+  let lcoh = [randomize(5000, 20000),randomize(5000, 20000),randomize(5000, 20000),randomize(5000, 20000)].sort();
+  if(randomize(0,1)) { let temp = lcoh[1]; lcoh[1] = lcoh[2]; lcoh[2] = temp; }
+  tick.push(lcoh[1]);             //o
+  tick.push(lcoh[0]);             //h
+  tick.push(lcoh[3]);             //l
+  tick.push(lcoh[2]);             //c
+  tick.push(randomize(10, 1000));  //v
+  random.push(tick);
+}
+let noize = new TA(random, TA.exchangeFormat());
+
 /* eslint-env mocha */
 
 describe('Getters formats', () => {
@@ -34,7 +53,7 @@ describe('MAE', () => {
   it(`Direct test (${delta.toFixed(5)})`, () => assert.ok(delta < 1e-2));
 })
 
-describe('RMSE, NRMSE', () => {
+describe('(N)RMSE', () => {
   it('Equal test', () =>rmse([-2,5,-8,9,-4],[-2,5,-8,9,-4]) < 1e-12);
   let delta = Math.abs(rmse([-2,5,-8,9,-4],[0,0,0,0,0]) - 6.16);
   it(`Direct rmse test (${delta.toFixed(5)})`, () =>delta < 1e-2)
@@ -51,6 +70,27 @@ describe('SMA', () => {
   it('Finite test', () => assert.ok(actual.every(isFinite)));
   let delta = nrmse(expected.slice(9), actual.slice(9))
   it(`NRMSE test (${delta.toFixed(5)})`, () => assert.ok(delta < 1e-2));
+})
+
+describe('EMA', () => {
+  let c = [22.27,22.19,22.08,22.17,22.18,22.13,22.23,22.43,22.24,22.29,22.15,22.39,22.38,22.61,23.36,
+    24.05,23.75,23.83,23.95,23.63,23.82,23.87,23.65,23.19,23.10,23.33,22.68,23.10,22.40,22.17];
+  let expected = [NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,22.22,22.21,22.24,22.27,22.33,22.52,22.80,
+          22.97,23.13,23.28,23.34,23.43,23.51,23.54,23.47,23.40,23.39,23.26,23.23,23.08,22.92];
+  let actual = new TA([c,c,c,c,c,c], TA.simpleFormat()).ema(10);
+  it('Finite test', () => assert.ok(actual.every(isFinite)));
+  let delta = nrmse(expected.slice(9), actual.slice(9));
+  it(`NRMSE test (${delta.toFixed(5)})`, () => assert.ok(delta < 1e-2));
+})
+
+describe('DEMA', () => {
+  let actual = noize.dema();
+  it('Finite test', () => assert.ok(actual.every(isFinite)));
+})
+
+describe('TEMA', () => {
+  let actual = noize.tema();
+  it('Finite test', () => assert.ok(actual.every(isFinite)));
 })
 
 describe('EMA', () => {
@@ -149,6 +189,23 @@ describe('Keltner channel', () => {
   it('Finite test', () => assert.ok(actual.lower.every(isFinite) && actual.middle.every(isFinite) && actual.upper.every(isFinite)));
   let delta = nrmse(expected.slice(20), actual.upper.slice(20));
   it(`NRMSE test (${delta.toFixed(5)})`, () => assert.ok(delta < 1e-2));
+})
+
+describe('VWAP', () => {
+  let h = [12736,12731,12721,12715,12708,12719,12709,12708,12718,12716,12731,12735,12734,12729,12736,
+    12730,12724,12723,12725,12713,12709,12709,12709,12714,12714,12712,12692,12690,12694,12695,12678];
+  let l = [12699,12710,12711,12693,12698,12699,12682,12695,12705,12705,12708,12720,12725,12717,12725,
+    12719,12711,12717,12710,12705,12704,12704,12705,12707,12707,12690,12687,12684,12684,12669,12667];
+  let c = [12728,12711,12715,12704,12698,12707,12693,12705,12711,12715,12730,12728,12728,12729,12725,
+    12722,12719,12720,12710,12706,12706,12707,12709,12714,12713,12690,12689,12684,12694,12669,12674];
+  let v = [89329,16137,23945,20679,27252,20915,17372,17600,13896,6700,13848,9925,5540,10803,19400,
+    9322, 9982, 8723, 7735, 30330,8486, 9885, 10728,10796,21740,43638,8000, 10340,10515,26587,11731];
+  let expected = [12721,12720,12720,12717,12715,12714,12713,12712,12712,12712,12712,12713,12713,12714,12715,
+    12715,12715,12715,12715,12715,12714,12714,12714,12714,12714,12712,12712,12711,12711,12709,12709];
+  let actual = new TA([c,c,h,l,c,v], TA.simpleFormat()).vwap();
+  let delta = nrmse(expected, actual);
+  it('Finite test', () => assert.ok(actual.every(isFinite)));
+  it(`NRMSE test (${delta.toFixed(5)})`, () => assert.ok(delta < 0.1));
 })
 
 describe('ZigZag', () => {

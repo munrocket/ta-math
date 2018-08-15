@@ -53,6 +53,7 @@ export default class TA {
   psar(factor = 0.02, maxfactor = 0.2)              { return overlays.psar(this.$high, this.$low, factor, maxfactor) }
   vbp(zones = 12, left = 0, right = NaN)            { return overlays.vbp(this.$close, this.$volume, zones, left, right) }
   keltner(window = 14, mult = 2)                    { return overlays.keltner(this.$high, this.$low, this.$close, window, mult) }
+  vwap()                                            { return overlays.vwap(this.$high, this.$low, this.$close, this.$volume) }
   zigzag(percent = 15)                              { return overlays.zigzag(this.$time, this.$high, this.$low, percent) }    
   stdev(window = 15)                                { return core.stdev(this.$close, window) }
   madev(window = 15)                                { return core.madev(this.$close, window) }

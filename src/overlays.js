@@ -1,4 +1,4 @@
-import { sma, ema, stdev, expdev, pointwise, atr} from './core';
+import { sma, ema, stdev, expdev, pointwise, atr, typicalPrice} from './core';
 
 /* overlays */
 
@@ -75,6 +75,15 @@ export function keltner($high, $low, $close, window, mult) {
   return { lower: lower, middle: middle, upper: upper };
 }
 
+export function vwap($high, $low, $close, $volume) {
+  let tp = typicalPrice($high, $low, $close), cumulVTP = [$volume[0] * tp[0]], cumulV = [$volume[0]];
+  for(let i = 1, len = $close.length; i < len; i++) {
+    cumulVTP[i] = cumulVTP[i - 1] + $volume[i] * tp[i];
+    cumulV[i] = cumulV[i - 1] + $volume[i];
+  }
+  return pointwise((a, b) => a / b, cumulVTP, cumulV)
+}
+
 export function zigzag($time, $high, $low, percent) {
   let lowest = $low[0],         thattime = $time[0],    isUp = false;
   let highest = $high[0],       time = [],              zigzag = [];
@@ -92,4 +101,4 @@ export function zigzag($time, $high, $low, percent) {
     }
   }
   return { time : time, price : zigzag };
-}
+  }

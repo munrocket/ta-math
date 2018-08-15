@@ -260,6 +260,15 @@ function keltner($high, $low, $close, window, mult) {
   return { lower: lower, middle: middle, upper: upper };
 }
 
+function vwap($high, $low, $close, $volume) {
+  let tp = typicalPrice($high, $low, $close), cumulVTP = [$volume[0] * tp[0]], cumulV = [$volume[0]];
+  for(let i = 1, len = $close.length; i < len; i++) {
+    cumulVTP[i] = cumulVTP[i - 1] + $volume[i] * tp[i];
+    cumulV[i] = cumulV[i - 1] + $volume[i];
+  }
+  return pointwise((a, b) => a / b, cumulVTP, cumulV)
+}
+
 function zigzag($time, $high, $low, percent) {
   let lowest = $low[0],         thattime = $time[0],    isUp = false;
   let highest = $high[0],       time = [],              zigzag = [];
@@ -277,7 +286,7 @@ function zigzag($time, $high, $low, percent) {
     }
   }
   return { time : time, price : zigzag };
-}
+  }
 
 /* data formats */
 
@@ -367,6 +376,7 @@ class TA {
   psar(factor = 0.02, maxfactor = 0.2)              { return psar(this.$high, this.$low, factor, maxfactor) }
   vbp(zones = 12, left = 0, right = NaN)            { return vbp(this.$close, this.$volume, zones, left, right) }
   keltner(window = 14, mult = 2)                    { return keltner(this.$high, this.$low, this.$close, window, mult) }
+  vwap()                                            { return vwap(this.$high, this.$low, this.$close, this.$volume) }
   zigzag(percent = 15)                              { return zigzag(this.$time, this.$high, this.$low, percent) }    
   stdev(window = 15)                                { return stdev(this.$close, window) }
   madev(window = 15)                                { return madev(this.$close, window) }
