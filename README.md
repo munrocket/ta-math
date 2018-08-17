@@ -81,4 +81,4 @@ Install npm package in node environment by `npm i ta-math` or add `ta-math.iife.
 
 ### Contributing
 
-Feel free to contribute. Here [reference](http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators) how to implement new indicators. There are test samples in the .xls files, also you can use this tools([1](https://www.browserling.com/tools/text-columns-to-rows),[2](https://online2pdf.com/convert-jpg-to-excel)) to convert columns into rows.
+Feel free to contribute. Here [reference](http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators) how to implement new indicators. There are test samples in the .xls files, also you can use this tools [[1](https://www.browserling.com/tools/text-columns-to-rows)], [[2](https://online2pdf.com/convert-jpg-to-excel)] to convert columns into rows.

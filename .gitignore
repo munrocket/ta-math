@@ -1,5 +1,6 @@
 # Stuff
 .code
+.eslintrc
 build
 
 # Logs
