@@ -75,9 +75,8 @@ Install npm package in node environment by `npm i ta-math` or add `ta-math.iife.
 - [X] es5 with babel
 - [X] coverage
 - [X] good looking example
-- [ ] new indicators (ADX, PPSR [etc](https://github.com/joshuaulrich/TTR/tree/master/R))
 - [ ] forecasting and strategies (Holt-Winters, ARIMA, FFT [etc](https://www.quantstart.com/articles#time-series-analysis))
-- [ ] other languages (typescript, python, r)
+- [ ] proper test for default parameters, static function
 
 ### Contributing
 
