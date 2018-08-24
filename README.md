@@ -44,9 +44,10 @@ Well tested library for calculating technical indicators and overlays from price
 ### Error methods
 | Function  | Error methods                         | Tested  |
 |:----------|:--------------------------------------|:-------:|
-| mae       | Mean Absolute Error                   |    ✔️    |
-| rmse      | Root-Mean-Square Error                |    ✔️    |
-| nrmse     | Normalized Root-Mean-Square Error     |    ✔️    |
+| mae       | Mean Absolute Error                   |    ✔️   |
+| mape      | Mean Absulute Percentage Error        |    ❔    |
+| rmse      | Root-Mean-Square Error                |    ✔️   |
+| nrmse     | Normalized Root-Mean-Square Error     |    ✔️   |
 
 ### Screenshot example
 Bollinger bands with plotly visualization, ccxt data provider and BTC price from Binance.
@@ -76,7 +77,7 @@ Install npm package in node environment by `npm i ta-math` or add `ta-math.iife.
 - [X] coverage
 - [X] good looking example
 - [ ] forecasting and strategies (Holt-Winters, ARIMA, FFT [etc](https://www.quantstart.com/articles#time-series-analysis))
-- [ ] proper test for default parameters, static function
+- [ ] test for default parameters and not enough length
 
 ### Contributing
 

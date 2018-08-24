@@ -37,21 +37,23 @@ var TA = (function () {
 
   /* basic math */
 
-  function mean(array) {
+  function mean(series) {
     var sum = 0;
-    for (var i = 0; i < array.length; i++) {
-      sum += array[i];
+    for (var i = 0; i < series.length; i++) {
+      sum += series[i];
     }
-    return sum / array.length;
+    return sum / series.length;
   }
 
-  function sd(array) {
-    return rmse(array, new Array(array.length).fill(mean(array)));
+  function sd(series) {
+    return rmse(series, new Array(series.length).fill(mean(series)));
   }
 
   function mad(array) {
     return mae(array, new Array(array.length).fill(mean(array)));
   }
+
+  /* scaled and percentage errors */
 
   function mae(f, g) {
     var absDiff = pointwise(function (a, b) {
@@ -70,27 +72,27 @@ var TA = (function () {
   /* functional programming */
 
   function pointwise(operation) {
-    for (var _len = arguments.length, arrays = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-      arrays[_key - 1] = arguments[_key];
+    for (var _len = arguments.length, serieses = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      serieses[_key - 1] = arguments[_key];
     }
 
     var result = [];
-    for (var i = 0, len = arrays[0].length; i < len; i++) {
-      var iarray = function iarray(i) {
-        return arrays.map(function (x) {
+    for (var i = 0, len = serieses[0].length; i < len; i++) {
+      var iseries = function iseries(i) {
+        return serieses.map(function (x) {
           return x[i];
         });
       };
-      result[i] = operation.apply(undefined, toConsumableArray(iarray(i)));
+      result[i] = operation.apply(undefined, toConsumableArray(iseries(i)));
     }
     return result;
   }
 
-  function rolling(operation, window, array) {
+  function rolling(operation, window, series) {
     var result = [];
-    for (var i = 0, len = array.length; i < len; i++) {
+    for (var i = 0, len = series.length; i < len; i++) {
       var j = i + 1 - window;
-      result.push(operation(array.slice(j > 0 ? j : 0, i + 1)));
+      result.push(operation(series.slice(j > 0 ? j : 0, i + 1)));
     }
     return result;
   }

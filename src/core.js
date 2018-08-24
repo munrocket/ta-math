@@ -1,20 +1,22 @@
 /* basic math */
 
-export function mean(array) {
+export function mean(series) {
   let sum = 0;
-  for (let i = 0; i < array.length; i++) {
-    sum += array[i];
+  for (let i = 0; i < series.length; i++) {
+    sum += series[i];
   }
-  return sum / array.length;
+  return sum / series.length;
 }
 
-export function sd(array) {
-  return rmse(array, new Array(array.length).fill(mean(array)));
+export function sd(series) {
+  return rmse(series, new Array(series.length).fill(mean(series)));
 }
 
 export function mad(array) {
   return mae(array, new Array(array.length).fill(mean(array)));
 }
+
+/* scaled and percentage errors */
 
 export function mae(f, g) {
   const absDiff = pointwise((a, b) => Math.abs(a - b), f, g);
@@ -30,22 +32,27 @@ export function nrmse(f, g) {
   return rmse(f, g) / (Math.max(...f) - Math.min(...f));
 }
 
+export function mape(f, g) {
+  const mapd = pointwise((a, b) => Math.abs(a / b), f, g);
+  return (f.length != g.length) ? Infinity : 100 * mapd / f.length;
+}
+
 /* functional programming */
 
-export function pointwise(operation, ...arrays) {
+export function pointwise(operation, ...serieses) {
   let result = [];
-  for (let i = 0, len = arrays[0].length; i < len; i++) {
-    let iarray = (i) => arrays.map(x => x[i]);
-    result[i] = operation(...iarray(i));
+  for (let i = 0, len = serieses[0].length; i < len; i++) {
+    let iseries = (i) => serieses.map(x => x[i]);
+    result[i] = operation(...iseries(i));
   }
   return result;
 }
 
-export function rolling(operation, window, array) {
+export function rolling(operation, window, series) {
   let result = [];
-  for (let i = 0, len = array.length; i < len; i++) {
+  for (let i = 0, len = series.length; i < len; i++) {
     let j = i + 1 - window;
-    result.push(operation(array.slice((j > 0) ? j : 0, i + 1)));
+    result.push(operation(series.slice((j > 0) ? j : 0, i + 1)));
   }
   return result;
 }
