@@ -49,6 +49,11 @@ Well tested library for calculating technical indicators and overlays from price
 | rmse      | Root-Mean-Square Error                |    ✔️   |
 | nrmse     | Normalized Root-Mean-Square Error     |    ✔️   |
 
+### Forecasting methods 
+| Function     | Method                  | Tested  | Developed by                   | Year |
+|:-------------|:--------------------------------|:-------:|:------------------------------:|:----:|
+| holtWinters  | Holt-Winters Filtering          |    ❔   | C. C. Holt and P. R. Winters   | 1957 |
+
 ### Screenshot example
 Bollinger bands with plotly visualization, ccxt data provider and BTC price from Binance.
 ![](https://i.imgur.com/1wE0AJO.png)

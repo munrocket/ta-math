@@ -1,5 +1,6 @@
 import { mean, sd, mae, rmse, nrmse } from '../src/core';
 import TA from '../src/main';
+//import { holtWinters } from '../src/forecasting';
 import assert from 'assert';
 
 // random ohlcv
@@ -465,3 +466,17 @@ describe('ROC', () => {
   let delta = nrmse(expected.slice(12), actual.slice(12));
   it(`Precision test (NRMSE=${delta.toFixed(5)})`, () => assert.ok(delta < 1e-2));
 })
+
+// describe('test', () => {
+//   let series = [3,10,12,13,12,10,12];
+
+// })
+
+// describe('HoltWinters', () => {
+//   let series = [30,21,29,31,40,48,53,47,37,39,31,29,17,9,20,24,27,35,41,38,
+//   27,31,27,26,21,13,21,18,33,35,40,36,22,24,21,20,17,14,17,19,
+//   26,29,40,31,20,24,18,26,17,9,17,21,28,32,46,33,23,28,22,27,
+//   18,8,17,21,31,34,44,38,31,30,26,32];
+//   let actual = holtWinters(series);
+//   console.log(actual);
+// });
