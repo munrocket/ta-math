@@ -337,15 +337,9 @@ let objectFormat = (x) => {
  */
 class TA {
   constructor(ohlcv, format = null) {
-    this.time = null;
-    this.open = null;
-    this.high = null;
-    this.low = null;
-    this.close = null;
-    this.volume = null;
-
     this.ohlcv = ohlcv;
     this.format = (format == null) ? exchangeFormat : format;
+    this.time = null; this.open = null; this.high = null; this.low = null; this.close = null; this.volume = null;
   }
 
   /* price getters */

@@ -520,15 +520,9 @@ var TA = (function (util) {
       var format = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
       classCallCheck(this, TA);
 
-      this.time = null;
-      this.open = null;
-      this.high = null;
-      this.low = null;
-      this.close = null;
-      this.volume = null;
-
       this.ohlcv = ohlcv;
       this.format = format == null ? exchangeFormat : format;
+      this.time = null;this.open = null;this.high = null;this.low = null;this.close = null;this.volume = null;
     }
 
     /* price getters */

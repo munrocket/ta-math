@@ -50,6 +50,7 @@
   "homepage": "https://github.com/munrocket/ta-math#readme",
   "dependencies": {},
   "devDependencies": {
+    "antlr4": "^4.7.1",
     "babel-core": "^6.26.3",
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-preset-env": "^1.7.0",
