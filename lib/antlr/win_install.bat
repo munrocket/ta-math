@@ -9,4 +9,4 @@ if not CLASSPATH == "%ANTLR%" (
 )
 
 @echo off
-ping 127.0.0.1 -n 10 > nul
+ping 127.0.0.1 -n 5 > nul

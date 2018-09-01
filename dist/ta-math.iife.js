@@ -1,4 +1,4 @@
-var TA = (function (util) {
+var TA = (function () {
   'use strict';
 
   var classCallCheck = function (instance, Constructor) {
@@ -99,40 +99,40 @@ var TA = (function (util) {
 
   /* core indicators & overlays */
 
-  function sma($close, window) {
+  function sma(series, window) {
     return rolling(function (x) {
       return mean(x);
-    }, window, $close);
+    }, window, series);
   }
 
-  function ema($close, window) {
+  function ema(series, window) {
     var weight = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
     var start = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
 
     weight = weight ? weight : 2 / (window + 1);
-    var ema = [start ? start : mean($close.slice(0, window))];
-    for (var i = 1, len = $close.length; i < len; i++) {
-      ema.push($close[i] * weight + (1 - weight) * ema[i - 1]);
+    var ema = [start ? start : mean(series.slice(0, window))];
+    for (var i = 1, len = series.length; i < len; i++) {
+      ema.push(series[i] * weight + (1 - weight) * ema[i - 1]);
     }
     return ema;
   }
 
-  function stdev($close, window) {
+  function stdev(series, window) {
     return rolling(function (x) {
       return sd(x);
-    }, window, $close);
+    }, window, series);
   }
 
-  function madev($close, window) {
+  function madev(series, window) {
     return rolling(function (x) {
       return mad(x);
-    }, window, $close);
+    }, window, series);
   }
 
-  function expdev($close, window) {
+  function expdev(series, window) {
     var sqrDiff = pointwise(function (a, b) {
       return (a - b) * (a - b);
-    }, $close, ema($close, window));
+    }, series, ema(series, window));
     return pointwise(function (x) {
       return Math.sqrt(x);
     }, ema(sqrDiff, window));
@@ -324,25 +324,27 @@ var TA = (function (util) {
   }
 
   function bb($close, window, mult) {
-    var middle = sma($close, window);
+    var ma = sma($close, window);
+    var dev = stdev($close, window);
     var upper = pointwise(function (a, b) {
       return a + b * mult;
-    }, middle, stdev($close, window));
+    }, ma, dev);
     var lower = pointwise(function (a, b) {
       return a - b * mult;
-    }, middle, stdev($close, window));
-    return { lower: lower, middle: middle, upper: upper };
+    }, ma, dev);
+    return { lower: lower, middle: ma, upper: upper };
   }
 
   function ebb($close, window, mult) {
-    var middle = ema($close, window);
+    var ma = ema($close, window);
+    var dev = expdev($close, window);
     var upper = pointwise(function (a, b) {
       return a + b * mult;
-    }, middle, expdev($close, window));
+    }, ma, dev);
     var lower = pointwise(function (a, b) {
       return a - b * mult;
-    }, middle, expdev($close, window));
-    return { lower: lower, middle: middle, upper: upper };
+    }, ma, dev);
+    return { lower: lower, middle: ma, upper: upper };
   }
 
   function psar($high, $low, stepfactor, maxfactor) {
@@ -516,13 +518,11 @@ var TA = (function (util) {
    */
 
   var TA = function () {
-    function TA(ohlcv) {
-      var format = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    function TA(ohlcv, format) {
       classCallCheck(this, TA);
 
       this.ohlcv = ohlcv;
-      this.format = format == null ? exchangeFormat : format;
-      this.time = null;this.open = null;this.high = null;this.low = null;this.close = null;this.volume = null;
+      this.format = format === undefined ? TA.exchangeFormat : format;
     }
 
     /* price getters */
@@ -536,6 +536,7 @@ var TA = (function (util) {
         for (var i = 0; i < length; i++) {
           result.push(this.format(this.ohlcv)[name](i));
         }
+        this[name] = result;
         return result;
       }
     }, {
@@ -711,56 +712,41 @@ var TA = (function (util) {
     }, {
       key: '$time',
       get: function get$$1() {
-        return util.isNull(this['time']) ? this.initGetter('time') : this['time'];
+        return this.time === undefined ? this.initGetter('time') : this.time;
       }
     }, {
       key: '$open',
       get: function get$$1() {
-        return util.isNull(this['open']) ? this.initGetter('open') : this['open'];
+        return this.open === undefined ? this.initGetter('open') : this.open;
       }
     }, {
       key: '$high',
       get: function get$$1() {
-        return util.isNull(this['high']) ? this.initGetter('high') : this['high'];
+        return this.high === undefined ? this.initGetter('high') : this.high;
       }
     }, {
       key: '$low',
       get: function get$$1() {
-        return util.isNull(this['low']) ? this.initGetter('low') : this['low'];
+        return this.low === undefined ? this.initGetter('low') : this.low;
       }
     }, {
       key: '$close',
       get: function get$$1() {
-        return util.isNull(this['close']) ? this.initGetter('close') : this['close'];
+        return this.close === undefined ? this.initGetter('close') : this.close;
       }
     }, {
       key: '$volume',
       get: function get$$1() {
-        return util.isNull(this['volume']) ? this.initGetter('volume') : this['volume'];
+        return this.volume === undefined ? this.initGetter('volume') : this.volume;
       }
 
       /* formats */
 
     }], [{
-      key: 'simpleFormat',
-      value: function simpleFormat$$1() {
-        return simpleFormat;
-      }
-    }, {
-      key: 'exchangeFormat',
-      value: function exchangeFormat$$1() {
-        return exchangeFormat;
-      }
-    }, {
-      key: 'objectFormat',
-      value: function objectFormat$$1() {
-        return objectFormat;
-      }
+      key: 'sma',
+
 
       /* static defenition of technical analysis methods */
-
-    }, {
-      key: 'sma',
       value: function sma$$1($close) {
         var window = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 15;
         return sma($close, window);
@@ -926,10 +912,25 @@ var TA = (function (util) {
         var window = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 14;
         return roc($close, window);
       }
+    }, {
+      key: 'simpleFormat',
+      get: function get$$1() {
+        return simpleFormat;
+      }
+    }, {
+      key: 'exchangeFormat',
+      get: function get$$1() {
+        return exchangeFormat;
+      }
+    }, {
+      key: 'objectFormat',
+      get: function get$$1() {
+        return objectFormat;
+      }
     }]);
     return TA;
   }();
 
   return TA;
 
-}(util));
+}());

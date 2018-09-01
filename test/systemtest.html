@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Testing page</title>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script src="../lib/ccxt.mini.js"></script>
+  <script src="../dist/ta-math.iife.js"></script>
+</head>
+<body>
+
+<!-- Plotly chart will be drawn inside this div -->
+<div id="plotly-div" style="width: 800px; height: 500px;"></div>
+
+<script>
+var fetchFromExchange = new ccxt.binance({'proxy': 'https://cors-anywhere.herokuapp.com/'}).fetchOHLCV ('BTC/USDT', '1d', Date.now() - 1000*60*60*24*30*5);
+
+fetchFromExchange.then( function(ohlcv) {
+  render(new TA(ohlcv));
+}).catch( function(err) {
+  Plotly.d3.csv("https://raw.githubusercontent.com/munrocket/ta-math/master/test/data.csv", function (err, rows) {
+    window.alert("CORS/Binance server not answer. CSV data will be used")
+    function unpack(rows, columns) {
+      return rows.map(function (row) {
+        return columns.reduce(function(result, column) {
+          result.push(parseFloat(row[column]));
+          return result;
+        }, []);
+      });
+    };
+    var ohlcv = unpack(rows, ['time', 'open', 'high', 'low', 'close', 'volume']);
+    render(new TA(ohlcv));
+  });
+});
+
+function render(ta) {
+  var candlestick = {
+    name: 'BTC/USDT',
+    x: ta.$time, 
+    close: ta.$close, 
+    high: ta.$high, 
+    low: ta.$low, 
+    open: ta.$open, 
+    type: 'candlestick', 
+    decreasing: {line: {color: '#FF3860'}}, 
+    increasing: {line: {color: '#23D160'}}, 
+    line: {color: 'rgba(123,123,12,3)'}, 
+    xaxis: 'x', 
+    yaxis: 'y'
+  };
+  var data = [...bbContext(ta), ...bbContext(ta, true), candlestick];
+
+  var layout = {
+    margin: { r: 5, t: 5, b: 50, l: 5 }, 
+    xaxis: { autorange: true, type: 'date' }, 
+    yaxis: { autorange: true, type: 'linear' },
+    showlegend: false,
+    dragmode: 'zoom',
+    hovermode: 'closest',
+    legend: { y: -0.1, "orientation": "h" },
+    updatemenus: [{
+      x: 0,
+      y: 1,
+      xanchor: "left",
+      yanchor: "bottom",
+      buttons: [
+      {
+        method: 'restyle',
+        args: ['visible', [false, false, false, false, false, false, true]],
+        label: 'None'
+      },
+      { 
+        method: 'restyle',
+        args: ['visible', [true, true, true, false, false, false, true]],
+        label: 'Bollinger Bands'
+      }, {
+        method: 'restyle',
+        args: ['visible', [false, false, false, true, true, true, true]],
+        label: 'Exponential Bollinger Bands'
+      }]
+    }]
+  };
+  var defaultPlotlyConfiguration = {
+    modeBarButtonsToRemove: ['sendDataToCloud', 'autoScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian', 'lasso2d', 'select2d'],
+    displaylogo: false,
+    showTips: true
+  };
+
+  Plotly.plot('plotly-div', data, layout, defaultPlotlyConfiguration);
+}
+
+function bbContext(ta, isExp) {
+  var bb = isExp ? ta.ebb() : ta.bb();
+  var bbUpper = {
+    showlegend: false,
+    x: ta.$time,
+    y: bb.upper,
+    type: 'line',
+    line: {color: 'rgba(255,255,255,0)'},
+    visible: false
+  }
+
+  var bbMiddle = {
+    name: isExp ? 'EMA(10)' : 'SMA(15)',
+    x: ta.$time,
+    y: bb.middle,
+    type: 'line',
+    line: {color: '#FFE22F'},
+    visible: false
+  }
+
+  var bbLower = {
+    name: isExp ? 'EBB(15,2)' : 'BB(15,2)',
+    x: ta.$time,
+    y: bb.lower,
+    fill: 'tonexty',
+    type: 'line',
+    mode: 'none',
+    line: {color: 'rgba(255,226,150,0.1)'},
+    visible: false
+  }
+
+  return [bbUpper, bbLower, bbMiddle];
+}
+
+</script>
+</body>
+</html>

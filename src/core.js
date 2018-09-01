@@ -59,29 +59,29 @@ export function rolling(operation, window, series) {
 
 /* core indicators & overlays */
 
-export function sma($close, window) {
-  return rolling(x => mean(x), window, $close);
+export function sma(series, window) {
+  return rolling(x => mean(x), window, series);
 }
 
-export function ema($close, window, weight = null, start = null) {
+export function ema(series, window, weight = null, start = null) {
   weight = weight ? weight : 2 / (window + 1);
-  let ema = [ start ? start : mean($close.slice(0, window)) ];
-  for (let i = 1, len = $close.length; i < len; i++) {
-    ema.push($close[i] * weight + (1 - weight) * ema[i - 1]);
+  let ema = [ start ? start : mean(series.slice(0, window)) ];
+  for (let i = 1, len = series.length; i < len; i++) {
+    ema.push(series[i] * weight + (1 - weight) * ema[i - 1]);
   }
   return ema;
 }
 
-export function stdev($close, window) {
-  return rolling(x => sd(x), window, $close);
+export function stdev(series, window) {
+  return rolling(x => sd(x), window, series);
 }
 
-export function madev($close, window) {
-  return rolling(x => mad(x), window, $close);
+export function madev(series, window) {
+  return rolling(x => mad(x), window, series);
 }
 
-export function expdev($close, window) {
-  let sqrDiff = pointwise((a, b) => (a - b) * (a - b), $close, ema($close, window));
+export function expdev(series, window) {
+  let sqrDiff = pointwise((a, b) => (a - b) * (a - b), series, ema(series, window));
   return pointwise(x => Math.sqrt(x), ema(sqrDiff, window));
 }
 

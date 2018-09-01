@@ -2,35 +2,34 @@ import * as core from './core';
 import * as indicators from './indicators';
 import * as overlays from './overlays';
 import * as formats from './formats';
-import { isNull } from 'util';
 
 /**
  * Class for calculating technical analysis indicators and overlays
  */
 export default class TA {
-  constructor(ohlcv, format = null) {
+  constructor(ohlcv, format) {
     this.ohlcv = ohlcv;
-    this.format = (format == null) ? formats.exchangeFormat : format;
-    this.time = null; this.open = null; this.high = null; this.low = null; this.close = null; this.volume = null;
+    this.format = (format === undefined) ? TA.exchangeFormat : format;
   }
 
   /* price getters */
   initGetter(name) {
     let result = [], length = this.format(this.ohlcv)['length'];
     for(let i = 0; i < length; i++) { result.push(this.format(this.ohlcv)[name](i)) }
+    this[name] = result;
     return result;
   }
-  get $time() { return isNull(this['time']) ? this.initGetter('time') : this['time'] }
-  get $open() { return isNull(this['open']) ? this.initGetter('open') : this['open'] }
-  get $high() { return isNull(this['high']) ? this.initGetter('high') : this['high'] }
-  get $low() { return isNull(this['low']) ? this.initGetter('low') : this['low'] }
-  get $close() { return isNull(this['close']) ? this.initGetter('close') : this['close'] }
-  get $volume() { return isNull(this['volume']) ? this.initGetter('volume') : this['volume'] }
-  
+  get $time()   { return (this.time === undefined) ? this.initGetter('time') : this.time }
+  get $open()   { return (this.open === undefined) ? this.initGetter('open') : this.open }
+  get $high()   { return (this.high === undefined) ? this.initGetter('high') : this.high }
+  get $low()    { return (this.low === undefined) ? this.initGetter('low') : this.low }
+  get $close()  { return (this.close === undefined) ? this.initGetter('close') : this.close }
+  get $volume() { return (this.volume === undefined) ? this.initGetter('volume') : this.volume }
+
   /* formats */
-  static simpleFormat()                                                 { return formats.simpleFormat }
-  static exchangeFormat()                                               { return formats.exchangeFormat }
-  static objectFormat()                                                 { return formats.objectFormat }
+  static get simpleFormat()   { return formats.simpleFormat }
+  static get exchangeFormat() { return formats.exchangeFormat }
+  static get objectFormat()   { return formats.objectFormat }
 
   /* static defenition of technical analysis methods */
   static sma($close, window = 15)                                       { return core.sma($close, window) }

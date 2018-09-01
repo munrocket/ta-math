@@ -11,22 +11,20 @@
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -c -w",
-    "test": "nyc mocha ./coverage/test.js",
-    "browser": "start ./examples/example.html",
-    "build-test": "npm run build && npm run test",
+    "test": "nyc mocha ./coverage/unittest.js",
+    "browser": "start ./test/systemtest.html",
+    "build-n-test": "npm run build && npm run test",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "eslintIgnore": [
     "dist",
-    "coverage"
+    "lib"
   ],
   "nyc": {
     "reporter": [
       "lcov",
       "text"
-    ],
-    "sourceMap": false,
-    "instrument": false
+    ]
   },
   "repository": {
     "type": "git",

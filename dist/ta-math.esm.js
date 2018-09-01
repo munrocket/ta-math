@@ -1,5 +1,3 @@
-import { isNull } from 'util';
-
 /* basic math */
 
 function mean(series) {
@@ -52,29 +50,29 @@ function rolling(operation, window, series) {
 
 /* core indicators & overlays */
 
-function sma($close, window) {
-  return rolling(x => mean(x), window, $close);
+function sma(series, window) {
+  return rolling(x => mean(x), window, series);
 }
 
-function ema($close, window, weight = null, start = null) {
+function ema(series, window, weight = null, start = null) {
   weight = weight ? weight : 2 / (window + 1);
-  let ema = [ start ? start : mean($close.slice(0, window)) ];
-  for (let i = 1, len = $close.length; i < len; i++) {
-    ema.push($close[i] * weight + (1 - weight) * ema[i - 1]);
+  let ema = [ start ? start : mean(series.slice(0, window)) ];
+  for (let i = 1, len = series.length; i < len; i++) {
+    ema.push(series[i] * weight + (1 - weight) * ema[i - 1]);
   }
   return ema;
 }
 
-function stdev($close, window) {
-  return rolling(x => sd(x), window, $close);
+function stdev(series, window) {
+  return rolling(x => sd(x), window, series);
 }
 
-function madev($close, window) {
-  return rolling(x => mad(x), window, $close);
+function madev(series, window) {
+  return rolling(x => mad(x), window, series);
 }
 
-function expdev($close, window) {
-  let sqrDiff = pointwise((a, b) => (a - b) * (a - b), $close, ema($close, window));
+function expdev(series, window) {
+  let sqrDiff = pointwise((a, b) => (a - b) * (a - b), series, ema(series, window));
   return pointwise(x => Math.sqrt(x), ema(sqrDiff, window));
 }
 
@@ -203,17 +201,19 @@ function tema($close, window) {
 }
 
 function bb($close, window, mult) {
-  const middle = sma($close, window);
-  const upper = pointwise((a, b) => a + b * mult, middle, stdev($close, window));
-  const lower = pointwise((a, b) => a - b * mult, middle, stdev($close, window));
-  return { lower : lower, middle : middle, upper : upper };
+  let ma = sma($close, window);
+  let dev = stdev($close, window);
+  let upper = pointwise((a, b) => a + b * mult, ma, dev);
+  let lower = pointwise((a, b) => a - b * mult, ma, dev);
+  return { lower : lower, middle : ma, upper : upper };
 }
 
 function ebb($close, window, mult) {
-  const middle = ema($close, window);
-  const upper = pointwise((a, b) => a + b * mult, middle, expdev($close, window));
-  const lower = pointwise((a, b) => a - b * mult, middle, expdev($close, window));
-  return { lower : lower, middle : middle, upper : upper };
+  let ma = ema($close, window);
+  let dev = expdev($close, window);
+  let upper = pointwise((a, b) => a + b * mult, ma, dev);
+  let lower = pointwise((a, b) => a - b * mult, ma, dev);
+  return { lower : lower, middle : ma, upper : upper };
 }
 
 function psar($high, $low, stepfactor, maxfactor) {
@@ -290,7 +290,7 @@ function zigzag($time, $high, $low, percent) {
     }
   }
   return { time : time, price : zigzag };
-  }
+}
 
 /* data formats */
 
@@ -334,29 +334,29 @@ let objectFormat = (x) => {
  * Class for calculating technical analysis indicators and overlays
  */
 class TA {
-  constructor(ohlcv, format = null) {
+  constructor(ohlcv, format) {
     this.ohlcv = ohlcv;
-    this.format = (format == null) ? exchangeFormat : format;
-    this.time = null; this.open = null; this.high = null; this.low = null; this.close = null; this.volume = null;
+    this.format = (format === undefined) ? TA.exchangeFormat : format;
   }
 
   /* price getters */
   initGetter(name) {
     let result = [], length = this.format(this.ohlcv)['length'];
     for(let i = 0; i < length; i++) { result.push(this.format(this.ohlcv)[name](i)); }
+    this[name] = result;
     return result;
   }
-  get $time() { return isNull(this['time']) ? this.initGetter('time') : this['time'] }
-  get $open() { return isNull(this['open']) ? this.initGetter('open') : this['open'] }
-  get $high() { return isNull(this['high']) ? this.initGetter('high') : this['high'] }
-  get $low() { return isNull(this['low']) ? this.initGetter('low') : this['low'] }
-  get $close() { return isNull(this['close']) ? this.initGetter('close') : this['close'] }
-  get $volume() { return isNull(this['volume']) ? this.initGetter('volume') : this['volume'] }
-  
+  get $time()   { return (this.time === undefined) ? this.initGetter('time') : this.time }
+  get $open()   { return (this.open === undefined) ? this.initGetter('open') : this.open }
+  get $high()   { return (this.high === undefined) ? this.initGetter('high') : this.high }
+  get $low()    { return (this.low === undefined) ? this.initGetter('low') : this.low }
+  get $close()  { return (this.close === undefined) ? this.initGetter('close') : this.close }
+  get $volume() { return (this.volume === undefined) ? this.initGetter('volume') : this.volume }
+
   /* formats */
-  static simpleFormat()                                                 { return simpleFormat }
-  static exchangeFormat()                                               { return exchangeFormat }
-  static objectFormat()                                                 { return objectFormat }
+  static get simpleFormat()   { return simpleFormat }
+  static get exchangeFormat() { return exchangeFormat }
+  static get objectFormat()   { return objectFormat }
 
   /* static defenition of technical analysis methods */
   static sma($close, window = 15)                                       { return sma($close, window) }

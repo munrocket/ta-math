@@ -14,17 +14,19 @@ export function tema($close, window) {
 }
 
 export function bb($close, window, mult) {
-  const middle = sma($close, window);
-  const upper = pointwise((a, b) => a + b * mult, middle, stdev($close, window));
-  const lower = pointwise((a, b) => a - b * mult, middle, stdev($close, window));
-  return { lower : lower, middle : middle, upper : upper };
+  let ma = sma($close, window);
+  let dev = stdev($close, window);
+  let upper = pointwise((a, b) => a + b * mult, ma, dev);
+  let lower = pointwise((a, b) => a - b * mult, ma, dev);
+  return { lower : lower, middle : ma, upper : upper };
 }
 
 export function ebb($close, window, mult) {
-  const middle = ema($close, window);
-  const upper = pointwise((a, b) => a + b * mult, middle, expdev($close, window));
-  const lower = pointwise((a, b) => a - b * mult, middle, expdev($close, window));
-  return { lower : lower, middle : middle, upper : upper };
+  let ma = ema($close, window);
+  let dev = expdev($close, window);
+  let upper = pointwise((a, b) => a + b * mult, ma, dev);
+  let lower = pointwise((a, b) => a - b * mult, ma, dev);
+  return { lower : lower, middle : ma, upper : upper };
 }
 
 export function psar($high, $low, stepfactor, maxfactor) {
@@ -101,4 +103,4 @@ export function zigzag($time, $high, $low, percent) {
     }
   }
   return { time : time, price : zigzag };
-  }
+}

@@ -22,8 +22,8 @@ export default [
 		]
 	},
 	{
-		input: 'test/test.js',
-		output: { file: 'coverage/test.js', format: 'cjs' },
+		input: 'test/unittest.js',
+		output: { file: 'coverage/unittest.js', format: 'cjs', sourcemap: 'inline' },
 		plugins: [
 			builtins(),
 			istanbul({

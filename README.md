@@ -54,12 +54,11 @@ Well tested library for calculating technical indicators and overlays from price
 |:-------------|:--------------------------------|:-------:|:------------------------------:|:----:|
 | holtWinters  | Holt-Winters Filtering          |    ❔   | C. C. Holt and P. R. Winters   | 1957 |
 
-### Screenshot example
-Bollinger bands with plotly visualization, ccxt data provider and BTC price from Binance.
+### Visualization
+You can see [interactive example](http://htmlpreview.github.io/?https://github.com/munrocket/ta-math/blob/master/test/systemtest.html) of bollinger bands with plotly library, ccxt data provider and BTC prices from Binance exchange. If you choose plotly as visualization library check this [documentation](https://plot.ly/javascript/reference/).
 ![](https://i.imgur.com/1wE0AJO.png)
 
 ### Installation
-
 Install npm package in node environment by `npm i ta-math` or add `ta-math.iife.js` script file in web page.
 
 ### Usage
@@ -86,4 +85,4 @@ Install npm package in node environment by `npm i ta-math` or add `ta-math.iife.
 
 ### Contributing
 
-Feel free to contribute. Here [reference](http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators) how to implement new indicators. There are test samples in the .xls files, also you can use this tools [[1](https://www.browserling.com/tools/text-columns-to-rows)], [[2](https://online2pdf.com/convert-jpg-to-excel)] to convert columns into rows.
+Feel free to contribute. Here [reference](http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators) how to implement new indicators. There are test samples in the .xls files, also you can use this [[tool](https://www.browserling.com/tools/text-columns-to-rows)] to convert columns into rows.
