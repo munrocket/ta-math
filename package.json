@@ -11,10 +11,11 @@
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -c -w",
-    "test": "nyc mocha ./coverage/unittest.js",
-    "browser": "start ./test/systemtest.html",
-    "build-n-test": "npm run build && npm run test",
-    "coverage": "nyc report --reporter=text-lcov | coveralls"
+    "test": "nyc mocha ./coverage/test.js",
+    "bnt": "npm run build && npm run test",
+    "browser": "start ./test/test.html",
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "generate": "python ./test/generator.py"
   },
   "eslintIgnore": [
     "dist",

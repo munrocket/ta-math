@@ -363,7 +363,6 @@ var TA = (function () {
         isUp = !isUp;
         factor = stepfactor;
         cursar = isUp ? Math.min.apply(Math, toConsumableArray($low.slice(i - 2, i + 1))) : Math.max.apply(Math, toConsumableArray($high.slice(i - 2, i + 1)));
-        //extreme = (isUp) ? $high[i] : $low[i];
       }
       //console.log(`isUp=${isUp}, c=${$low[i]}, extreme=${extreme.toFixed(2)}, factor=${factor}, sar=${cursar.toFixed(2)}`);
       psar.push(cursar);

@@ -33,8 +33,8 @@ export function nrmse(f, g) {
 }
 
 export function mape(f, g) {
-  const mapd = pointwise((a, b) => Math.abs(a / b), f, g);
-  return (f.length != g.length) ? Infinity : 100 * mapd / f.length;
+  const frac = pointwise((a, b) => Math.abs((a - b) / a), f, g);
+  return (f.length != g.length) ? Infinity : mean(frac) * 100;
 }
 
 /* functional programming */

@@ -45,7 +45,6 @@ export function psar($high, $low, stepfactor, maxfactor) {
       isUp = !isUp;
       factor = stepfactor;
       cursar = (isUp) ? Math.min(...$low.slice(i - 2, i + 1)) : Math.max(...$high.slice(i - 2, i + 1));
-      //extreme = (isUp) ? $high[i] : $low[i];
     }
     //console.log(`isUp=${isUp}, c=${$low[i]}, extreme=${extreme.toFixed(2)}, factor=${factor}, sar=${cursar.toFixed(2)}`);
     psar.push(cursar);

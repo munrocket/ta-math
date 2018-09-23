@@ -1,7 +1,11 @@
 
 Technical analysis math
 =========
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat)](https://egghead.io/courses/how-to-contribute-to-an-open-source-project-on-github) [![dependencies Status](https://david-dm.org/munrocket/ta-math/status.svg)](https://david-dm.org/munrocket/ta-math) [![Build Status](https://travis-ci.org/munrocket/ta-math.svg?branch=master)](https://travis-ci.org/munrocket/ta-math) [![Coverage Status](https://coveralls.io/repos/github/munrocket/ta-math/badge.svg?branch=master)](https://coveralls.io/github/munrocket/ta-math?branch=master) [![dependencies Status](https://david-dm.org/munrocket/ta-math/status.svg)](https://david-dm.org/munrocket/ta-math)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat)](https://egghead.io/courses/how-to-contribute-to-an-open-source-project-on-github) 
+![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg)
+[![Build Status](https://travis-ci.org/munrocket/ta-math.svg?branch=master)](https://travis-ci.org/munrocket/ta-math)
+[![Coverage Status](https://coveralls.io/repos/github/munrocket/ta-math/badge.svg?branch=master)](https://coveralls.io/github/munrocket/ta-math?branch=master)
+[![dependencies Status](https://david-dm.org/munrocket/ta-math/status.svg)](https://david-dm.org/munrocket/ta-math)
 
 Well tested library for calculating technical indicators and overlays from price data in any format. You choose format and data by yourself and library return charts data. Written in es6 javascript, but also distributed in es5.
 
@@ -12,8 +16,8 @@ Well tested library for calculating technical indicators and overlays from price
 |:----------|:--------------------------------------|:-------:|:----------------:|:----:|
 | sma       | Simple Moving Average                 |    ✔️️    |                 |      |
 | ema       | Exponential Moving Average            |    ✔️️    |                 |      |
-| dema      | Double Exponential Moving Average     |   ️ ❔     | Patrick  Mulloy | 1994 |
-| tema      | Triple Exponential Moving Average     |   ️ ❔     | Patrick  Mulloy | 1994 |
+| dema      | Double Exponential Moving Average     |   ️ ✔️️    | Patrick  Mulloy | 1994 |
+| tema      | Triple Exponential Moving Average     |   ️ ✔️️    | Patrick  Mulloy | 1994 |
 | bb        | Bollinger Band                        |    ✔️️    | John Bollinger  | 1980s|
 | ebb       | Exponential Bollinger Band            |    ✔️️    |                 |      |
 | psar      | Parabolic SAR                         | :suspect: | Welles Wilder   | 1978 |
@@ -45,17 +49,17 @@ Well tested library for calculating technical indicators and overlays from price
 | Function  | Error methods                         | Tested  |
 |:----------|:--------------------------------------|:-------:|
 | mae       | Mean Absolute Error                   |    ✔️   |
-| mape      | Mean Absulute Percentage Error        |    ❔    |
+| mape      | Mean Absulute Percentage Error        |    ✔️   |
 | rmse      | Root-Mean-Square Error                |    ✔️   |
 | nrmse     | Normalized Root-Mean-Square Error     |    ✔️   |
 
 ### Forecasting methods 
 | Function     | Method                  | Tested  | Developed by                   | Year |
 |:-------------|:--------------------------------|:-------:|:------------------------------:|:----:|
-| holtWinters  | Holt-Winters Filtering          |    ❔   | C. C. Holt and P. R. Winters   | 1957 |
+| holtWinters  | Holt-Winters Filtering          |    ❌   | C. C. Holt and P. R. Winters   | 1957 |
 
 ### Visualization
-You can see [interactive example](http://htmlpreview.github.io/?https://github.com/munrocket/ta-math/blob/master/test/systemtest.html) of bollinger bands with plotly library, ccxt data provider and BTC prices from Binance exchange. If you choose plotly as visualization library check this [documentation](https://plot.ly/javascript/reference/).
+You can see [interactive example](http://htmlpreview.github.io/?https://github.com/munrocket/ta-math/blob/master/test/test.html) of bollinger bands with plotly library, ccxt data provider and BTC prices from Binance exchange. If you choose plotly as visualization library check this [documentation](https://plot.ly/javascript/reference/).
 ![](https://i.imgur.com/1wE0AJO.png)
 
 ### Installation
@@ -85,4 +89,4 @@ Install npm package in node environment by `npm i ta-math` or add `ta-math.iife.
 
 ### Contributing
 
-Feel free to contribute. Here [reference](http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators) how to implement new indicators. There are test samples in the .xls files, also you can use this [[tool](https://www.browserling.com/tools/text-columns-to-rows)] to convert columns into rows.
+Feel free to contribute. Here [reference](http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators) how to implement new indicators. There are test samples in the .xls files, also you can generate testing data with 'generator.py' file. To convert columns into rows use this [tool](https://www.browserling.com/tools/text-columns-to-rows).
