@@ -1,6 +1,6 @@
 {
   "name": "ta-math",
-  "version": "0.3.5",
+  "version": "0.3.7",
   "description": "Technical analysis library in javascript. Calculates indicators and overlays from ohlcv data",
   "main": "dist/ta-math.cjs.js",
   "module": "dist/ta-math.esm.js",
@@ -14,7 +14,7 @@
     "test": "nyc mocha ./coverage/test.js",
     "bnt": "npm run build && npm run test",
     "browser": "start ./test/test.html",
-    "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "coverage": "nyc report --reporter=lcov",
     "generate": "python ./test/generator.py"
   },
   "eslintIgnore": [
@@ -47,13 +47,14 @@
     "url": "https://github.com/munrocket/ta-math/issues"
   },
   "homepage": "https://github.com/munrocket/ta-math#readme",
-  "dependencies": {},
+  "dependencies": {
+    "codecov": "^3.1.0"
+  },
   "devDependencies": {
     "antlr4": "^4.7.1",
     "babel-core": "^6.26.3",
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-preset-env": "^1.7.0",
-    "coveralls": "^3.0.2",
     "mocha": "^5.2.0",
     "nyc": "^12.0.2",
     "proxy-polyfill": "^0.3.0",

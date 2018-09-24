@@ -4,7 +4,7 @@ Technical analysis math
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat)](https://egghead.io/courses/how-to-contribute-to-an-open-source-project-on-github) 
 ![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg)
 [![Build Status](https://travis-ci.org/munrocket/ta-math.svg?branch=master)](https://travis-ci.org/munrocket/ta-math)
-[![Coverage Status](https://coveralls.io/repos/github/munrocket/ta-math/badge.svg?branch=master)](https://coveralls.io/github/munrocket/ta-math?branch=master)
+[![Codecov](https://img.shields.io/codecov/c/github/munrocket/ta-math)](https://codecov.io/gh/munrocket/ta-math)
 [![dependencies Status](https://david-dm.org/munrocket/ta-math/status.svg)](https://david-dm.org/munrocket/ta-math)
 
 Well tested library for calculating technical indicators and overlays from price data in any format. You choose format and data by yourself and library return charts data. Written in es6 javascript, but also distributed in es5.
