@@ -4,7 +4,7 @@ Technical analysis math
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat)](https://egghead.io/courses/how-to-contribute-to-an-open-source-project-on-github) 
 ![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg)
 [![Build Status](https://travis-ci.org/munrocket/ta-math.svg?branch=master)](https://travis-ci.org/munrocket/ta-math)
-[![Codecov](https://img.shields.io/codecov/c/github/munrocket/ta-math)](https://codecov.io/gh/munrocket/ta-math)
+[![Codecov](https://img.shields.io/codecov/c/github/munrocket/ta-math.svg)](https://codecov.io/gh/munrocket/ta-math)
 [![dependencies Status](https://david-dm.org/munrocket/ta-math/status.svg)](https://david-dm.org/munrocket/ta-math)
 
 Well tested library for calculating technical indicators and overlays from price data in any format. You choose format and data by yourself and library return charts data. Written in es6 javascript, but also distributed in es5.
@@ -59,7 +59,7 @@ Well tested library for calculating technical indicators and overlays from price
 | holtWinters  | Holt-Winters Filtering          |    ❌   | C. C. Holt and P. R. Winters   | 1957 |
 
 ### Visualization
-You can see [interactive example](http://htmlpreview.github.io/?https://github.com/munrocket/ta-math/blob/master/test/test.html) of bollinger bands with plotly library, ccxt data provider and BTC prices from Binance exchange. If you choose plotly as visualization library check this [documentation](https://plot.ly/javascript/reference/).
+You can see [interactive example](https://cdn.rawgit.com/munrocket/ta-math/e1971812/test/test.html) of bollinger bands with plotly library, ccxt data provider and BTC prices from Binance exchange. If you choose plotly as visualization library check this [documentation](https://plot.ly/javascript/reference/).
 ![](https://i.imgur.com/1wE0AJO.png)
 
 ### Installation
