@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Testing page</title>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-  <script src="https://gist.github.com/munrocket/3dccba6c5c3c00bb9cfcc992df329e66"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ccxt@1.17.229/build/ccxt.browser.js"></script>
   <script src="../dist/ta-math.iife.js"></script>
 </head>
 <body>
@@ -36,50 +36,44 @@ fetchFromExchange.then( function(ohlcv) {
 });
 
 function render(ta) {
-  var candlestick = {
-    name: 'BTC/USDT',
-    x: ta.$time, 
-    close: ta.$close, 
-    high: ta.$high, 
-    low: ta.$low, 
-    open: ta.$open, 
-    type: 'candlestick', 
-    decreasing: {line: {color: '#FF3860'}}, 
-    increasing: {line: {color: '#23D160'}}, 
-    line: {color: 'rgba(123,123,12,3)'}, 
-    xaxis: 'x', 
-    yaxis: 'y'
-  };
-  var data = [...bbContext(ta), ...bbContext(ta, true), candlestick];
+  var charts = [
+    { context: barContext(ta), label: "None" },
+    { context: maContext(ta), label: "Simple Moving Average" },
+    { context: maContext(ta, true), label: "Exponential Moving Average" },
+    { context: bbContext(ta), label: "Bollinger Bands" },
+    { context: bbContext(ta, true), label: "Exponential Bollinger Bands" },
+  ];
+  var data = charts.reduce((all, ch) => all.concat(ch.context), []);
+
+  function visibleChart(ch, charts) {
+    result = [true];
+    for (let i = 1; i < charts.length; i++) {
+      for (let j = 0; j < charts[i].context.length; j++) {
+        result.push(ch == charts[i]);
+      }
+    }
+    return result;
+  }
 
   var layout = {
     margin: { r: 5, t: 5, b: 50, l: 5 }, 
     xaxis: { autorange: true, type: 'date' }, 
     yaxis: { autorange: true, type: 'linear' },
-    showlegend: false,
+    showlegend: true,
     dragmode: 'zoom',
     hovermode: 'closest',
-    legend: { y: -0.1, "orientation": "h" },
+    legend: { x: 0.3, y: 1.1, "orientation": "h" },
     updatemenus: [{
       x: 0,
       y: 1,
       xanchor: "left",
       yanchor: "bottom",
-      buttons: [
-      {
-        method: 'restyle',
-        args: ['visible', [false, false, false, false, false, false, true]],
-        label: 'None'
-      },
-      { 
-        method: 'restyle',
-        args: ['visible', [true, true, true, false, false, false, true]],
-        label: 'Bollinger Bands'
-      }, {
-        method: 'restyle',
-        args: ['visible', [false, false, false, true, true, true, true]],
-        label: 'Exponential Bollinger Bands'
-      }]
+      buttons: charts.reduce((all, ch) => {all.push(
+        { method: 'restyle',
+          args: ['visible', visibleChart(ch, charts)],
+          label: ch.label
+        })
+      return all}, [])
     }]
   };
   var defaultPlotlyConfiguration = {
@@ -91,6 +85,47 @@ function render(ta) {
   Plotly.plot('plotly-div', data, layout, defaultPlotlyConfiguration);
 }
 
+function barContext(ta) {
+  return [{
+    name: 'BTC/USDT',
+    x: ta.$time, 
+    close: ta.$close, 
+    high: ta.$high, 
+    low: ta.$low, 
+    open: ta.$open, 
+    type: 'candlestick', 
+    decreasing: {line: {color: '#9a49e5'}}, 
+    increasing: {line: {color: '#28C2ED'}},
+    xaxis: 'x', 
+    yaxis: 'y'
+  }];
+}
+
+function maContext(ta, isExp) {
+  var long = isExp ? ta.ema(21) : ta.sma(21);
+  var short = isExp ? ta.ema(10) : ta.sma(10);
+
+  var maLong = {
+    name: isExp ? 'EMA(21)' : 'SMA(21)',
+    x: ta.$time,
+    y: long,
+    type: 'line',
+    line: {color: 'rgba(170, 120, 34, 0.7)'},
+    visible: false
+  }
+
+  var maShort = {
+    name: isExp ? 'EMA(10)' : 'SMA(10)',
+    x: ta.$time,
+    y: short,
+    type: 'line',
+    line: {color: 'rgba(20, 130, 40, 0.7)'},
+    visible: false
+  }
+
+  return [maLong, maShort];
+}
+
 function bbContext(ta, isExp) {
   var bb = isExp ? ta.ebb() : ta.bb();
   var bbUpper = {
@@ -98,7 +133,7 @@ function bbContext(ta, isExp) {
     x: ta.$time,
     y: bb.upper,
     type: 'line',
-    line: {color: 'rgba(255,255,255,0)'},
+    line: {color: 'rgba(188, 92, 242,0.7)'},
     visible: false
   }
 
@@ -107,7 +142,7 @@ function bbContext(ta, isExp) {
     x: ta.$time,
     y: bb.middle,
     type: 'line',
-    line: {color: '#FFE22F'},
+    line: {color: 'rgba(170, 120, 34, 0.7)'},
     visible: false
   }
 
@@ -115,10 +150,40 @@ function bbContext(ta, isExp) {
     name: isExp ? 'EBB(15,2)' : 'BB(15,2)',
     x: ta.$time,
     y: bb.lower,
-    fill: 'tonexty',
     type: 'line',
-    mode: 'none',
-    line: {color: 'rgba(255,226,150,0.1)'},
+    line: {color: 'rgba(63, 64, 208, 0.7)'},
+    visible: false
+  }
+
+  return [bbUpper, bbLower, bbMiddle];
+}
+
+function macdContext(ta) {
+  var bb = ta.macd();
+  var bbUpper = {
+    showlegend: false,
+    x: ta.$time,
+    y: bb.upper,
+    type: 'line',
+    line: {color: 'rgba(188, 92, 242,0.7)'},
+    visible: false
+  }
+
+  var bbMiddle = {
+    name: isExp ? 'EMA(10)' : 'SMA(15)',
+    x: ta.$time,
+    y: bb.middle,
+    type: 'line',
+    line: {color: 'rgba(170, 120, 34, 0.7)'},
+    visible: false
+  }
+
+  var bbLower = {
+    name: isExp ? 'EBB(15,2)' : 'BB(15,2)',
+    x: ta.$time,
+    y: bb.lower,
+    type: 'line',
+    line: {color: 'rgba(63, 64, 208, 0.7)'},
     visible: false
   }
 

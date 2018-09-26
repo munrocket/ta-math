@@ -12,19 +12,19 @@ Well tested library for calculating technical indicators and overlays from price
 [//]: # (used emoji ✔️️❔❌:suspect:)
 
 ### Technical Overlays
-| Function  | Technical Overlay                     | Tested  | Developed by     | Year |
-|:----------|:--------------------------------------|:-------:|:----------------:|:----:|
-| sma       | Simple Moving Average                 |    ✔️️    |                 |      |
-| ema       | Exponential Moving Average            |    ✔️️    |                 |      |
-| dema      | Double Exponential Moving Average     |   ️ ✔️️    | Patrick  Mulloy | 1994 |
-| tema      | Triple Exponential Moving Average     |   ️ ✔️️    | Patrick  Mulloy | 1994 |
-| bb        | Bollinger Band                        |    ✔️️    | John Bollinger  | 1980s|
-| ebb       | Exponential Bollinger Band            |    ✔️️    |                 |      |
-| psar      | Parabolic SAR                         | :suspect: | Welles Wilder   | 1978 |
-| keltner   | Keltner Channels                      |    ✔️️    | Chester Keltner | 1960 |
-| vbp       | Volume by Price                       |    ✔️️    |                 |      |
-| vwap      | Volume Weighted Average Price         |    ✔️️    | James Elkins    | 1984 |
-| zigzag    | ZigZag Indicator                      |    ✔️️    | Arthur Merrill  | 1977 |
+| Function  | Technical Overlay                     | Tested   | Developed by       | Year |
+|:----------|:--------------------------------------|:--------:|:------------------:|:----:|
+| sma       | Simple Moving Average                 |    ✔️️    |                   |      |
+| ema       | Exponential Moving Average            |    ✔️️    |                   |      |
+| dema      | Double Exponential Moving Average     |   ️ ✔️️    | Patrick  Mulloy   | 1994 |
+| tema      | Triple Exponential Moving Average     |   ️ ✔️️    | Patrick  Mulloy   | 1994 |
+| bb        | Bollinger Band                        |    ✔️️    | John Bollinger    | 1980s|
+| ebb       | Exponential Bollinger Band            |    ✔️️    | Based on Welford's|      |
+| psar      | Parabolic SAR                         | :suspect: | Welles Wilder     | 1978 |
+| keltner   | Keltner Channels                      |    ✔️️    | Chester Keltner   | 1960 |
+| vbp       | Volume by Price                       |    ✔️️    |                   |      |
+| vwap      | Volume Weighted Average Price         |    ✔️️    | James Elkins      | 1984 |
+| zigzag    | ZigZag Indicator                      |    ✔️️    | Arthur Merrill    | 1977 |
 
 ### Technical Indicators
 | Function  | Technical Indicator                   | Tested  | Developed by                      | Year |
@@ -54,21 +54,21 @@ Well tested library for calculating technical indicators and overlays from price
 | nrmse     | Normalized Root-Mean-Square Error     |    ✔️   |
 
 ### Forecasting methods 
-| Function     | Method                  | Tested  | Developed by                   | Year |
+| Function     | Method                          | Tested  | Developed by                   | Year |
 |:-------------|:--------------------------------|:-------:|:------------------------------:|:----:|
 | holtWinters  | Holt-Winters Filtering          |    ❌   | C. C. Holt and P. R. Winters   | 1957 |
 
 ### Visualization
-You can see [interactive example](https://cdn.rawgit.com/munrocket/ta-math/e1971812/test/test.html) of bollinger bands with plotly library, ccxt data provider and BTC prices from Binance exchange. If you choose plotly as visualization library check this [documentation](https://plot.ly/javascript/reference/).
-![](https://i.imgur.com/1wE0AJO.png)
+![btc-with-bollinger-bands](https://i.imgur.com/moDdzmM.png)
+You can check [interactive example](https://cdn.rawgit.com/munrocket/ta-math/e1971812/test/test.html) of with plotly library, ccxt data provider and BTC prices from Binance exchange.
 
 ### Installation
 Install npm package in node environment by `npm i ta-math` or add `ta-math.iife.js` script file in web page.
 
 ### Usage
 ```
-  var ohlcv = [[t0,o0,h0,l0,c0,v0],  ...  ,[tN,oN,hN,lN,cN,vN]];
-  var ta = new TA(ohlcv, exchangeFormat);
+  var ohlcv = [[t,o,h,l,c,v], [t2,o2,h2,l2,c2,v2],  ...  ,[tN,oN,hN,lN,cN,vN]];
+  var ta = new TA(ohlcv, TA.exchangeFormat);
   var emaShort = ta.ema(10);
   var emaLong = ta.ema(21);
   var bband = ta.bb(15, 2);
@@ -80,7 +80,6 @@ Install npm package in node environment by `npm i ta-math` or add `ta-math.iife.
 
 - [X] basic indicators and overlays
 - [X] unit tests
-- [X] proxy for ohlcv
 - [X] es5 with babel
 - [X] coverage
 - [X] good looking example
