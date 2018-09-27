@@ -7,7 +7,11 @@ Technical analysis math
 [![Codecov](https://img.shields.io/codecov/c/github/munrocket/ta-math.svg)](https://codecov.io/gh/munrocket/ta-math)
 [![dependencies Status](https://david-dm.org/munrocket/ta-math/status.svg)](https://david-dm.org/munrocket/ta-math)
 
-Well tested library for calculating technical indicators and overlays from price data in any format. You choose format and data by yourself and library return charts data. Written in es6 javascript, but also distributed in es5.
+Well tested library for calculating technical indicators and overlays from price data in any format. You choose format and data by yourself and library return charts data. Written in es6 javascript, but also distributed in es5. 
+
+![btc-with-bollinger-bands](https://i.imgur.com/moDdzmM.png)
+
+You can check [example](https://cdn.rawgit.com/munrocket/ta-math/9436df09/test/test.html) with plotly library, ccxt data provider and BTC prices from Binance exchange.
 
 [//]: # (used emoji ✔️️❔❌:suspect:)
 
@@ -58,12 +62,8 @@ Well tested library for calculating technical indicators and overlays from price
 |:-------------|:--------------------------------|:-------:|:------------------------------:|:----:|
 | holtWinters  | Holt-Winters Filtering          |    ❌   | C. C. Holt and P. R. Winters   | 1957 |
 
-### Visualization
-![btc-with-bollinger-bands](https://i.imgur.com/moDdzmM.png)
-You can check [interactive example](https://cdn.rawgit.com/munrocket/ta-math/e1971812/test/test.html) of with plotly library, ccxt data provider and BTC prices from Binance exchange.
-
 ### Installation
-Install npm package in node environment by `npm i ta-math` or add `ta-math.iife.js` script file in web page.
+Install npm package `npm i ta-math` or add `ta-math.iife.js` script file on web page.
 
 ### Usage
 ```
