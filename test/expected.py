@@ -1,14 +1,7 @@
 import numpy as np
 from talib.abstract import *
 
-# series = {
-#     'open': np.random.random(80),
-#     'high': np.random.random(80),
-#     'low': np.random.random(80),
-#     'close': np.random.random(80),
-#     'volume': np.random.random(80)
-# }
-
+# series = {'open': np.random.random(80), 'high': np.random.random(80), 'low': np.random.random(80), 'close': np.random.random(80), 'volume': np.random.random(80)}
 series = {
     'high': np.array([9.8,9.6,9.9,9.8,9.2,9.4,9.5,9.3,9.9,10.2,10.1,10.5,11.3,11.6,11.6,11.8,11.9,11.9,11.6,11.4,11.2,11.4,\
         11.3,11.3,10.9,10.8,10.7,10.8,10.0,10.1,9.8,9.8,9.5,9.4,9.5,9.4,9.6,10.0,10.0,9.8,10.1,10.0,9.4,9.5,9.3,9.4,9.4,10.1]),
@@ -19,5 +12,4 @@ series = {
 }
 
 print(series);
-#print(list(TEMA(series, timeperiod=15)));
 print(list(SAR(series)));

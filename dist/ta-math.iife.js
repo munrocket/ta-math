@@ -46,27 +46,39 @@ var TA = (function () {
   }
 
   function sd(series) {
-    return rmse(series, new Array(series.length).fill(mean(series)));
+    var E = mean(series);
+    var E2 = mean(pointwise(function (x) {
+      return x * x;
+    }, series));
+    return Math.sqrt(E2 - E * E);
+  }
+
+  function cov(f, g) {
+    var Ef = mean(f),
+        Eg = mean(g);
+    var Efg = mean(pointwise(function (a, b) {
+      return a * b;
+    }, f, g));
+    return Efg - Ef * Eg;
+  }
+
+  function cor(f, g) {
+    var Ef = mean(f),
+        Eg = mean(g);
+    var Ef2 = mean(pointwise(function (a) {
+      return a * a;
+    }, f));
+    var Eg2 = mean(pointwise(function (a) {
+      return a * a;
+    }, g));
+    var Efg = mean(pointwise(function (a, b) {
+      return a * b;
+    }, f, g));
+    return (Efg - Ef * Eg) / Math.sqrt((Ef2 - Ef * Ef) * (Eg2 - Eg * Eg));
   }
 
   function mad(array) {
     return mae(array, new Array(array.length).fill(mean(array)));
-  }
-
-  /* scaled and percentage errors */
-
-  function mae(f, g) {
-    var absDiff = pointwise(function (a, b) {
-      return Math.abs(a - b);
-    }, f, g);
-    return f.length != g.length ? Infinity : mean(absDiff);
-  }
-
-  function rmse(f, g) {
-    var sqrDiff = pointwise(function (a, b) {
-      return (a - b) * (a - b);
-    }, f, g);
-    return f.length != g.length ? Infinity : Math.sqrt(mean(sqrDiff));
   }
 
   /* functional programming */
@@ -95,6 +107,15 @@ var TA = (function () {
       result.push(operation(series.slice(j > 0 ? j : 0, i + 1)));
     }
     return result;
+  }
+
+  /* scaled and percentage errors */
+
+  function mae(f, g) {
+    var absDiff = pointwise(function (a, b) {
+      return Math.abs(a - b);
+    }, f, g);
+    return f.length != g.length ? Infinity : mean(absDiff);
   }
 
   /* core indicators & overlays */
@@ -708,6 +729,9 @@ var TA = (function () {
         var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 14;
         return TA.roc(this.$close, window);
       }
+
+      /* correlation functions */
+
     }, {
       key: '$time',
       get: function get$$1() {
@@ -910,6 +934,16 @@ var TA = (function () {
       value: function roc$$1($close) {
         var window = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 14;
         return roc($close, window);
+      }
+    }, {
+      key: 'cov',
+      value: function cov$$1(f, g) {
+        return cov(f, g);
+      }
+    }, {
+      key: 'cor',
+      value: function cor$$1(f, g) {
+        return cor(f, g);
       }
     }, {
       key: 'simpleFormat',

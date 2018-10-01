@@ -57,13 +57,21 @@ You can check [example](https://cdn.rawgit.com/munrocket/ta-math/9436df09/test/t
 | rmse      | Root-Mean-Square Error                |    ✔️   |
 | nrmse     | Normalized Root-Mean-Square Error     |    ✔️   |
 
+### Statistics methods
+| Function  | Statistics methods                    | Tested  |
+|:----------|:--------------------------------------|:-------:|
+| mean      | Mean (Average)                        |    ✔️   |
+| sd        | Standard deviation                    |    ✔️   |
+| cov       | Covariation                           |    ✔️   |
+| cor       | Correlation                           |    ✔️   |
+
+### Correlation matrix
+![correlation-matrix](https://i.imgur.com/6tVQifE.png)
+
 ### Forecasting methods 
 | Function     | Method                          | Tested  | Developed by                   | Year |
 |:-------------|:--------------------------------|:-------:|:------------------------------:|:----:|
 | holtWinters  | Holt-Winters Filtering          |    ❌   | C. C. Holt and P. R. Winters   | 1957 |
-
-### Installation
-Install npm package `npm i ta-math` or add `ta-math.iife.js` script file on web page.
 
 ### Usage
 ```
@@ -74,7 +82,11 @@ Install npm package `npm i ta-math` or add `ta-math.iife.js` script file on web 
   var bband = ta.bb(15, 2);
   var bbUpper = bband.upper;
   var bbLower = bband.lower;
+  var smaOpenPrice = TA.sma(ta.$open);
 ```
+
+### Installation
+Install npm package `npm i ta-math` or add `ta-math.iife.js` script file on web page.
 
 ### 2do list
 

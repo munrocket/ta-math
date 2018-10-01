@@ -11,14 +11,17 @@
 </head>
 <body>
 
-<!-- Plotly chart will be drawn inside this div -->
-<div id="plotly-div" style="width: 800px; height: 500px;"></div>
+<!-- Plotly chart -->
+<div id="plotly-chart" style="width: 800px; height: 500px;"></div>
+
+<!-- Plotly heat map -->
+<div id="plotly-heat-map" style="width: 400px; height: 400px;"></div>
 
 <script>
-var fetchFromExchange = new ccxt.binance({'proxy': 'https://cors-anywhere.herokuapp.com/'}).fetchOHLCV ('BTC/USDT', '1d', Date.now() - 1000*60*60*24*30*5);
+var fetchBinance = function(x, nmonths) { return new ccxt.binance({'proxy': 'https://cors-anywhere.herokuapp.com/'}).fetchOHLCV(x, '1d', Date.now() - 1000*60*60*24*30*nmonths) };
 
-fetchFromExchange.then( function(ohlcv) {
-  render(new TA(ohlcv));
+fetchBinance('BTC/USDT', 5).then( function(ohlcv) {
+  renderChart(new TA(ohlcv));
 }).catch( function(err) {
   Plotly.d3.csv("https://raw.githubusercontent.com/munrocket/ta-math/master/test/data.csv", function (err, rows) {
     window.alert("CORS/Binance server not answer. CSV data will be used")
@@ -31,11 +34,40 @@ fetchFromExchange.then( function(ohlcv) {
       });
     };
     var ohlcv = unpack(rows, ['time', 'open', 'high', 'low', 'close', 'volume']);
-    render(new TA(ohlcv));
+    renderChart(new TA(ohlcv));
   });
 });
 
-function render(ta) {
+var tickersArray = ['BTC/USDT', 'ETH/USDT', 'EOS/USDT', 'LTC/USDT', 'ADA/USDT', 'NEO/USDT', 'IOTA/USDT'];
+Promise.all(tickersArray.map(x => fetchBinance(x, 2))).then(function(arr) {
+  arr = arr.map(x => new TA(x).$close);
+  let heatMap = new Array(arr.length), corij;
+  for (let i = 0; i < arr.length; i++) {
+    heatMap[i] = [];
+    for (let j = 0; j <= i; j++) {
+      if (i == j) {
+        heatMap[i].push(1);
+      } else {
+        corij = TA.cor(arr[i], arr[j]);
+        heatMap[i].push(corij);
+        heatMap[j].push(corij);
+      }
+    }
+  }
+  renderHeatMap(heatMap);
+}).catch();
+
+function renderHeatMap(heatMap) {
+  Plotly.newPlot('plotly-heat-map', [{
+    x: tickersArray,
+    y: tickersArray,
+    z: heatMap,
+    colorscale: [['0.0', 'rgb(155, 31, 221)'], ['1.0', 'rgb(97, 197, 237)']],
+    type: 'heatmap'
+  }]);
+};
+
+function renderChart(ta) {
   //note that this is not a production ready code and just quick hack
   var charts = [
     { context: barContext(ta), label: "None" },
@@ -84,7 +116,7 @@ function render(ta) {
     showTips: true
   };
 
-  Plotly.plot('plotly-div', data, layout, defaultPlotlyConfiguration);
+  Plotly.plot('plotly-chart', data, layout, defaultPlotlyConfiguration);
 }
 
 function barContext(ta) {
@@ -131,6 +163,7 @@ function maContext(ta, isExp) {
 function bbContext(ta, isExp) {
   var bb = isExp ? ta.ebb() : ta.bb();
   var bbUpper = {
+    name: isExp ? 'upper EBB(15,2)' : 'upper BB(15,2)',
     x: ta.$time,
     y: bb.upper,
     type: 'line',
@@ -148,7 +181,7 @@ function bbContext(ta, isExp) {
   }
 
   var bbLower = {
-    name: isExp ? 'EBB(15,2)' : 'BB(15,2)',
+    name: isExp ? 'lower' : 'lower',
     x: ta.$time,
     y: bb.lower,
     type: 'line',
@@ -215,7 +248,7 @@ function keltnerContext(ta) {
   }
 
   var signal = {
-    name: 'macd-bearish',
+    name: 'bearish',
     x: ta.$time,
     y: keltner.signal.map((x, i) => (x > macd.line[i]) ? x : macd.line[i]).map(x => shift + mult * x),
     fill: 'tonexty',
@@ -225,7 +258,7 @@ function keltnerContext(ta) {
   }
 
   var signal2 = {
-    name: 'macd-bullish',
+    name: 'bullish',
     x: ta.$time,
     y: keltner.signal.map((x, i) => (x > macd.line[i]) ? macd.line[i] :  x).map(x => shift + mult * x),
     fill: 'tonexty',

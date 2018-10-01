@@ -10,3 +10,4 @@ coverage
 
 # Next version
 lib/
+build/

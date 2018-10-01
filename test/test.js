@@ -40,11 +40,28 @@ describe('Getters formats', () => {
 })
 
 describe('Mean, SD', () => {
-  let data = [53.73,53.87,53.85,53.88,54.08,54.14,54.50,54.30,54.40,54.16];
-  let delta = Math.abs(mean(data) - 54.09);
+  let f = [21.40, 21.71, 21.20, 21.34, 21.49, 21.39, 22.16, 22.53, 22.44, 22.75, 23.23, 23.09, 22.85, 22.45, 22.48, 22.27, 22.37, 22.28, 23.06, 22.99];
+  let expected = 22.2738;
+  let actual = mean(f);
+  let delta = Math.abs(expected - actual);
   it(`Direct mean test (${delta.toFixed(5)})`, () => assert.ok(delta < 1e-2));
-  delta = Math.abs(sd(data) - 0.24);
+  expected = Math.sqrt(0.3985);
+  actual = sd(f);
+  delta = Math.abs(expected - actual);
   it(`Direct sd test (${delta.toFixed(5)})`, () => assert.ok(delta < 1e-2));
+})
+
+describe('Cov, Cor', () => {
+  let f = [21.40, 21.71, 21.20, 21.34, 21.49, 21.39, 22.16, 22.53, 22.44, 22.75, 23.23, 23.09, 22.85, 22.45, 22.48, 22.27, 22.37, 22.28, 23.06, 22.99];
+  let g = [54.83, 55.34, 54.38, 55.25, 56.07, 56.30, 57.05, 57.91, 58.20, 58.39, 59.19, 59.03, 57.96, 57.52, 57.76, 57.09, 57.85, 57.54, 58.85, 58.60];
+  let expected = 0.8484;
+  let actual = TA.cov(f, g);
+  let delta = Math.abs(expected - actual);
+  it(`Direct Cov test (${delta.toFixed(5)})`, () => assert.ok(delta < 1e-2));
+  expected = 0.9582;
+  actual = TA.cor(f, g);
+  delta = Math.abs(expected - actual);
+  it(`Direct Cor test (${delta.toFixed(5)})`, () => assert.ok(delta < 1e-2));
 })
 
 describe('MAE', () => {
@@ -508,11 +525,6 @@ describe('ROC', () => {
   let delta = nrmse(expected.slice(12), actual.slice(12));
   it(`Precision test (NRMSE=${delta.toFixed(5)})`, () => assert.ok(delta < 1e-2));
 })
-
-// describe('test', () => {
-//   let series = [3,10,12,13,12,10,12];
-
-// })
 
 // describe('HoltWinters', () => {
 //   let series = [30,21,29,31,40,48,53,47,37,39,31,29,17,9,20,24,27,35,41,38,

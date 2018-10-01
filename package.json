@@ -12,10 +12,11 @@
     "build": "rollup -c",
     "watch": "rollup -c -w",
     "test": "nyc mocha ./coverage/test.js",
-    "bnt": "npm run build && npm run test",
     "browser": "start ./test/test.html",
+    "ci": "npm run build && npm run test",
     "coverage": "nyc report --reporter=lcov",
-    "generate": "python ./test/generator.py"
+    "expected": "python ./test/expected.py",
+    "antlr": "antlr4 -Dlanguage=JavaScript -lib lib -o build -Xexact-output-dir lib/ECMAScript.g4 -visitor"
   },
   "eslintIgnore": [
     "dist",
@@ -47,14 +48,12 @@
     "url": "https://github.com/munrocket/ta-math/issues"
   },
   "homepage": "https://github.com/munrocket/ta-math#readme",
-  "dependencies": {
-    "codecov": "^3.1.0"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "antlr4": "^4.7.1",
     "babel-core": "^6.26.3",
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-preset-env": "^1.7.0",
+    "codecov": "^3.1.0",
     "mocha": "^5.2.0",
     "nyc": "^12.0.2",
     "rollup": "^0.63.5",

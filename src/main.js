@@ -86,4 +86,9 @@ export default class TA {
   atr(window = 14)                                                      { return TA.atr(this.$high, this.$low, this.$close, window) }
   williams(window = 14)                                                 { return TA.williams(this.$high, this.$low, this.$close, window) }
   roc(window = 14)                                                      { return TA.roc(this.$close, window) }
+
+  /* correlation functions */
+
+  static cov(f, g)                                                      { return core.cov(f, g) }
+  static cor(f, g)                                                      { return core.cor(f, g) }
 }

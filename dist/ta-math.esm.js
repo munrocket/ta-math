@@ -9,23 +9,27 @@ function mean(series) {
 }
 
 function sd(series) {
-  return rmse(series, new Array(series.length).fill(mean(series)));
+  let E = mean(series);
+  let E2 = mean(pointwise(x => x * x, series));
+  return Math.sqrt(E2 - E * E);
+}
+
+function cov(f, g) {
+  let Ef = mean(f), Eg = mean(g);
+  let Efg = mean(pointwise((a, b) => a * b, f, g));
+  return Efg - Ef * Eg;
+}
+
+function cor(f, g) {
+  let Ef = mean(f), Eg = mean(g);
+  let Ef2 = mean(pointwise((a) => a * a, f));
+  let Eg2 = mean(pointwise((a) => a * a, g));
+  let Efg = mean(pointwise((a, b) => a * b, f, g));
+  return (Efg - Ef * Eg) / Math.sqrt((Ef2 - Ef * Ef) * (Eg2 - Eg * Eg));
 }
 
 function mad(array) {
   return mae(array, new Array(array.length).fill(mean(array)));
-}
-
-/* scaled and percentage errors */
-
-function mae(f, g) {
-  const absDiff = pointwise((a, b) => Math.abs(a - b), f, g);
-  return (f.length != g.length) ? Infinity : mean(absDiff);
-}
-
-function rmse(f, g) {
-  const sqrDiff = pointwise((a, b) => (a - b) * (a - b), f, g);
-  return (f.length != g.length) ? Infinity : Math.sqrt(mean(sqrDiff));
 }
 
 /* functional programming */
@@ -46,6 +50,13 @@ function rolling(operation, window, series) {
     result.push(operation(series.slice((j > 0) ? j : 0, i + 1)));
   }
   return result;
+}
+
+/* scaled and percentage errors */
+
+function mae(f, g) {
+  const absDiff = pointwise((a, b) => Math.abs(a - b), f, g);
+  return (f.length != g.length) ? Infinity : mean(absDiff);
 }
 
 /* core indicators & overlays */
@@ -412,6 +423,11 @@ class TA {
   atr(window = 14)                                                      { return TA.atr(this.$high, this.$low, this.$close, window) }
   williams(window = 14)                                                 { return TA.williams(this.$high, this.$low, this.$close, window) }
   roc(window = 14)                                                      { return TA.roc(this.$close, window) }
+
+  /* correlation functions */
+
+  static cov(f, g)                                                      { return cov(f, g) }
+  static cor(f, g)                                                      { return cor(f, g) }
 }
 
 export default TA;

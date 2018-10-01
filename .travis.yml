@@ -2,7 +2,7 @@ language: node_js
 node_js:
   - 6
 script:
-  - npm run bnt
+  - npm run ci
 after_success: 
   - npm run coverage
   - bash <(curl -s https://codecov.io/bash)

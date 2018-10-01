@@ -9,11 +9,47 @@ export function mean(series) {
 }
 
 export function sd(series) {
-  return rmse(series, new Array(series.length).fill(mean(series)));
+  let E = mean(series);
+  let E2 = mean(pointwise(x => x * x, series));
+  return Math.sqrt(E2 - E * E);
+}
+
+export function cov(f, g) {
+  let Ef = mean(f), Eg = mean(g);
+  let Efg = mean(pointwise((a, b) => a * b, f, g));
+  return Efg - Ef * Eg;
+}
+
+export function cor(f, g) {
+  let Ef = mean(f), Eg = mean(g);
+  let Ef2 = mean(pointwise((a) => a * a, f));
+  let Eg2 = mean(pointwise((a) => a * a, g));
+  let Efg = mean(pointwise((a, b) => a * b, f, g));
+  return (Efg - Ef * Eg) / Math.sqrt((Ef2 - Ef * Ef) * (Eg2 - Eg * Eg));
 }
 
 export function mad(array) {
   return mae(array, new Array(array.length).fill(mean(array)));
+}
+
+/* functional programming */
+
+export function pointwise(operation, ...serieses) {
+  let result = [];
+  for (let i = 0, len = serieses[0].length; i < len; i++) {
+    let iseries = (i) => serieses.map(x => x[i]);
+    result[i] = operation(...iseries(i));
+  }
+  return result;
+}
+
+export function rolling(operation, window, series) {
+  let result = [];
+  for (let i = 0, len = series.length; i < len; i++) {
+    let j = i + 1 - window;
+    result.push(operation(series.slice((j > 0) ? j : 0, i + 1)));
+  }
+  return result;
 }
 
 /* scaled and percentage errors */
@@ -35,26 +71,6 @@ export function nrmse(f, g) {
 export function mape(f, g) {
   const frac = pointwise((a, b) => Math.abs((a - b) / a), f, g);
   return (f.length != g.length) ? Infinity : mean(frac) * 100;
-}
-
-/* functional programming */
-
-export function pointwise(operation, ...serieses) {
-  let result = [];
-  for (let i = 0, len = serieses[0].length; i < len; i++) {
-    let iseries = (i) => serieses.map(x => x[i]);
-    result[i] = operation(...iseries(i));
-  }
-  return result;
-}
-
-export function rolling(operation, window, series) {
-  let result = [];
-  for (let i = 0, len = series.length; i < len; i++) {
-    let j = i + 1 - window;
-    result.push(operation(series.slice((j > 0) ? j : 0, i + 1)));
-  }
-  return result;
 }
 
 /* core indicators & overlays */
