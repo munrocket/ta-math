@@ -119,21 +119,59 @@ function trueRange($high, $low, $close) {
 
 /* indicators */
 
-function macd($close, wshort, wlong, wsig) {
-  const line = pointwise((a, b) => a - b, ema($close, wshort), ema($close, wlong));
-  const signal = ema(line, wsig);
-  const hist = pointwise((a, b) => a - b, line, signal);
-  return { line: line, signal: signal, hist: hist };
+function adl($high, $low, $close, $volume) {
+  let adl = [$volume[0] * (2*$close[0] - $low[0] - $high[0]) / ($high[0] - $low[0])];
+  for (let i = 1, len = $high.length; i < len; i++) {
+    adl[i] = adl[i - 1] + $volume[i] * (2*$close[i] - $low[i] - $high[i]) / ($high[i] - $low[i]);
+  }
+  return adl;
 }
 
-function rsi($close, window) {
-  let gains = [0], loss = [1e-14];
-  for (let i = 1, len = $close.length; i < len; i++) {
-    let diff = $close[i] - $close[i - 1];
-    gains.push(diff >= 0 ? diff : 0);
-    loss.push(diff < 0 ? -diff : 0);
+function adx($high, $low, $close, window) {
+  let dmp = [0], dmm = [0];
+  for(let i = 1, len = $low.length; i < len; i++) {
+    let hd = $high[i] - $high[i - 1];
+    let ld = $low[i - 1] - $low[i];
+    dmp.push((hd > ld) ? Math.max(hd, 0) : 0);
+    dmm.push((ld > hd) ? Math.max(ld, 0) : 0);
   }
-  return pointwise((a, b) => 100 - 100 / (1 + a / b), ema(gains, 2 * window - 1), ema(loss, 2 * window - 1));
+  let str = wilderSmooth(trueRange($high, $low, $close), window);
+  dmp = wilderSmooth(dmp, window);
+  dmm = wilderSmooth(dmm, window);
+  let dip = pointwise((a, b) => 100 * a / b, dmp, str);
+  let dim = pointwise((a, b) => 100 * a / b, dmm, str);
+  let dx = pointwise((a, b) => 100 * Math.abs(a - b) / (a + b), dip, dim);
+  //console.log("dip,dim", pointwise((a, b, c) => [a, b, c], dip, dim, dx));
+  return {dip: dip, dim: dim, adx: new Array(14).fill(NaN).concat(ema(dx.slice(14), 2 * window - 1))};
+}
+
+function cci($high, $low, $close, window, mult) {
+  let tp = typicalPrice($high, $low, $close);
+  let tpsma = sma(tp, window);
+  let tpmad = madev(tp, window);
+  tpmad[0] = Infinity;
+  return pointwise((a, b, c) => (a - b) / (c * mult), tp, tpsma, tpmad);
+}
+
+function fi($close, $volume, window) {
+  let delta = rolling(x => x[x.length - 1] - x[0], 2, $close);
+  return ema(pointwise((a, b) => a * b, delta, $volume), window);
+}
+
+function kst($close, w1, w2, w3, w4, s1, s2, s3, s4, sig) {
+  let rcma1 = sma(roc($close, w1), s1);
+  let rcma2 = sma(roc($close, w2), s2);
+  let rcma3 = sma(roc($close, w3), s3);
+  let rcma4 = sma(roc($close, w4), s4);
+  let line = pointwise((a, b, c, d) => a + b + c + d, rcma1, rcma2, rcma3, rcma4);
+  return { line: line, signal: sma(line, sig) };
+}
+
+function macd($close, winshort, winlong, winsig) {
+  const line = pointwise((a, b) => a - b, ema($close, winshort), ema($close, winlong));
+  const signal = ema(line, winsig);
+  const hist = pointwise((a, b) => a - b, line, signal);
+  return { line: line, signal: signal, hist: hist };
 }
 
 function mfi($high, $low, $close, $volume, window) {
@@ -147,6 +185,28 @@ function mfi($high, $low, $close, $volume, window) {
   pmf = rolling(x => x.reduce((sum, x) => {return sum + x}, 0), window, pmf);
   nmf = rolling(x => x.reduce((sum, x) => {return sum + x}, 0), window, nmf);
   return pointwise((a, b) => 100 - 100 / (1 + a / b), pmf, nmf);
+}
+
+function obv($close, $volume, signal) {
+  let obv = [0];
+  for (let i = 1, len = $close.length; i < len; i++) {
+    obv.push(obv[i - 1] + Math.sign($close[i] - $close[i - 1]) * $volume[i]);
+  }
+  return {line: obv, signal: sma(obv, signal)};
+}
+
+function roc($close, window) {
+  return rolling(x => 100 * (x[x.length - 1] - x[0]) / x[0], window, $close);
+}
+
+function rsi($close, window) {
+  let gains = [0], loss = [1e-14];
+  for (let i = 1, len = $close.length; i < len; i++) {
+    let diff = $close[i] - $close[i - 1];
+    gains.push(diff >= 0 ? diff : 0);
+    loss.push(diff < 0 ? -diff : 0);
+  }
+  return pointwise((a, b) => 100 - 100 / (1 + a / b), ema(gains, 2 * window - 1), ema(loss, 2 * window - 1));
 }
 
 function stoch($high, $low, $close, window, signal, smooth) {
@@ -177,68 +237,11 @@ function vi($high, $low, $close, window) {
   return { plus: pointwise((a, b) => a / b, apv, atr$$1), minus: pointwise((a, b) => a / b, anv, atr$$1) };
 }
 
-function cci($high, $low, $close, window, mult) {
-  let tp = typicalPrice($high, $low, $close);
-  let tpsma = sma(tp, window);
-  let tpmad = madev(tp, window);
-  tpmad[0] = Infinity;
-  return pointwise((a, b, c) => (a - b) / (c * mult), tp, tpsma, tpmad);
-}
-
-function obv($close, $volume, signal) {
-  let obv = [0];
-  for (let i = 1, len = $close.length; i < len; i++) {
-    obv.push(obv[i - 1] + Math.sign($close[i] - $close[i - 1]) * $volume[i]);
-  }
-  return {line: obv, signal: sma(obv, signal)};
-}
-
-function adl($high, $low, $close, $volume) {
-  let adl = [$volume[0] * (2*$close[0] - $low[0] - $high[0]) / ($high[0] - $low[0])];
-  for (let i = 1, len = $high.length; i < len; i++) {
-    adl[i] = adl[i - 1] + $volume[i] * (2*$close[i] - $low[i] - $high[i]) / ($high[i] - $low[i]);
-  }
-  return adl;
-}
-
-function adx($high, $low, $close, window) {
-  let dmp = [0], dmm = [0];
-  for(let i = 1; i < $low.length; i++) {
-    let hd = $high[i] - $high[i - 1];
-    let ld = $low[i - 1] - $low[i];
-    dmp.push((hd > ld) ? Math.max(hd, 0) : 0);
-    dmm.push((ld > hd) ? Math.max(ld, 0) : 0);
-  }
-  let str = wilderSmooth(trueRange($high, $low, $close), window);
-  dmp = wilderSmooth(dmp, window);
-  dmm = wilderSmooth(dmm, window);
-  let dip = pointwise((a, b) => 100 * a / b, dmp, str);
-  let dim = pointwise((a, b) => 100 * a / b, dmm, str);
-  let dx = pointwise((a, b) => 100 * Math.abs(a - b) / (a + b), dip, dim);
-  //console.log("dip,dim", pointwise((a, b, c) => [a, b, c], dip, dim, dx));
-  return {dip: dip, dim: dim, adx: new Array(14).fill(NaN).concat(ema(dx.slice(14), 2 * window - 1))};
-}
-
-function roc($close, window) {
-  return rolling(x => 100 * (x[x.length - 1] - x[0]) / x[0], window, $close);
-}
-
 function williams($high, $low, $close, window) {
   return pointwise(x => x - 100, stoch($high, $low, $close, window, 1, 1).line);
 }
 
 /* overlays */
-
-function dema($close, window) {
-  let ema1 = ema($close, window);
-  return pointwise((a, b) => 2 * a - b, ema1, ema(ema1, window));
-}
-
-function tema($close, window) {
-  let ema1 = ema($close, window);
-  let ema2 = ema(ema1, window);
-  return pointwise((a, b, c) => 3 * a - 3 * b + c, ema1, ema2, ema(ema2, window));
-}
 
 function bb($close, window, mult) {
   let ma = sma($close, window);
@@ -248,12 +251,24 @@ function bb($close, window, mult) {
   return { lower : lower, middle : ma, upper : upper };
 }
 
+function dema($close, window) {
+  let ema1 = ema($close, window);
+  return pointwise((a, b) => 2 * a - b, ema1, ema(ema1, window));
+}
+
 function ebb($close, window, mult) {
   let ma = ema($close, window);
   let dev = expdev($close, window);
   let upper = pointwise((a, b) => a + b * mult, ma, dev);
   let lower = pointwise((a, b) => a - b * mult, ma, dev);
   return { lower : lower, middle : ma, upper : upper };
+}
+
+function keltner($high, $low, $close, window, mult) {
+  let middle = ema($close, window);
+  let upper = pointwise((a, b) => a + mult * b, middle, atr($high, $low, $close, window));
+  let lower = pointwise((a, b) => a - mult * b, middle, atr($high, $low, $close, window));
+  return { lower: lower, middle: middle, upper: upper };
 }
 
 function psar($high, $low, stepfactor, maxfactor) {
@@ -279,6 +294,12 @@ function psar($high, $low, stepfactor, maxfactor) {
   return psar;
 }
 
+function tema($close, window) {
+  let ema1 = ema($close, window);
+  let ema2 = ema(ema1, window);
+  return pointwise((a, b, c) => 3 * a - 3 * b + c, ema1, ema2, ema(ema2, window));
+}
+
 function vbp($close, $volume, zones, left, right) {
   let total = 0;
   let bottom = Infinity;
@@ -294,13 +315,6 @@ function vbp($close, $volume, zones, left, right) {
     vbp[Math.floor(($close[i] - bottom) / (top - bottom) * (zones - 1))] += $volume[i];
   }
   return { bottom: bottom, top: top, volumes: vbp.map((x) => { return x / total }) };
-}
-
-function keltner($high, $low, $close, window, mult) {
-  let middle = ema($close, window);
-  let upper = pointwise((a, b) => a + mult * b, middle, atr($high, $low, $close, window));
-  let lower = pointwise((a, b) => a - mult * b, middle, atr($high, $low, $close, window));
-  return { lower: lower, middle: middle, upper: upper };
 }
 
 function vwap($high, $low, $close, $volume) {
@@ -396,69 +410,73 @@ class TA {
   static get simpleFormat()   { return simpleFormat }
   static get exchangeFormat() { return exchangeFormat }
   static get objectFormat()   { return objectFormat }
+  
+  /* correlation and covariance */
+  static cov(f, g)            { return cov(f, g) }
+  static cor(f, g)            { return cor(f, g) }
 
   /* static defenition of technical analysis methods */
-  static sma($close, window = 15)                                       { return sma($close, window) }
-  static ema($close, window = 10)                                       { return ema($close, window) }
-  static dema($close, window = 10)                                      { return dema($close, window) }
-  static tema($close, window = 10)                                      { return tema($close, window) }
-  static bb($close, window = 15, mult = 2)                              { return bb($close, window, mult) }
-  static ebb($close, window = 10, mult = 2)                             { return ebb($close, window, mult) }
-  static psar($high, $low, factor = 0.02, maxfactor = 0.2)              { return psar($high, $low, factor, maxfactor) }
-  static vbp($close, $volume, zones = 12, left = 0, right = NaN)        { return vbp($close, $volume, zones, left, right) }
-  static keltner($high, $low, $close, window = 14, mult = 2)            { return keltner($high, $low, $close, window, mult) }
-  static vwap($high, $low, $close, $volume)                             { return vwap($high, $low, $close, $volume) }
-  static zigzag($time, $high, $low, percent = 15)                       { return zigzag($time, $high, $low, percent) }    
-  static stdev($close, window = 15)                                     { return stdev($close, window) }
-  static madev($close, window = 15)                                     { return madev($close, window) }
-  static expdev($close, window = 15)                                    { return expdev($close, window) }
-  static macd($close, wshort = 12, wlong = 26, wsig = 9)                { return macd($close, wshort, wlong, wsig) }
-  static rsi($close, window = 14)                                       { return rsi($close, window) }
-  static mfi($high, $low, $close, $volume, window = 14)                 { return mfi($high, $low, $close, $volume, window) }
-  static stoch($high, $low, $close, window = 14, signal = 3, smooth = 1){ return stoch($high, $low, $close, window, signal, smooth) }
-  static stochRsi($close, window = 14, signal = 3, smooth = 1)          { return stochRsi($close, window, signal, smooth) }
-  static vi($high, $low, $close, window = 14)                           { return vi($high, $low, $close, window) }
-  static cci($high, $low, $close, window = 20, mult = 0.015)            { return cci($high, $low, $close, window, mult) }
-  static obv($close, $volume, signal = 10)                              { return obv($close, $volume, signal) }
-  static adl($high, $low, $close, $volume)                              { return adl($high, $low, $close, $volume) }
-  static atr($high, $low, $close, window = 14)                          { return atr($high, $low, $close, window) }
-  static adx($high, $low, $close, window = 14)                          { return adx($high, $low, $close, window) }
-  static williams($high, $low, $close, window = 14)                     { return williams($high, $low, $close, window) }
-  static roc($close, window = 14)                                       { return roc($close, window) }
+  static adl($high, $low, $close, $volume)                                          { return adl($high, $low, $close, $volume) }
+  static atr($high, $low, $close, window = 14)                                      { return atr($high, $low, $close, window) }
+  static adx($high, $low, $close, window = 14)                                      { return adx($high, $low, $close, window) }
+  static bb($close, window = 15, mult = 2)                                          { return bb($close, window, mult) }
+  static cci($high, $low, $close, window = 20, mult = 0.015)                        { return cci($high, $low, $close, window, mult) }
+  static dema($close, window = 10)                                                  { return dema($close, window) }
+  static ebb($close, window = 10, mult = 2)                                         { return ebb($close, window, mult) }
+  static ema($close, window = 10)                                                   { return ema($close, window) }
+  static expdev($close, window = 15)                                                { return expdev($close, window) }  
+  static fi($close, $volume, window = 13)                                           { return fi($close, $volume, window) }
+  static keltner($high, $low, $close, window = 14, mult = 2)                        { return keltner($high, $low, $close, window, mult) }
+  static kst($close, w1=10, w2=15, w3=20, w4=30, s1=10, s2=10, s3=10, s4=15, sig=9) { return kst($close, w1, w2, w3, w4, s1, s2, s3, s4, sig) }
+  static macd($close, winshort = 12, winlong = 26, winsig = 9)                      { return macd($close, winshort, winlong, winsig) }
+  static madev($close, window = 15)                                                 { return madev($close, window) }
+  static mfi($high, $low, $close, $volume, window = 14)                             { return mfi($high, $low, $close, $volume, window) }
+  static obv($close, $volume, signal = 10)                                          { return obv($close, $volume, signal) }
+  static psar($high, $low, factor = 0.02, maxfactor = 0.2)                          { return psar($high, $low, factor, maxfactor) }
+  static roc($close, window = 14)                                                   { return roc($close, window) }
+  static rsi($close, window = 14)                                                   { return rsi($close, window) }
+  static sma($close, window = 15)                                                   { return sma($close, window) }
+  static stdev($close, window = 15)                                                 { return stdev($close, window) }
+  static stoch($high, $low, $close, window = 14, signal = 3, smooth = 1)            { return stoch($high, $low, $close, window, signal, smooth) }
+  static stochRsi($close, window = 14, signal = 3, smooth = 1)                      { return stochRsi($close, window, signal, smooth) }
+  static tema($close, window = 10)                                                  { return tema($close, window) }
+  static vbp($close, $volume, zones = 12, left = 0, right = NaN)                    { return vbp($close, $volume, zones, left, right) }
+  static vi($high, $low, $close, window = 14)                                       { return vi($high, $low, $close, window) }
+  static vwap($high, $low, $close, $volume)                                         { return vwap($high, $low, $close, $volume) }
+  static williams($high, $low, $close, window = 14)                                 { return williams($high, $low, $close, window) }
+  static zigzag($time, $high, $low, percent = 15)                                   { return zigzag($time, $high, $low, percent) }    
 
   /* member defenition of technical analysis methods */
-  sma(window = 15)                                                      { return TA.sma(this.$close, window) }
-  ema(window = 10)                                                      { return TA.ema(this.$close, window) }
-  dema(window = 10)                                                     { return TA.dema(this.$close, window) }
-  tema(window = 10)                                                     { return TA.tema(this.$close, window) }
+  adl()                                                                 { return TA.adl(this.$high, this.$low, this.$close, this.$volume) }
+  atr(window = 14)                                                      { return TA.atr(this.$high, this.$low, this.$close, window) }
+  adx(window = 14)                                                      { return TA.adx(this.$high, this.$low, this.$close, window) }
   bb(window = 15, mult = 2)                                             { return TA.bb(this.$close, window, mult) }
+  cci(window = 20, mult = 0.015)                                        { return TA.cci(this.$high, this.$low, this.$close, window, mult) }
+  dema(window = 10)                                                     { return TA.dema(this.$close, window) }
   ebb(window = 10, mult = 2)                                            { return TA.ebb(this.$close, window, mult) }
-  psar(factor = 0.02, maxfactor = 0.2)                                  { return TA.psar(this.$high, this.$low, factor, maxfactor) }
-  vbp(zones = 12, left = 0, right = NaN)                                { return TA.vbp(this.$close, this.$volume, zones, left, right) }
-  keltner(window = 14, mult = 2)                                        { return TA.keltner(this.$high, this.$low, this.$close, window, mult) }
-  vwap()                                                                { return TA.vwap(this.$high, this.$low, this.$close, this.$volume) }
-  zigzag(percent = 15)                                                  { return TA.zigzag(this.$time, this.$high, this.$low, percent) }    
-  stdev(window = 15)                                                    { return TA.stdev(this.$close, window) }
-  madev(window = 15)                                                    { return TA.madev(this.$close, window) }
+  ema(window = 10)                                                      { return TA.ema(this.$close, window) }
   expdev(window = 15)                                                   { return TA.expdev(this.$close, window) }
-  macd(wshort = 12, wlong = 26, wsig = 9)                               { return TA.macd(this.$close, wshort, wlong, wsig) }
-  rsi(window = 14)                                                      { return TA.rsi(this.$close, window) }
+  fi(window = 13)                                                       { return TA.fi(this.$close, this.$volume, window) }
+  keltner(window = 14, mult = 2)                                        { return TA.keltner(this.$high, this.$low, this.$close, window, mult) }
+  kst(w1=10, w2=15, w3=20, w4=30, s1=10, s2=10, s3=10, s4=15, sig=9)    { return TA.kst(this.$close, w1, w2, w3, w4, s1, s2, s3, s4, sig) }
+  macd(winshort = 12, winlong = 26, winsig = 9)                         { return TA.macd(this.$close, winshort, winlong, winsig) }
+  madev(window = 15)                                                    { return TA.madev(this.$close, window) }
   mfi(window = 14)                                                      { return TA.mfi(this.$high, this.$low, this.$close, this.$volume, window) }
+  obv(signal = 10)                                                      { return TA.obv(this.$close, this.$volume, signal) }  
+  psar(factor = 0.02, maxfactor = 0.2)                                  { return TA.psar(this.$high, this.$low, factor, maxfactor) }
+  roc(window = 14)                                                      { return TA.roc(this.$close, window) }
+  rsi(window = 14)                                                      { return TA.rsi(this.$close, window) }
+  sma(window = 15)                                                      { return TA.sma(this.$close, window) }
+  stdev(window = 15)                                                    { return TA.stdev(this.$close, window) }
   stoch(window = 14, signal = 3, smooth = 1)                            { return TA.stoch(this.$high, this.$low, this.$close, window, signal, smooth) }
   stochRsi(window = 14, signal = 3, smooth = 1)                         { return TA.stochRsi(this.$close, window, signal, smooth) }
+  tema(window = 10)                                                     { return TA.tema(this.$close, window) }
+  vbp(zones = 12, left = 0, right = NaN)                                { return TA.vbp(this.$close, this.$volume, zones, left, right) }
   vi(window = 14)                                                       { return TA.vi(this.$high, this.$low, this.$close, window) }
-  cci(window = 20, mult = 0.015)                                        { return TA.cci(this.$high, this.$low, this.$close, window, mult) }
-  obv(signal = 10)                                                      { return TA.obv(this.$close, this.$volume, signal) }
-  adl()                                                                 { return TA.adl(this.$high, this.$low, this.$close, this.$volume) }
-  adx(window = 14)                                                      { return TA.adx(this.$high, this.$low, this.$close, window) }
-  atr(window = 14)                                                      { return TA.atr(this.$high, this.$low, this.$close, window) }
+  vwap()                                                                { return TA.vwap(this.$high, this.$low, this.$close, this.$volume) }
   williams(window = 14)                                                 { return TA.williams(this.$high, this.$low, this.$close, window) }
-  roc(window = 14)                                                      { return TA.roc(this.$close, window) }
+  zigzag(percent = 15)                                                  { return TA.zigzag(this.$time, this.$high, this.$low, percent) }    
 
-  /* correlation functions */
-
-  static cov(f, g)                                                      { return cov(f, g) }
-  static cor(f, g)                                                      { return cor(f, g) }
 }
 
 export default TA;

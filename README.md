@@ -13,19 +13,19 @@ Well tested library for calculating technical indicators and overlays from price
 
 You can check [example](https://cdn.rawgit.com/munrocket/ta-math/9436df09/test/test.html) with plotly library, ccxt data provider and BTC prices from Binance exchange.
 
-[//]: # (used emoji ✔️️❔❌:suspect:)
+[//]: # (used emoji ➖✔️️❔❌:suspect:)
 
 ### Technical Overlays
 | Function  | Technical Overlay                     | Tested   | Developed by       | Year |
 |:----------|:--------------------------------------|:--------:|:------------------:|:----:|
-| sma       | Simple Moving Average                 |    ✔️️    |                   |      |
-| ema       | Exponential Moving Average            |    ✔️️    |                   |      |
-| dema      | Double Exponential Moving Average     |   ️ ✔️️    | Patrick  Mulloy   | 1994 |
-| tema      | Triple Exponential Moving Average     |   ️ ✔️️    | Patrick  Mulloy   | 1994 |
 | bb        | Bollinger Band                        |    ✔️️    | John Bollinger    | 1980s|
+| dema      | Double Exponential Moving Average     |   ️ ✔️️    | Patrick  Mulloy   | 1994 |
+| ema       | Exponential Moving Average            |    ✔️️    |                   |      |
 | ebb       | Exponential Bollinger Band            |    ✔️️    | Based on Welford's|      |
-| psar      | Parabolic SAR                         | :suspect: | Welles Wilder     | 1978 |
 | keltner   | Keltner Channels                      |    ✔️️    | Chester Keltner   | 1960 |
+| psar      | Parabolic SAR                         | :suspect: | Welles Wilder     | 1978 |
+| sma       | Simple Moving Average                 |    ✔️️    |                   |      |
+| tema      | Triple Exponential Moving Average     |   ️ ✔️️    | Patrick  Mulloy   | 1994 |
 | vbp       | Volume by Price                       |    ✔️️    |                   |      |
 | vwap      | Volume Weighted Average Price         |    ✔️️    | James Elkins      | 1984 |
 | zigzag    | ZigZag Indicator                      |    ✔️️    | Arthur Merrill    | 1977 |
@@ -33,38 +33,40 @@ You can check [example](https://cdn.rawgit.com/munrocket/ta-math/9436df09/test/t
 ### Technical Indicators
 | Function  | Technical Indicator                   | Tested  | Developed by                      | Year |
 |:----------|:--------------------------------------|:-------:|:---------------------------------:|:----:|
-| stdev     | Standard Deviation                    |   ✔️️    |                                   |      |
-| madev     | Mean Absolute Deviation               |   ✔️    |                                   |      |
-| expdev    | Exponential Weighted Deviation        |   ✔️    |                                   |      |
-| macd      | Moving Average Convergence/Divergence |   ✔️    | Gerald Appel                      | 1979 |
-| rsi       | Relative Strength Index               |   ✔️    | Welles Wilder                     | 1978 |
-| mfi       | Money Flow Index, volume-weighted RSI |   ✔️    | Gene Quong and Avrum Soudack      | 1989 |
-| stoch     | Stochastic Oscillator (Full)          |   ✔️    | George Lane                       | 1950s|
-| stochRsi  | Combines Stochastics with the RSI     |   ✔️    | Welles Wilder                     | 1994 |
-| vi        | Vortex Indicator                      |   ✔️    | Etienne Botes and Douglas Siepman | 2010 |
-| cci       | Commodity Channel Index               |   ✔️    | Donald Lambert                    | 1980 |
-| obv       | On Balance Volume                     |   ✔️    | Joseph Granville                  | 1963 |
 | adl       | Accumulation / Distribution line      |   ✔️    | Marc Chaikin                      | 1970s|
 | atr       | Average True Range                    |   ✔️    | Welles Wilder                     | 1978 |
 | adx       | Average Directional Index             |   ✔️    | Welles Wilder                     | 1978 |
-| williams  | Williams %R                           |   ✔️    |                                   |      |
+| cci       | Commodity Channel Index               |   ✔️    | Donald Lambert                    | 1980 |
+| expdev    | Exponential Weighted Deviation        |   ✔️    |                                   |      |
+| fi        | Force Index                           |   ✔️    |                                   |      |
+| kst       | Know Sure Thing                       |   ➖    |                                   |      |
+| macd      | Moving Average Convergence/Divergence |   ✔️    | Gerald Appel                      | 1979 |
+| madev     | Mean Absolute Deviation               |   ✔️    |                                   |      |
+| mfi       | Money Flow Index (volume-weighted RSI)|   ✔️    | Gene Quong and Avrum Soudack      | 1989 |
+| obv       | On Balance Volume                     |   ✔️    | Joseph Granville                  | 1963 |
 | roc       | Rate-of-Change                        |   ✔️    |                                   |      |
+| rsi       | Relative Strength Index               |   ✔️    | Welles Wilder                     | 1978 |
+| stdev     | Standard Deviation                    |   ✔️️    |                                   |      |
+| stoch     | Stochastic Oscillator (Full)          |   ✔️    | George Lane                       | 1950s|
+| stochRsi  | Combines Stochastics with the RSI     |   ✔️    | Welles Wilder                     | 1994 |
+| vi        | Vortex Indicator                      |   ✔️    | Etienne Botes and Douglas Siepman | 2010 |
+| williams  | Williams %R                           |   ✔️    |                                   |      |
 
 ### Error methods
 | Function  | Error methods                         | Tested  |
 |:----------|:--------------------------------------|:-------:|
 | mae       | Mean Absolute Error                   |    ✔️   |
 | mape      | Mean Absulute Percentage Error        |    ✔️   |
-| rmse      | Root-Mean-Square Error                |    ✔️   |
 | nrmse     | Normalized Root-Mean-Square Error     |    ✔️   |
+| rmse      | Root-Mean-Square Error                |    ✔️   |
 
 ### Statistics methods
 | Function  | Statistics methods                    | Tested  |
 |:----------|:--------------------------------------|:-------:|
-| mean      | Mean (Average)                        |    ✔️   |
-| sd        | Standard deviation                    |    ✔️   |
 | cov       | Covariation                           |    ✔️   |
 | cor       | Correlation                           |    ✔️   |
+| mean      | Mean (Average)                        |    ✔️   |
+| sd        | Standard deviation                    |    ✔️   |
 
 ### Correlation matrix
 ![correlation-matrix](https://i.imgur.com/6tVQifE.png)

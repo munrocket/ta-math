@@ -194,28 +194,78 @@ var TA = (function () {
 
   /* indicators */
 
-  function macd($close, wshort, wlong, wsig) {
+  function adl($high, $low, $close, $volume) {
+    var adl = [$volume[0] * (2 * $close[0] - $low[0] - $high[0]) / ($high[0] - $low[0])];
+    for (var i = 1, len = $high.length; i < len; i++) {
+      adl[i] = adl[i - 1] + $volume[i] * (2 * $close[i] - $low[i] - $high[i]) / ($high[i] - $low[i]);
+    }
+    return adl;
+  }
+
+  function adx($high, $low, $close, window) {
+    var dmp = [0],
+        dmm = [0];
+    for (var i = 1, len = $low.length; i < len; i++) {
+      var hd = $high[i] - $high[i - 1];
+      var ld = $low[i - 1] - $low[i];
+      dmp.push(hd > ld ? Math.max(hd, 0) : 0);
+      dmm.push(ld > hd ? Math.max(ld, 0) : 0);
+    }
+    var str = wilderSmooth(trueRange($high, $low, $close), window);
+    dmp = wilderSmooth(dmp, window);
+    dmm = wilderSmooth(dmm, window);
+    var dip = pointwise(function (a, b) {
+      return 100 * a / b;
+    }, dmp, str);
+    var dim = pointwise(function (a, b) {
+      return 100 * a / b;
+    }, dmm, str);
+    var dx = pointwise(function (a, b) {
+      return 100 * Math.abs(a - b) / (a + b);
+    }, dip, dim);
+    //console.log("dip,dim", pointwise((a, b, c) => [a, b, c], dip, dim, dx));
+    return { dip: dip, dim: dim, adx: new Array(14).fill(NaN).concat(ema(dx.slice(14), 2 * window - 1)) };
+  }
+
+  function cci($high, $low, $close, window, mult) {
+    var tp = typicalPrice($high, $low, $close);
+    var tpsma = sma(tp, window);
+    var tpmad = madev(tp, window);
+    tpmad[0] = Infinity;
+    return pointwise(function (a, b, c) {
+      return (a - b) / (c * mult);
+    }, tp, tpsma, tpmad);
+  }
+
+  function fi($close, $volume, window) {
+    var delta = rolling(function (x) {
+      return x[x.length - 1] - x[0];
+    }, 2, $close);
+    return ema(pointwise(function (a, b) {
+      return a * b;
+    }, delta, $volume), window);
+  }
+
+  function kst($close, w1, w2, w3, w4, s1, s2, s3, s4, sig) {
+    var rcma1 = sma(roc($close, w1), s1);
+    var rcma2 = sma(roc($close, w2), s2);
+    var rcma3 = sma(roc($close, w3), s3);
+    var rcma4 = sma(roc($close, w4), s4);
+    var line = pointwise(function (a, b, c, d) {
+      return a + b + c + d;
+    }, rcma1, rcma2, rcma3, rcma4);
+    return { line: line, signal: sma(line, sig) };
+  }
+
+  function macd($close, winshort, winlong, winsig) {
     var line = pointwise(function (a, b) {
       return a - b;
-    }, ema($close, wshort), ema($close, wlong));
-    var signal = ema(line, wsig);
+    }, ema($close, winshort), ema($close, winlong));
+    var signal = ema(line, winsig);
     var hist = pointwise(function (a, b) {
       return a - b;
     }, line, signal);
     return { line: line, signal: signal, hist: hist };
-  }
-
-  function rsi($close, window) {
-    var gains = [0],
-        loss = [1e-14];
-    for (var i = 1, len = $close.length; i < len; i++) {
-      var diff = $close[i] - $close[i - 1];
-      gains.push(diff >= 0 ? diff : 0);
-      loss.push(diff < 0 ? -diff : 0);
-    }
-    return pointwise(function (a, b) {
-      return 100 - 100 / (1 + a / b);
-    }, ema(gains, 2 * window - 1), ema(loss, 2 * window - 1));
   }
 
   function mfi($high, $low, $close, $volume, window) {
@@ -240,6 +290,33 @@ var TA = (function () {
     return pointwise(function (a, b) {
       return 100 - 100 / (1 + a / b);
     }, pmf, nmf);
+  }
+
+  function obv($close, $volume, signal) {
+    var obv = [0];
+    for (var i = 1, len = $close.length; i < len; i++) {
+      obv.push(obv[i - 1] + Math.sign($close[i] - $close[i - 1]) * $volume[i]);
+    }
+    return { line: obv, signal: sma(obv, signal) };
+  }
+
+  function roc($close, window) {
+    return rolling(function (x) {
+      return 100 * (x[x.length - 1] - x[0]) / x[0];
+    }, window, $close);
+  }
+
+  function rsi($close, window) {
+    var gains = [0],
+        loss = [1e-14];
+    for (var i = 1, len = $close.length; i < len; i++) {
+      var diff = $close[i] - $close[i - 1];
+      gains.push(diff >= 0 ? diff : 0);
+      loss.push(diff < 0 ? -diff : 0);
+    }
+    return pointwise(function (a, b) {
+      return 100 - 100 / (1 + a / b);
+    }, ema(gains, 2 * window - 1), ema(loss, 2 * window - 1));
   }
 
   function stoch($high, $low, $close, window, signal, smooth) {
@@ -301,63 +378,6 @@ var TA = (function () {
       }, anv, atr$$1) };
   }
 
-  function cci($high, $low, $close, window, mult) {
-    var tp = typicalPrice($high, $low, $close);
-    var tpsma = sma(tp, window);
-    var tpmad = madev(tp, window);
-    tpmad[0] = Infinity;
-    return pointwise(function (a, b, c) {
-      return (a - b) / (c * mult);
-    }, tp, tpsma, tpmad);
-  }
-
-  function obv($close, $volume, signal) {
-    var obv = [0];
-    for (var i = 1, len = $close.length; i < len; i++) {
-      obv.push(obv[i - 1] + Math.sign($close[i] - $close[i - 1]) * $volume[i]);
-    }
-    return { line: obv, signal: sma(obv, signal) };
-  }
-
-  function adl($high, $low, $close, $volume) {
-    var adl = [$volume[0] * (2 * $close[0] - $low[0] - $high[0]) / ($high[0] - $low[0])];
-    for (var i = 1, len = $high.length; i < len; i++) {
-      adl[i] = adl[i - 1] + $volume[i] * (2 * $close[i] - $low[i] - $high[i]) / ($high[i] - $low[i]);
-    }
-    return adl;
-  }
-
-  function adx($high, $low, $close, window) {
-    var dmp = [0],
-        dmm = [0];
-    for (var i = 1; i < $low.length; i++) {
-      var hd = $high[i] - $high[i - 1];
-      var ld = $low[i - 1] - $low[i];
-      dmp.push(hd > ld ? Math.max(hd, 0) : 0);
-      dmm.push(ld > hd ? Math.max(ld, 0) : 0);
-    }
-    var str = wilderSmooth(trueRange($high, $low, $close), window);
-    dmp = wilderSmooth(dmp, window);
-    dmm = wilderSmooth(dmm, window);
-    var dip = pointwise(function (a, b) {
-      return 100 * a / b;
-    }, dmp, str);
-    var dim = pointwise(function (a, b) {
-      return 100 * a / b;
-    }, dmm, str);
-    var dx = pointwise(function (a, b) {
-      return 100 * Math.abs(a - b) / (a + b);
-    }, dip, dim);
-    //console.log("dip,dim", pointwise((a, b, c) => [a, b, c], dip, dim, dx));
-    return { dip: dip, dim: dim, adx: new Array(14).fill(NaN).concat(ema(dx.slice(14), 2 * window - 1)) };
-  }
-
-  function roc($close, window) {
-    return rolling(function (x) {
-      return 100 * (x[x.length - 1] - x[0]) / x[0];
-    }, window, $close);
-  }
-
   function williams($high, $low, $close, window) {
     return pointwise(function (x) {
       return x - 100;
@@ -365,21 +385,6 @@ var TA = (function () {
   }
 
   /* overlays */
-
-  function dema($close, window) {
-    var ema1 = ema($close, window);
-    return pointwise(function (a, b) {
-      return 2 * a - b;
-    }, ema1, ema(ema1, window));
-  }
-
-  function tema($close, window) {
-    var ema1 = ema($close, window);
-    var ema2 = ema(ema1, window);
-    return pointwise(function (a, b, c) {
-      return 3 * a - 3 * b + c;
-    }, ema1, ema2, ema(ema2, window));
-  }
 
   function bb($close, window, mult) {
     var ma = sma($close, window);
@@ -393,6 +398,13 @@ var TA = (function () {
     return { lower: lower, middle: ma, upper: upper };
   }
 
+  function dema($close, window) {
+    var ema1 = ema($close, window);
+    return pointwise(function (a, b) {
+      return 2 * a - b;
+    }, ema1, ema(ema1, window));
+  }
+
   function ebb($close, window, mult) {
     var ma = ema($close, window);
     var dev = expdev($close, window);
@@ -403,6 +415,17 @@ var TA = (function () {
       return a - b * mult;
     }, ma, dev);
     return { lower: lower, middle: ma, upper: upper };
+  }
+
+  function keltner($high, $low, $close, window, mult) {
+    var middle = ema($close, window);
+    var upper = pointwise(function (a, b) {
+      return a + mult * b;
+    }, middle, atr($high, $low, $close, window));
+    var lower = pointwise(function (a, b) {
+      return a - mult * b;
+    }, middle, atr($high, $low, $close, window));
+    return { lower: lower, middle: middle, upper: upper };
   }
 
   function psar($high, $low, stepfactor, maxfactor) {
@@ -428,6 +451,14 @@ var TA = (function () {
     return psar;
   }
 
+  function tema($close, window) {
+    var ema1 = ema($close, window);
+    var ema2 = ema(ema1, window);
+    return pointwise(function (a, b, c) {
+      return 3 * a - 3 * b + c;
+    }, ema1, ema2, ema(ema2, window));
+  }
+
   function vbp($close, $volume, zones, left, right) {
     var total = 0;
     var bottom = Infinity;
@@ -445,17 +476,6 @@ var TA = (function () {
     return { bottom: bottom, top: top, volumes: vbp.map(function (x) {
         return x / total;
       }) };
-  }
-
-  function keltner($high, $low, $close, window, mult) {
-    var middle = ema($close, window);
-    var upper = pointwise(function (a, b) {
-      return a + mult * b;
-    }, middle, atr($high, $low, $close, window));
-    var lower = pointwise(function (a, b) {
-      return a - mult * b;
-    }, middle, atr($high, $low, $close, window));
-    return { lower: lower, middle: middle, upper: upper };
   }
 
   function vwap($high, $low, $close, $volume) {
@@ -597,31 +617,24 @@ var TA = (function () {
         return result;
       }
     }, {
-      key: 'sma',
+      key: 'adl',
 
 
       /* member defenition of technical analysis methods */
-      value: function sma$$1() {
-        var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 15;
-        return TA.sma(this.$close, window);
+      value: function adl$$1() {
+        return TA.adl(this.$high, this.$low, this.$close, this.$volume);
       }
     }, {
-      key: 'ema',
-      value: function ema$$1() {
-        var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 10;
-        return TA.ema(this.$close, window);
+      key: 'atr',
+      value: function atr$$1() {
+        var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 14;
+        return TA.atr(this.$high, this.$low, this.$close, window);
       }
     }, {
-      key: 'dema',
-      value: function dema$$1() {
-        var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 10;
-        return TA.dema(this.$close, window);
-      }
-    }, {
-      key: 'tema',
-      value: function tema$$1() {
-        var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 10;
-        return TA.tema(this.$close, window);
+      key: 'adx',
+      value: function adx$$1() {
+        var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 14;
+        return TA.adx(this.$high, this.$low, this.$close, window);
       }
     }, {
       key: 'bb',
@@ -631,6 +644,19 @@ var TA = (function () {
         return TA.bb(this.$close, window, mult);
       }
     }, {
+      key: 'cci',
+      value: function cci$$1() {
+        var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 20;
+        var mult = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0.015;
+        return TA.cci(this.$high, this.$low, this.$close, window, mult);
+      }
+    }, {
+      key: 'dema',
+      value: function dema$$1() {
+        var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 10;
+        return TA.dema(this.$close, window);
+      }
+    }, {
       key: 'ebb',
       value: function ebb$$1() {
         var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 10;
@@ -638,19 +664,22 @@ var TA = (function () {
         return TA.ebb(this.$close, window, mult);
       }
     }, {
-      key: 'psar',
-      value: function psar$$1() {
-        var factor = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0.02;
-        var maxfactor = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0.2;
-        return TA.psar(this.$high, this.$low, factor, maxfactor);
+      key: 'ema',
+      value: function ema$$1() {
+        var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 10;
+        return TA.ema(this.$close, window);
       }
     }, {
-      key: 'vbp',
-      value: function vbp$$1() {
-        var zones = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 12;
-        var left = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-        var right = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : NaN;
-        return TA.vbp(this.$close, this.$volume, zones, left, right);
+      key: 'expdev',
+      value: function expdev$$1() {
+        var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 15;
+        return TA.expdev(this.$close, window);
+      }
+    }, {
+      key: 'fi',
+      value: function fi$$1() {
+        var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 13;
+        return TA.fi(this.$close, this.$volume, window);
       }
     }, {
       key: 'keltner',
@@ -660,21 +689,26 @@ var TA = (function () {
         return TA.keltner(this.$high, this.$low, this.$close, window, mult);
       }
     }, {
-      key: 'vwap',
-      value: function vwap$$1() {
-        return TA.vwap(this.$high, this.$low, this.$close, this.$volume);
+      key: 'kst',
+      value: function kst$$1() {
+        var w1 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 10;
+        var w2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 15;
+        var w3 = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 20;
+        var w4 = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 30;
+        var s1 = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 10;
+        var s2 = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 10;
+        var s3 = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : 10;
+        var s4 = arguments.length > 7 && arguments[7] !== undefined ? arguments[7] : 15;
+        var sig = arguments.length > 8 && arguments[8] !== undefined ? arguments[8] : 9;
+        return TA.kst(this.$close, w1, w2, w3, w4, s1, s2, s3, s4, sig);
       }
     }, {
-      key: 'zigzag',
-      value: function zigzag$$1() {
-        var percent = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 15;
-        return TA.zigzag(this.$time, this.$high, this.$low, percent);
-      }
-    }, {
-      key: 'stdev',
-      value: function stdev$$1() {
-        var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 15;
-        return TA.stdev(this.$close, window);
+      key: 'macd',
+      value: function macd$$1() {
+        var winshort = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 12;
+        var winlong = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 26;
+        var winsig = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 9;
+        return TA.macd(this.$close, winshort, winlong, winsig);
       }
     }, {
       key: 'madev',
@@ -683,18 +717,29 @@ var TA = (function () {
         return TA.madev(this.$close, window);
       }
     }, {
-      key: 'expdev',
-      value: function expdev$$1() {
-        var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 15;
-        return TA.expdev(this.$close, window);
+      key: 'mfi',
+      value: function mfi$$1() {
+        var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 14;
+        return TA.mfi(this.$high, this.$low, this.$close, this.$volume, window);
       }
     }, {
-      key: 'macd',
-      value: function macd$$1() {
-        var wshort = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 12;
-        var wlong = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 26;
-        var wsig = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 9;
-        return TA.macd(this.$close, wshort, wlong, wsig);
+      key: 'obv',
+      value: function obv$$1() {
+        var signal = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 10;
+        return TA.obv(this.$close, this.$volume, signal);
+      }
+    }, {
+      key: 'psar',
+      value: function psar$$1() {
+        var factor = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0.02;
+        var maxfactor = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0.2;
+        return TA.psar(this.$high, this.$low, factor, maxfactor);
+      }
+    }, {
+      key: 'roc',
+      value: function roc$$1() {
+        var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 14;
+        return TA.roc(this.$close, window);
       }
     }, {
       key: 'rsi',
@@ -703,10 +748,16 @@ var TA = (function () {
         return TA.rsi(this.$close, window);
       }
     }, {
-      key: 'mfi',
-      value: function mfi$$1() {
-        var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 14;
-        return TA.mfi(this.$high, this.$low, this.$close, this.$volume, window);
+      key: 'sma',
+      value: function sma$$1() {
+        var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 15;
+        return TA.sma(this.$close, window);
+      }
+    }, {
+      key: 'stdev',
+      value: function stdev$$1() {
+        var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 15;
+        return TA.stdev(this.$close, window);
       }
     }, {
       key: 'stoch',
@@ -725,40 +776,29 @@ var TA = (function () {
         return TA.stochRsi(this.$close, window, signal, smooth);
       }
     }, {
+      key: 'tema',
+      value: function tema$$1() {
+        var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 10;
+        return TA.tema(this.$close, window);
+      }
+    }, {
+      key: 'vbp',
+      value: function vbp$$1() {
+        var zones = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 12;
+        var left = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+        var right = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : NaN;
+        return TA.vbp(this.$close, this.$volume, zones, left, right);
+      }
+    }, {
       key: 'vi',
       value: function vi$$1() {
         var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 14;
         return TA.vi(this.$high, this.$low, this.$close, window);
       }
     }, {
-      key: 'cci',
-      value: function cci$$1() {
-        var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 20;
-        var mult = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0.015;
-        return TA.cci(this.$high, this.$low, this.$close, window, mult);
-      }
-    }, {
-      key: 'obv',
-      value: function obv$$1() {
-        var signal = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 10;
-        return TA.obv(this.$close, this.$volume, signal);
-      }
-    }, {
-      key: 'adl',
-      value: function adl$$1() {
-        return TA.adl(this.$high, this.$low, this.$close, this.$volume);
-      }
-    }, {
-      key: 'adx',
-      value: function adx$$1() {
-        var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 14;
-        return TA.adx(this.$high, this.$low, this.$close, window);
-      }
-    }, {
-      key: 'atr',
-      value: function atr$$1() {
-        var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 14;
-        return TA.atr(this.$high, this.$low, this.$close, window);
+      key: 'vwap',
+      value: function vwap$$1() {
+        return TA.vwap(this.$high, this.$low, this.$close, this.$volume);
       }
     }, {
       key: 'williams',
@@ -767,14 +807,11 @@ var TA = (function () {
         return TA.williams(this.$high, this.$low, this.$close, window);
       }
     }, {
-      key: 'roc',
-      value: function roc$$1() {
-        var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 14;
-        return TA.roc(this.$close, window);
+      key: 'zigzag',
+      value: function zigzag$$1() {
+        var percent = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 15;
+        return TA.zigzag(this.$time, this.$high, this.$low, percent);
       }
-
-      /* correlation functions */
-
     }, {
       key: '$time',
       get: function get$$1() {
@@ -809,152 +846,21 @@ var TA = (function () {
       /* formats */
 
     }], [{
-      key: 'sma',
+      key: 'cov',
 
+
+      /* correlation and covariance */
+      value: function cov$$1(f, g) {
+        return cov(f, g);
+      }
+    }, {
+      key: 'cor',
+      value: function cor$$1(f, g) {
+        return cor(f, g);
+      }
 
       /* static defenition of technical analysis methods */
-      value: function sma$$1($close) {
-        var window = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 15;
-        return sma($close, window);
-      }
-    }, {
-      key: 'ema',
-      value: function ema$$1($close) {
-        var window = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 10;
-        return ema($close, window);
-      }
-    }, {
-      key: 'dema',
-      value: function dema$$1($close) {
-        var window = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 10;
-        return dema($close, window);
-      }
-    }, {
-      key: 'tema',
-      value: function tema$$1($close) {
-        var window = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 10;
-        return tema($close, window);
-      }
-    }, {
-      key: 'bb',
-      value: function bb$$1($close) {
-        var window = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 15;
-        var mult = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 2;
-        return bb($close, window, mult);
-      }
-    }, {
-      key: 'ebb',
-      value: function ebb$$1($close) {
-        var window = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 10;
-        var mult = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 2;
-        return ebb($close, window, mult);
-      }
-    }, {
-      key: 'psar',
-      value: function psar$$1($high, $low) {
-        var factor = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0.02;
-        var maxfactor = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0.2;
-        return psar($high, $low, factor, maxfactor);
-      }
-    }, {
-      key: 'vbp',
-      value: function vbp$$1($close, $volume) {
-        var zones = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 12;
-        var left = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
-        var right = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : NaN;
-        return vbp($close, $volume, zones, left, right);
-      }
-    }, {
-      key: 'keltner',
-      value: function keltner$$1($high, $low, $close) {
-        var window = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 14;
-        var mult = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 2;
-        return keltner($high, $low, $close, window, mult);
-      }
-    }, {
-      key: 'vwap',
-      value: function vwap$$1($high, $low, $close, $volume) {
-        return vwap($high, $low, $close, $volume);
-      }
-    }, {
-      key: 'zigzag',
-      value: function zigzag$$1($time, $high, $low) {
-        var percent = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 15;
-        return zigzag($time, $high, $low, percent);
-      }
-    }, {
-      key: 'stdev',
-      value: function stdev$$1($close) {
-        var window = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 15;
-        return stdev($close, window);
-      }
-    }, {
-      key: 'madev',
-      value: function madev$$1($close) {
-        var window = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 15;
-        return madev($close, window);
-      }
-    }, {
-      key: 'expdev',
-      value: function expdev$$1($close) {
-        var window = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 15;
-        return expdev($close, window);
-      }
-    }, {
-      key: 'macd',
-      value: function macd$$1($close) {
-        var wshort = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 12;
-        var wlong = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 26;
-        var wsig = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 9;
-        return macd($close, wshort, wlong, wsig);
-      }
-    }, {
-      key: 'rsi',
-      value: function rsi$$1($close) {
-        var window = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 14;
-        return rsi($close, window);
-      }
-    }, {
-      key: 'mfi',
-      value: function mfi$$1($high, $low, $close, $volume) {
-        var window = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 14;
-        return mfi($high, $low, $close, $volume, window);
-      }
-    }, {
-      key: 'stoch',
-      value: function stoch$$1($high, $low, $close) {
-        var window = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 14;
-        var signal = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 3;
-        var smooth = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 1;
-        return stoch($high, $low, $close, window, signal, smooth);
-      }
-    }, {
-      key: 'stochRsi',
-      value: function stochRsi$$1($close) {
-        var window = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 14;
-        var signal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 3;
-        var smooth = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1;
-        return stochRsi($close, window, signal, smooth);
-      }
-    }, {
-      key: 'vi',
-      value: function vi$$1($high, $low, $close) {
-        var window = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 14;
-        return vi($high, $low, $close, window);
-      }
-    }, {
-      key: 'cci',
-      value: function cci$$1($high, $low, $close) {
-        var window = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 20;
-        var mult = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0.015;
-        return cci($high, $low, $close, window, mult);
-      }
-    }, {
-      key: 'obv',
-      value: function obv$$1($close, $volume) {
-        var signal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 10;
-        return obv($close, $volume, signal);
-      }
+
     }, {
       key: 'adl',
       value: function adl$$1($high, $low, $close, $volume) {
@@ -973,10 +879,103 @@ var TA = (function () {
         return adx($high, $low, $close, window);
       }
     }, {
-      key: 'williams',
-      value: function williams$$1($high, $low, $close) {
+      key: 'bb',
+      value: function bb$$1($close) {
+        var window = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 15;
+        var mult = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 2;
+        return bb($close, window, mult);
+      }
+    }, {
+      key: 'cci',
+      value: function cci$$1($high, $low, $close) {
+        var window = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 20;
+        var mult = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0.015;
+        return cci($high, $low, $close, window, mult);
+      }
+    }, {
+      key: 'dema',
+      value: function dema$$1($close) {
+        var window = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 10;
+        return dema($close, window);
+      }
+    }, {
+      key: 'ebb',
+      value: function ebb$$1($close) {
+        var window = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 10;
+        var mult = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 2;
+        return ebb($close, window, mult);
+      }
+    }, {
+      key: 'ema',
+      value: function ema$$1($close) {
+        var window = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 10;
+        return ema($close, window);
+      }
+    }, {
+      key: 'expdev',
+      value: function expdev$$1($close) {
+        var window = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 15;
+        return expdev($close, window);
+      }
+    }, {
+      key: 'fi',
+      value: function fi$$1($close, $volume) {
+        var window = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 13;
+        return fi($close, $volume, window);
+      }
+    }, {
+      key: 'keltner',
+      value: function keltner$$1($high, $low, $close) {
         var window = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 14;
-        return williams($high, $low, $close, window);
+        var mult = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 2;
+        return keltner($high, $low, $close, window, mult);
+      }
+    }, {
+      key: 'kst',
+      value: function kst$$1($close) {
+        var w1 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 10;
+        var w2 = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 15;
+        var w3 = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 20;
+        var w4 = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 30;
+        var s1 = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 10;
+        var s2 = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : 10;
+        var s3 = arguments.length > 7 && arguments[7] !== undefined ? arguments[7] : 10;
+        var s4 = arguments.length > 8 && arguments[8] !== undefined ? arguments[8] : 15;
+        var sig = arguments.length > 9 && arguments[9] !== undefined ? arguments[9] : 9;
+        return kst($close, w1, w2, w3, w4, s1, s2, s3, s4, sig);
+      }
+    }, {
+      key: 'macd',
+      value: function macd$$1($close) {
+        var winshort = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 12;
+        var winlong = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 26;
+        var winsig = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 9;
+        return macd($close, winshort, winlong, winsig);
+      }
+    }, {
+      key: 'madev',
+      value: function madev$$1($close) {
+        var window = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 15;
+        return madev($close, window);
+      }
+    }, {
+      key: 'mfi',
+      value: function mfi$$1($high, $low, $close, $volume) {
+        var window = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 14;
+        return mfi($high, $low, $close, $volume, window);
+      }
+    }, {
+      key: 'obv',
+      value: function obv$$1($close, $volume) {
+        var signal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 10;
+        return obv($close, $volume, signal);
+      }
+    }, {
+      key: 'psar',
+      value: function psar$$1($high, $low) {
+        var factor = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0.02;
+        var maxfactor = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0.2;
+        return psar($high, $low, factor, maxfactor);
       }
     }, {
       key: 'roc',
@@ -985,14 +984,75 @@ var TA = (function () {
         return roc($close, window);
       }
     }, {
-      key: 'cov',
-      value: function cov$$1(f, g) {
-        return cov(f, g);
+      key: 'rsi',
+      value: function rsi$$1($close) {
+        var window = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 14;
+        return rsi($close, window);
       }
     }, {
-      key: 'cor',
-      value: function cor$$1(f, g) {
-        return cor(f, g);
+      key: 'sma',
+      value: function sma$$1($close) {
+        var window = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 15;
+        return sma($close, window);
+      }
+    }, {
+      key: 'stdev',
+      value: function stdev$$1($close) {
+        var window = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 15;
+        return stdev($close, window);
+      }
+    }, {
+      key: 'stoch',
+      value: function stoch$$1($high, $low, $close) {
+        var window = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 14;
+        var signal = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 3;
+        var smooth = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 1;
+        return stoch($high, $low, $close, window, signal, smooth);
+      }
+    }, {
+      key: 'stochRsi',
+      value: function stochRsi$$1($close) {
+        var window = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 14;
+        var signal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 3;
+        var smooth = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1;
+        return stochRsi($close, window, signal, smooth);
+      }
+    }, {
+      key: 'tema',
+      value: function tema$$1($close) {
+        var window = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 10;
+        return tema($close, window);
+      }
+    }, {
+      key: 'vbp',
+      value: function vbp$$1($close, $volume) {
+        var zones = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 12;
+        var left = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+        var right = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : NaN;
+        return vbp($close, $volume, zones, left, right);
+      }
+    }, {
+      key: 'vi',
+      value: function vi$$1($high, $low, $close) {
+        var window = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 14;
+        return vi($high, $low, $close, window);
+      }
+    }, {
+      key: 'vwap',
+      value: function vwap$$1($high, $low, $close, $volume) {
+        return vwap($high, $low, $close, $volume);
+      }
+    }, {
+      key: 'williams',
+      value: function williams$$1($high, $low, $close) {
+        var window = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 14;
+        return williams($high, $low, $close, window);
+      }
+    }, {
+      key: 'zigzag',
+      value: function zigzag$$1($time, $high, $low) {
+        var percent = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 15;
+        return zigzag($time, $high, $low, percent);
       }
     }, {
       key: 'simpleFormat',

@@ -2,17 +2,6 @@ import { sma, ema, stdev, expdev, pointwise, atr, typicalPrice} from './core';
 
 /* overlays */
 
-export function dema($close, window) {
-  let ema1 = ema($close, window);
-  return pointwise((a, b) => 2 * a - b, ema1, ema(ema1, window));
-}
-
-export function tema($close, window) {
-  let ema1 = ema($close, window);
-  let ema2 = ema(ema1, window);
-  return pointwise((a, b, c) => 3 * a - 3 * b + c, ema1, ema2, ema(ema2, window));
-}
-
 export function bb($close, window, mult) {
   let ma = sma($close, window);
   let dev = stdev($close, window);
@@ -21,12 +10,24 @@ export function bb($close, window, mult) {
   return { lower : lower, middle : ma, upper : upper };
 }
 
+export function dema($close, window) {
+  let ema1 = ema($close, window);
+  return pointwise((a, b) => 2 * a - b, ema1, ema(ema1, window));
+}
+
 export function ebb($close, window, mult) {
   let ma = ema($close, window);
   let dev = expdev($close, window);
   let upper = pointwise((a, b) => a + b * mult, ma, dev);
   let lower = pointwise((a, b) => a - b * mult, ma, dev);
   return { lower : lower, middle : ma, upper : upper };
+}
+
+export function keltner($high, $low, $close, window, mult) {
+  let middle = ema($close, window);
+  let upper = pointwise((a, b) => a + mult * b, middle, atr($high, $low, $close, window));
+  let lower = pointwise((a, b) => a - mult * b, middle, atr($high, $low, $close, window));
+  return { lower: lower, middle: middle, upper: upper };
 }
 
 export function psar($high, $low, stepfactor, maxfactor) {
@@ -52,6 +53,12 @@ export function psar($high, $low, stepfactor, maxfactor) {
   return psar;
 }
 
+export function tema($close, window) {
+  let ema1 = ema($close, window);
+  let ema2 = ema(ema1, window);
+  return pointwise((a, b, c) => 3 * a - 3 * b + c, ema1, ema2, ema(ema2, window));
+}
+
 export function vbp($close, $volume, zones, left, right) {
   let total = 0;
   let bottom = Infinity;
@@ -67,13 +74,6 @@ export function vbp($close, $volume, zones, left, right) {
     vbp[Math.floor(($close[i] - bottom) / (top - bottom) * (zones - 1))] += $volume[i];
   }
   return { bottom: bottom, top: top, volumes: vbp.map((x) => { return x / total }) };
-}
-
-export function keltner($high, $low, $close, window, mult) {
-  let middle = ema($close, window);
-  let upper = pointwise((a, b) => a + mult * b, middle, atr($high, $low, $close, window));
-  let lower = pointwise((a, b) => a - mult * b, middle, atr($high, $low, $close, window));
-  return { lower: lower, middle: middle, upper: upper };
 }
 
 export function vwap($high, $low, $close, $volume) {
