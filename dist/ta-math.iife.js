@@ -127,10 +127,9 @@ var TA = (function () {
   }
 
   function ema(series, window) {
-    var weight = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-    var start = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+    var start = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
 
-    weight = weight ? weight : 2 / (window + 1);
+    var weight = 2 / (window + 1); // window(weight) = (2 / weight) - 1;
     var ema = [start ? start : mean(series.slice(0, window))];
     for (var i = 1, len = series.length; i < len; i++) {
       ema.push(series[i] * weight + (1 - weight) * ema[i - 1]);
@@ -159,9 +158,22 @@ var TA = (function () {
     }, ema(sqrDiff, window));
   }
 
+  /* Wilder's functions */
+
   function atr($high, $low, $close, window) {
     var tr = trueRange($high, $low, $close);
-    return ema(tr, window, 1 / window);
+    return ema(tr, 2 * window - 1);
+  }
+
+  function wilderSmooth(series, window) {
+    var result = new Array(window).fill(NaN);
+    result.push(series.slice(1, window + 1).reduce(function (sum, item) {
+      return sum += item;
+    }, 0));
+    for (var i = window + 1; i < series.length; i++) {
+      result.push((1 - 1 / window) * result[i - 1] + series[i]);
+    }
+    return result;
   }
 
   /* price transformations */
@@ -203,7 +215,7 @@ var TA = (function () {
     }
     return pointwise(function (a, b) {
       return 100 - 100 / (1 + a / b);
-    }, ema(gains, window, 1 / window), ema(loss, window, 1 / window));
+    }, ema(gains, 2 * window - 1), ema(loss, 2 * window - 1));
   }
 
   function mfi($high, $low, $close, $volume, window) {
@@ -313,6 +325,31 @@ var TA = (function () {
       adl[i] = adl[i - 1] + $volume[i] * (2 * $close[i] - $low[i] - $high[i]) / ($high[i] - $low[i]);
     }
     return adl;
+  }
+
+  function adx($high, $low, $close, window) {
+    var dmp = [0],
+        dmm = [0];
+    for (var i = 1; i < $low.length; i++) {
+      var hd = $high[i] - $high[i - 1];
+      var ld = $low[i - 1] - $low[i];
+      dmp.push(hd > ld ? Math.max(hd, 0) : 0);
+      dmm.push(ld > hd ? Math.max(ld, 0) : 0);
+    }
+    var str = wilderSmooth(trueRange($high, $low, $close), window);
+    dmp = wilderSmooth(dmp, window);
+    dmm = wilderSmooth(dmm, window);
+    var dip = pointwise(function (a, b) {
+      return 100 * a / b;
+    }, dmp, str);
+    var dim = pointwise(function (a, b) {
+      return 100 * a / b;
+    }, dmm, str);
+    var dx = pointwise(function (a, b) {
+      return 100 * Math.abs(a - b) / (a + b);
+    }, dip, dim);
+    //console.log("dip,dim", pointwise((a, b, c) => [a, b, c], dip, dim, dx));
+    return { dip: dip, dim: dim, adx: new Array(14).fill(NaN).concat(ema(dx.slice(14), 2 * window - 1)) };
   }
 
   function roc($close, window) {
@@ -712,6 +749,12 @@ var TA = (function () {
         return TA.adl(this.$high, this.$low, this.$close, this.$volume);
       }
     }, {
+      key: 'adx',
+      value: function adx$$1() {
+        var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 14;
+        return TA.adx(this.$high, this.$low, this.$close, window);
+      }
+    }, {
       key: 'atr',
       value: function atr$$1() {
         var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 14;
@@ -922,6 +965,12 @@ var TA = (function () {
       value: function atr$$1($high, $low, $close) {
         var window = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 14;
         return atr($high, $low, $close, window);
+      }
+    }, {
+      key: 'adx',
+      value: function adx$$1($high, $low, $close) {
+        var window = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 14;
+        return adx($high, $low, $close, window);
       }
     }, {
       key: 'williams',

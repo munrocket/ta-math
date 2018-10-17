@@ -65,8 +65,8 @@ function sma(series, window) {
   return rolling(x => mean(x), window, series);
 }
 
-function ema(series, window, weight = null, start = null) {
-  weight = weight ? weight : 2 / (window + 1);
+function ema(series, window, start = null) {
+  let weight = 2 / (window + 1); // window(weight) = (2 / weight) - 1;
   let ema = [ start ? start : mean(series.slice(0, window)) ];
   for (let i = 1, len = series.length; i < len; i++) {
     ema.push(series[i] * weight + (1 - weight) * ema[i - 1]);
@@ -87,9 +87,20 @@ function expdev(series, window) {
   return pointwise(x => Math.sqrt(x), ema(sqrDiff, window));
 }
 
+/* Wilder's functions */
+
 function atr($high, $low, $close, window) {
   let tr = trueRange($high, $low, $close);
-  return ema(tr, window, 1 / window);
+  return ema(tr, 2 * window - 1);
+}
+
+function wilderSmooth(series, window) {
+  let result = new Array(window).fill(NaN);
+  result.push(series.slice(1, window + 1).reduce((sum, item) => { return sum += item}, 0));
+  for(let i = window + 1; i < series.length; i++) {
+    result.push((1 - 1 / window) * result[i - 1] + series[i]);
+  }
+  return result;
 }
 
 /* price transformations */
@@ -112,7 +123,7 @@ function macd($close, wshort, wlong, wsig) {
   const line = pointwise((a, b) => a - b, ema($close, wshort), ema($close, wlong));
   const signal = ema(line, wsig);
   const hist = pointwise((a, b) => a - b, line, signal);
-  return { line : line, signal : signal, hist : hist };
+  return { line: line, signal: signal, hist: hist };
 }
 
 function rsi($close, window) {
@@ -122,7 +133,7 @@ function rsi($close, window) {
     gains.push(diff >= 0 ? diff : 0);
     loss.push(diff < 0 ? -diff : 0);
   }
-  return pointwise((a, b) => 100 - 100 / (1 + a / b), ema(gains, window, 1 / window), ema(loss, window, 1 / window));
+  return pointwise((a, b) => 100 - 100 / (1 + a / b), ema(gains, 2 * window - 1), ema(loss, 2 * window - 1));
 }
 
 function mfi($high, $low, $close, $volume, window) {
@@ -143,7 +154,7 @@ function stoch($high, $low, $close, window, signal, smooth) {
   let highest = rolling(x => Math.max(...x), window, $high);
   let K = pointwise((h, l, c) => 100 * (c - l) / (h - l), highest, lowest, $close); 
   if (smooth > 1) { K = sma(K, smooth); }
-  return { line : K, signal : sma(K, signal) };
+  return { line: K, signal: sma(K, signal) };
 }
 
 function stochRsi($close, window, signal, smooth) {
@@ -151,7 +162,7 @@ function stochRsi($close, window, signal, smooth) {
   let extreme = rolling(x => {return {low: Math.min(...x), high: Math.max(...x)}}, window, _rsi);
   let K = pointwise((rsi, e) => (rsi - e.low) / (e.high - e.low), _rsi, extreme);
   K[0] = 0; if (smooth > 1) { K = sma(K, smooth); }
-  return { line : K, signal : sma(K, signal) };
+  return { line: K, signal: sma(K, signal) };
 }
 
 function vi($high, $low, $close, window) {
@@ -163,7 +174,7 @@ function vi($high, $low, $close, window) {
   let apv = rolling(x => x.reduce((sum, x) => {return sum + x}, 0), window, pv);
   let anv = rolling(x => x.reduce((sum, x) => {return sum + x}, 0), window, nv);
   let atr$$1 = rolling(x => x.reduce((sum, x) => {return sum + x}, 0), window, trueRange($high, $low, $close));
-  return { plus : pointwise((a, b) => a / b, apv, atr$$1), minus :   pointwise((a, b) => a / b, anv, atr$$1) };
+  return { plus: pointwise((a, b) => a / b, apv, atr$$1), minus: pointwise((a, b) => a / b, anv, atr$$1) };
 }
 
 function cci($high, $low, $close, window, mult) {
@@ -188,6 +199,24 @@ function adl($high, $low, $close, $volume) {
     adl[i] = adl[i - 1] + $volume[i] * (2*$close[i] - $low[i] - $high[i]) / ($high[i] - $low[i]);
   }
   return adl;
+}
+
+function adx($high, $low, $close, window) {
+  let dmp = [0], dmm = [0];
+  for(let i = 1; i < $low.length; i++) {
+    let hd = $high[i] - $high[i - 1];
+    let ld = $low[i - 1] - $low[i];
+    dmp.push((hd > ld) ? Math.max(hd, 0) : 0);
+    dmm.push((ld > hd) ? Math.max(ld, 0) : 0);
+  }
+  let str = wilderSmooth(trueRange($high, $low, $close), window);
+  dmp = wilderSmooth(dmp, window);
+  dmm = wilderSmooth(dmm, window);
+  let dip = pointwise((a, b) => 100 * a / b, dmp, str);
+  let dim = pointwise((a, b) => 100 * a / b, dmm, str);
+  let dx = pointwise((a, b) => 100 * Math.abs(a - b) / (a + b), dip, dim);
+  //console.log("dip,dim", pointwise((a, b, c) => [a, b, c], dip, dim, dx));
+  return {dip: dip, dim: dim, adx: new Array(14).fill(NaN).concat(ema(dx.slice(14), 2 * window - 1))};
 }
 
 function roc($close, window) {
@@ -393,6 +422,7 @@ class TA {
   static obv($close, $volume, signal = 10)                              { return obv($close, $volume, signal) }
   static adl($high, $low, $close, $volume)                              { return adl($high, $low, $close, $volume) }
   static atr($high, $low, $close, window = 14)                          { return atr($high, $low, $close, window) }
+  static adx($high, $low, $close, window = 14)                          { return adx($high, $low, $close, window) }
   static williams($high, $low, $close, window = 14)                     { return williams($high, $low, $close, window) }
   static roc($close, window = 14)                                       { return roc($close, window) }
 
@@ -420,6 +450,7 @@ class TA {
   cci(window = 20, mult = 0.015)                                        { return TA.cci(this.$high, this.$low, this.$close, window, mult) }
   obv(signal = 10)                                                      { return TA.obv(this.$close, this.$volume, signal) }
   adl()                                                                 { return TA.adl(this.$high, this.$low, this.$close, this.$volume) }
+  adx(window = 14)                                                      { return TA.adx(this.$high, this.$low, this.$close, window) }
   atr(window = 14)                                                      { return TA.atr(this.$high, this.$low, this.$close, window) }
   williams(window = 14)                                                 { return TA.williams(this.$high, this.$low, this.$close, window) }
   roc(window = 14)                                                      { return TA.roc(this.$close, window) }

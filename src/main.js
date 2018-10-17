@@ -56,6 +56,7 @@ export default class TA {
   static obv($close, $volume, signal = 10)                              { return indicators.obv($close, $volume, signal) }
   static adl($high, $low, $close, $volume)                              { return indicators.adl($high, $low, $close, $volume) }
   static atr($high, $low, $close, window = 14)                          { return core.atr($high, $low, $close, window) }
+  static adx($high, $low, $close, window = 14)                          { return indicators.adx($high, $low, $close, window) }
   static williams($high, $low, $close, window = 14)                     { return indicators.williams($high, $low, $close, window) }
   static roc($close, window = 14)                                       { return indicators.roc($close, window) }
 
@@ -83,6 +84,7 @@ export default class TA {
   cci(window = 20, mult = 0.015)                                        { return TA.cci(this.$high, this.$low, this.$close, window, mult) }
   obv(signal = 10)                                                      { return TA.obv(this.$close, this.$volume, signal) }
   adl()                                                                 { return TA.adl(this.$high, this.$low, this.$close, this.$volume) }
+  adx(window = 14)                                                      { return TA.adx(this.$high, this.$low, this.$close, window) }
   atr(window = 14)                                                      { return TA.atr(this.$high, this.$low, this.$close, window) }
   williams(window = 14)                                                 { return TA.williams(this.$high, this.$low, this.$close, window) }
   roc(window = 14)                                                      { return TA.roc(this.$close, window) }

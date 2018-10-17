@@ -46,6 +46,7 @@ You can check [example](https://cdn.rawgit.com/munrocket/ta-math/9436df09/test/t
 | obv       | On Balance Volume                     |   ✔️    | Joseph Granville                  | 1963 |
 | adl       | Accumulation / Distribution line      |   ✔️    | Marc Chaikin                      | 1970s|
 | atr       | Average True Range                    |   ✔️    | Welles Wilder                     | 1978 |
+| adx       | Average Directional Index             |   ✔️    | Welles Wilder                     | 1978 |
 | williams  | Williams %R                           |   ✔️    |                                   |      |
 | roc       | Rate-of-Change                        |   ✔️    |                                   |      |
 

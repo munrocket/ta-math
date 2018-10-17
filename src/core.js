@@ -79,8 +79,8 @@ export function sma(series, window) {
   return rolling(x => mean(x), window, series);
 }
 
-export function ema(series, window, weight = null, start = null) {
-  weight = weight ? weight : 2 / (window + 1);
+export function ema(series, window, start = null) {
+  let weight = 2 / (window + 1); // window(weight) = (2 / weight) - 1;
   let ema = [ start ? start : mean(series.slice(0, window)) ];
   for (let i = 1, len = series.length; i < len; i++) {
     ema.push(series[i] * weight + (1 - weight) * ema[i - 1]);
@@ -101,9 +101,20 @@ export function expdev(series, window) {
   return pointwise(x => Math.sqrt(x), ema(sqrDiff, window));
 }
 
+/* Wilder's functions */
+
 export function atr($high, $low, $close, window) {
   let tr = trueRange($high, $low, $close);
-  return ema(tr, window, 1 / window);
+  return ema(tr, 2 * window - 1);
+}
+
+export function wilderSmooth(series, window) {
+  let result = new Array(window).fill(NaN);
+  result.push(series.slice(1, window + 1).reduce((sum, item) => { return sum += item}, 0));
+  for(let i = window + 1; i < series.length; i++) {
+    result.push((1 - 1 / window) * result[i - 1] + series[i]);
+  }
+  return result;
 }
 
 /* price transformations */
