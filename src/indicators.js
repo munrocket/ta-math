@@ -1,4 +1,5 @@
 import { ema, sma, madev, pointwise, rolling, trueRange, typicalPrice, wilderSmooth} from './core';
+import { bb } from './overlays';
 
 /* indicators */
 
@@ -28,12 +29,22 @@ export function adx($high, $low, $close, window) {
   return {dip: dip, dim: dim, adx: new Array(14).fill(NaN).concat(ema(dx.slice(14), 2 * window - 1))};
 }
 
+export function bbpb($close, window, mult) {
+  let band = bb($close, window, mult);
+  return pointwise((p, u, l) => (p - l) / (u - l), $close, band.upper, band.lower);
+}
+
 export function cci($high, $low, $close, window, mult) {
   let tp = typicalPrice($high, $low, $close);
   let tpsma = sma(tp, window);
   let tpmad = madev(tp, window);
   tpmad[0] = Infinity;
   return pointwise((a, b, c) => (a - b) / (c * mult), tp, tpsma, tpmad);
+}
+
+export function cho($high, $low, $close, $volume, winshort, winlong) {
+  let adli = adl($high, $low, $close, $volume);
+  return pointwise((s, l) => s - l, ema(adli, winshort), ema(adli, winlong));
 }
 
 export function fi($close, $volume, window) {

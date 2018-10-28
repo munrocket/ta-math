@@ -629,3 +629,28 @@ describe('KST', () => {
   // let delta = nrmse(expected.slice(45), actual.slice(45));
   // it(`Precision test (NRMSE=${delta.toFixed(5)})`, () => assert.ok(delta < 1e-2));
 })
+
+describe('BBPB', () => {
+  let c = [86.16,89.09,88.78,90.32,89.07,91.15,89.44,89.18,86.93,87.68,86.96,89.43,89.32,88.72,
+    87.45,87.26,89.50,87.90,89.13,90.70,92.90,92.98,91.80,92.66,92.68,92.30,92.77,92.54,92.95,
+    93.20,91.07,89.83,89.74,90.40,90.74,88.02,88.09,88.84,90.78,90.54,91.39,90.65];
+  // let expected = [NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,86.12,
+  //   86.14,85.87,85.85,85.70,85.65,85.59,85.56,85.60,85.98,86.27,86.82,86.87,86.91,87.12,87.63,87.83,
+  //   87.56,87.76,87.97,87.95,87.96,87.95];
+  let actual = new TA([c,c,c,c,c,c], TA.simpleFormat).bbpb();
+  it('Finite test', () => assert.ok(actual.slice(1).every(isFinite)));
+  // let delta = nrmse(expected.slice(19), bb.lower.slice(19));
+  // it(`Precision test on lower (NRMSE=${delta.toFixed(5)})`, () => assert.ok(delta < 1e-2));
+})
+
+describe('CHO', () => {
+  let h = [62.34,62.05,62.27,60.79,59.93,61.75,60.00,59.00];
+  let l = [61.37,60.69,60.10,58.61,58.71,59.86,57.97,58.02];
+  let c = [62.15,60.81,60.45,59.18,59.24,60.20,58.48,58.24];
+  let v = [7849,11692,10575,13059,20734,29630,17705,7259];
+  //let expected = [4774,-4855,-12019,-18249,-21006,-39976,-48785,-52785];
+  let actual = new TA([c,c,h,l,c,v], TA.simpleFormat).cho();
+  //let delta = nrmse(expected, actual);
+  it('Finite test', () => assert.ok(actual.every(isFinite)));
+  //it(`Precision test (NRMSE=${delta.toFixed(5)})`, () => assert.ok(delta < 1e-2));
+})

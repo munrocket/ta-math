@@ -2,7 +2,7 @@
 node_modules/
 
 # Coverage and tests directory
-coverage
+coverage/
 .nyc_output
 
 # Editor

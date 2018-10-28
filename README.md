@@ -6,6 +6,7 @@ Technical analysis math
 [![Build Status](https://travis-ci.org/munrocket/ta-math.svg?branch=master)](https://travis-ci.org/munrocket/ta-math)
 [![Codecov](https://img.shields.io/codecov/c/github/munrocket/ta-math.svg)](https://codecov.io/gh/munrocket/ta-math)
 [![dependencies Status](https://david-dm.org/munrocket/ta-math/status.svg)](https://david-dm.org/munrocket/ta-math)
+[![install size](https://packagephobia.now.sh/badge?p=ta-math)](https://packagephobia.now.sh/result?p=ta-math)
 
 Well tested library for calculating technical indicators and overlays from price data in any format. You choose format and data by yourself and library return charts data. Written in es6 javascript, but also distributed in es5. 
 
@@ -36,10 +37,12 @@ You can check [example](https://cdn.rawgit.com/munrocket/ta-math/9436df09/test/t
 | adl       | Accumulation / Distribution line      |   ✔️    | Marc Chaikin                      | 1970s|
 | atr       | Average True Range                    |   ✔️    | Welles Wilder                     | 1978 |
 | adx       | Average Directional Index             |   ✔️    | Welles Wilder                     | 1978 |
+| bbp       | Bollinger Bands Percent Bandwidth %B  | :suspect: |                                 |      |
 | cci       | Commodity Channel Index               |   ✔️    | Donald Lambert                    | 1980 |
+| cho       | Chaikin Oscillator                    | :suspect: | Marc Chaikin                    |      |
 | expdev    | Exponential Weighted Deviation        |   ✔️    |                                   |      |
 | fi        | Force Index                           |   ✔️    |                                   |      |
-| kst       | Know Sure Thing                       |   ➖    |                                   |      |
+| kst       | Know Sure Thing                       |   ❌    |                                   |      |
 | macd      | Moving Average Convergence/Divergence |   ✔️    | Gerald Appel                      | 1979 |
 | madev     | Mean Absolute Deviation               |   ✔️    |                                   |      |
 | mfi       | Money Flow Index (volume-weighted RSI)|   ✔️    | Gene Quong and Avrum Soudack      | 1989 |
@@ -60,8 +63,14 @@ You can check [example](https://cdn.rawgit.com/munrocket/ta-math/9436df09/test/t
 | nrmse     | Normalized Root-Mean-Square Error     |    ✔️   |
 | rmse      | Root-Mean-Square Error                |    ✔️   |
 
-### Statistics methods
-| Function  | Statistics methods                    | Tested  |
+### Price transformations
+| Function     | Price transformation               | Tested  |
+|:-------------|:-----------------------------------|:-------:|
+| trueRange    | True Range                         |    ✔️   |
+| typicalPrice | Typical Price                      |    ✔️   |
+
+### Statistical methods
+| Function  | Statistical methods                    | Tested  |
 |:----------|:--------------------------------------|:-------:|
 | cov       | Covariation                           |    ✔️   |
 | cor       | Correlation                           |    ✔️   |
@@ -71,10 +80,10 @@ You can check [example](https://cdn.rawgit.com/munrocket/ta-math/9436df09/test/t
 ### Correlation matrix
 ![correlation-matrix](https://i.imgur.com/6tVQifE.png)
 
-### Forecasting methods 
-| Function     | Method                          | Tested  | Developed by                   | Year |
-|:-------------|:--------------------------------|:-------:|:------------------------------:|:----:|
-| holtWinters  | Holt-Winters Filtering          |    ❌   | C. C. Holt and P. R. Winters   | 1957 |
+[//]: # (### Forecasting methods )
+[//]: # (| Function     | Method                          | Tested  | Developed by                   | Year |)
+[//]: # (|:-------------|:--------------------------------|:-------:|:------------------------------:|:----:|)
+[//]: # (| holtWinters  | Holt-Winters Filtering          |    ❌   | C. C. Holt and P. R. Winters   | 1957 |)
 
 ### Usage
 ```

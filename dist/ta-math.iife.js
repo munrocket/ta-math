@@ -192,6 +192,138 @@ var TA = (function () {
     return tr;
   }
 
+  /* overlays */
+
+  function bb($close, window, mult) {
+    var ma = sma($close, window);
+    var dev = stdev($close, window);
+    var upper = pointwise(function (a, b) {
+      return a + b * mult;
+    }, ma, dev);
+    var lower = pointwise(function (a, b) {
+      return a - b * mult;
+    }, ma, dev);
+    return { lower: lower, middle: ma, upper: upper };
+  }
+
+  function dema($close, window) {
+    var ema1 = ema($close, window);
+    return pointwise(function (a, b) {
+      return 2 * a - b;
+    }, ema1, ema(ema1, window));
+  }
+
+  function ebb($close, window, mult) {
+    var ma = ema($close, window);
+    var dev = expdev($close, window);
+    var upper = pointwise(function (a, b) {
+      return a + b * mult;
+    }, ma, dev);
+    var lower = pointwise(function (a, b) {
+      return a - b * mult;
+    }, ma, dev);
+    return { lower: lower, middle: ma, upper: upper };
+  }
+
+  function keltner($high, $low, $close, window, mult) {
+    var middle = ema($close, window);
+    var upper = pointwise(function (a, b) {
+      return a + mult * b;
+    }, middle, atr($high, $low, $close, window));
+    var lower = pointwise(function (a, b) {
+      return a - mult * b;
+    }, middle, atr($high, $low, $close, window));
+    return { lower: lower, middle: middle, upper: upper };
+  }
+
+  function psar($high, $low, stepfactor, maxfactor) {
+    var isUp = true;
+    var factor = stepfactor;
+    var extreme = Math.max($high[0], $high[1]);
+    var psar = [$low[0], Math.min($low[0], $low[1])];
+    var cursar = psar[1];
+    for (var i = 2, len = $high.length; i < len; i++) {
+      cursar = cursar + factor * (extreme - cursar);
+      if (isUp && $high[i] > extreme || !isUp && $low[i] < extreme) {
+        factor = factor <= maxfactor ? factor + stepfactor : maxfactor;
+        extreme = isUp ? $high[i] : $low[i];
+      }
+      if (isUp && $low[i] < cursar || !isUp && cursar > $high[i]) {
+        isUp = !isUp;
+        factor = stepfactor;
+        cursar = isUp ? Math.min.apply(Math, toConsumableArray($low.slice(i - 2, i + 1))) : Math.max.apply(Math, toConsumableArray($high.slice(i - 2, i + 1)));
+      }
+      //console.log(`isUp=${isUp}, c=${$low[i]}, extreme=${extreme.toFixed(2)}, factor=${factor}, sar=${cursar.toFixed(2)}`);
+      psar.push(cursar);
+    }
+    return psar;
+  }
+
+  function tema($close, window) {
+    var ema1 = ema($close, window);
+    var ema2 = ema(ema1, window);
+    return pointwise(function (a, b, c) {
+      return 3 * a - 3 * b + c;
+    }, ema1, ema2, ema(ema2, window));
+  }
+
+  function vbp($close, $volume, zones, left, right) {
+    var total = 0;
+    var bottom = Infinity;
+    var top = -Infinity;
+    var vbp = new Array(zones).fill(0);
+    right = !isNaN(right) ? right : $close.length;
+    for (var i = left; i < right; i++) {
+      total += $volume[i];
+      top = top < $close[i] ? $close[i] : top;
+      bottom = bottom > $close[i] ? $close[i] : bottom;
+    }
+    for (var _i = left; _i < right; _i++) {
+      vbp[Math.floor(($close[_i] - bottom) / (top - bottom) * (zones - 1))] += $volume[_i];
+    }
+    return { bottom: bottom, top: top, volumes: vbp.map(function (x) {
+        return x / total;
+      }) };
+  }
+
+  function vwap($high, $low, $close, $volume) {
+    var tp = typicalPrice($high, $low, $close),
+        cumulVTP = [$volume[0] * tp[0]],
+        cumulV = [$volume[0]];
+    for (var i = 1, len = $close.length; i < len; i++) {
+      cumulVTP[i] = cumulVTP[i - 1] + $volume[i] * tp[i];
+      cumulV[i] = cumulV[i - 1] + $volume[i];
+    }
+    return pointwise(function (a, b) {
+      return a / b;
+    }, cumulVTP, cumulV);
+  }
+
+  function zigzag($time, $high, $low, percent) {
+    var lowest = $low[0],
+        thattime = $time[0],
+        isUp = false;
+    var highest = $high[0],
+        time = [],
+        zigzag = [];
+    for (var i = 1, len = $time.length; i < len; i++) {
+      if (isUp) {
+        if ($high[i] > highest) {
+          thattime = $time[i];highest = $high[i];
+        } else if ($low[i] < lowest + (highest - lowest) * (100 - percent) / 100) {
+          isUp = false;time.push(thattime);zigzag.push(highest);lowest = $low[i];
+        }
+      } else {
+        if ($low[i] < lowest) {
+          thattime = $time[i];lowest = $low[i];
+        } else if ($high[i] > lowest + (highest - lowest) * percent / 100) {
+          isUp = true;time.push(thattime);zigzag.push(lowest);highest = $high[i];
+        }
+      }
+    }
+    return { time: time, price: zigzag };
+  }
+
   /* indicators */
 
   function adl($high, $low, $close, $volume) {
@@ -227,6 +359,13 @@ var TA = (function () {
     return { dip: dip, dim: dim, adx: new Array(14).fill(NaN).concat(ema(dx.slice(14), 2 * window - 1)) };
   }
 
+  function bbpb($close, window, mult) {
+    var band = bb($close, window, mult);
+    return pointwise(function (p, u, l) {
+      return (p - l) / (u - l);
+    }, $close, band.upper, band.lower);
+  }
+
   function cci($high, $low, $close, window, mult) {
     var tp = typicalPrice($high, $low, $close);
     var tpsma = sma(tp, window);
@@ -235,6 +374,13 @@ var TA = (function () {
     return pointwise(function (a, b, c) {
       return (a - b) / (c * mult);
     }, tp, tpsma, tpmad);
+  }
+
+  function cho($high, $low, $close, $volume, winshort, winlong) {
+    var adli = adl($high, $low, $close, $volume);
+    return pointwise(function (s, l) {
+      return s - l;
+    }, ema(adli, winshort), ema(adli, winlong));
   }
 
   function fi($close, $volume, window) {
@@ -384,138 +530,6 @@ var TA = (function () {
     }, stoch($high, $low, $close, window, 1, 1).line);
   }
 
-  /* overlays */
-
-  function bb($close, window, mult) {
-    var ma = sma($close, window);
-    var dev = stdev($close, window);
-    var upper = pointwise(function (a, b) {
-      return a + b * mult;
-    }, ma, dev);
-    var lower = pointwise(function (a, b) {
-      return a - b * mult;
-    }, ma, dev);
-    return { lower: lower, middle: ma, upper: upper };
-  }
-
-  function dema($close, window) {
-    var ema1 = ema($close, window);
-    return pointwise(function (a, b) {
-      return 2 * a - b;
-    }, ema1, ema(ema1, window));
-  }
-
-  function ebb($close, window, mult) {
-    var ma = ema($close, window);
-    var dev = expdev($close, window);
-    var upper = pointwise(function (a, b) {
-      return a + b * mult;
-    }, ma, dev);
-    var lower = pointwise(function (a, b) {
-      return a - b * mult;
-    }, ma, dev);
-    return { lower: lower, middle: ma, upper: upper };
-  }
-
-  function keltner($high, $low, $close, window, mult) {
-    var middle = ema($close, window);
-    var upper = pointwise(function (a, b) {
-      return a + mult * b;
-    }, middle, atr($high, $low, $close, window));
-    var lower = pointwise(function (a, b) {
-      return a - mult * b;
-    }, middle, atr($high, $low, $close, window));
-    return { lower: lower, middle: middle, upper: upper };
-  }
-
-  function psar($high, $low, stepfactor, maxfactor) {
-    var isUp = true;
-    var factor = stepfactor;
-    var extreme = Math.max($high[0], $high[1]);
-    var psar = [$low[0], Math.min($low[0], $low[1])];
-    var cursar = psar[1];
-    for (var i = 2, len = $high.length; i < len; i++) {
-      cursar = cursar + factor * (extreme - cursar);
-      if (isUp && $high[i] > extreme || !isUp && $low[i] < extreme) {
-        factor = factor <= maxfactor ? factor + stepfactor : maxfactor;
-        extreme = isUp ? $high[i] : $low[i];
-      }
-      if (isUp && $low[i] < cursar || !isUp && cursar > $high[i]) {
-        isUp = !isUp;
-        factor = stepfactor;
-        cursar = isUp ? Math.min.apply(Math, toConsumableArray($low.slice(i - 2, i + 1))) : Math.max.apply(Math, toConsumableArray($high.slice(i - 2, i + 1)));
-      }
-      //console.log(`isUp=${isUp}, c=${$low[i]}, extreme=${extreme.toFixed(2)}, factor=${factor}, sar=${cursar.toFixed(2)}`);
-      psar.push(cursar);
-    }
-    return psar;
-  }
-
-  function tema($close, window) {
-    var ema1 = ema($close, window);
-    var ema2 = ema(ema1, window);
-    return pointwise(function (a, b, c) {
-      return 3 * a - 3 * b + c;
-    }, ema1, ema2, ema(ema2, window));
-  }
-
-  function vbp($close, $volume, zones, left, right) {
-    var total = 0;
-    var bottom = Infinity;
-    var top = -Infinity;
-    var vbp = new Array(zones).fill(0);
-    right = !isNaN(right) ? right : $close.length;
-    for (var i = left; i < right; i++) {
-      total += $volume[i];
-      top = top < $close[i] ? $close[i] : top;
-      bottom = bottom > $close[i] ? $close[i] : bottom;
-    }
-    for (var _i = left; _i < right; _i++) {
-      vbp[Math.floor(($close[_i] - bottom) / (top - bottom) * (zones - 1))] += $volume[_i];
-    }
-    return { bottom: bottom, top: top, volumes: vbp.map(function (x) {
-        return x / total;
-      }) };
-  }
-
-  function vwap($high, $low, $close, $volume) {
-    var tp = typicalPrice($high, $low, $close),
-        cumulVTP = [$volume[0] * tp[0]],
-        cumulV = [$volume[0]];
-    for (var i = 1, len = $close.length; i < len; i++) {
-      cumulVTP[i] = cumulVTP[i - 1] + $volume[i] * tp[i];
-      cumulV[i] = cumulV[i - 1] + $volume[i];
-    }
-    return pointwise(function (a, b) {
-      return a / b;
-    }, cumulVTP, cumulV);
-  }
-
-  function zigzag($time, $high, $low, percent) {
-    var lowest = $low[0],
-        thattime = $time[0],
-        isUp = false;
-    var highest = $high[0],
-        time = [],
-        zigzag = [];
-    for (var i = 1, len = $time.length; i < len; i++) {
-      if (isUp) {
-        if ($high[i] > highest) {
-          thattime = $time[i];highest = $high[i];
-        } else if ($low[i] < lowest + (highest - lowest) * (100 - percent) / 100) {
-          isUp = false;time.push(thattime);zigzag.push(highest);lowest = $low[i];
-        }
-      } else {
-        if ($low[i] < lowest) {
-          thattime = $time[i];lowest = $low[i];
-        } else if ($high[i] > lowest + (highest - lowest) * percent / 100) {
-          isUp = true;time.push(thattime);zigzag.push(lowest);highest = $high[i];
-        }
-      }
-    }
-    return { time: time, price: zigzag };
-  }
-
   /* data formats */
 
   var simpleFormat = function simpleFormat(x) {
@@ -644,11 +658,25 @@ var TA = (function () {
         return TA.bb(this.$close, window, mult);
       }
     }, {
+      key: 'bbpb',
+      value: function bbpb$$1() {
+        var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 15;
+        var mult = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 2;
+        return TA.bbpb(this.$close, window, mult);
+      }
+    }, {
       key: 'cci',
       value: function cci$$1() {
         var window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 20;
         var mult = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0.015;
         return TA.cci(this.$high, this.$low, this.$close, window, mult);
+      }
+    }, {
+      key: 'cho',
+      value: function cho$$1() {
+        var winshort = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 3;
+        var winlong = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 10;
+        return TA.cho(this.$high, this.$low, this.$close, this.$volume, winshort, winlong);
       }
     }, {
       key: 'dema',
@@ -886,11 +914,25 @@ var TA = (function () {
         return bb($close, window, mult);
       }
     }, {
+      key: 'bbpb',
+      value: function bbpb$$1($close) {
+        var window = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 15;
+        var mult = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 2;
+        return bbpb($close, window, mult);
+      }
+    }, {
       key: 'cci',
       value: function cci$$1($high, $low, $close) {
         var window = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 20;
         var mult = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0.015;
         return cci($high, $low, $close, window, mult);
+      }
+    }, {
+      key: 'cho',
+      value: function cho$$1($high, $low, $close, $volume) {
+        var winshort = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 3;
+        var winlong = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 10;
+        return cho($high, $low, $close, $volume, winshort, winlong);
       }
     }, {
       key: 'dema',
