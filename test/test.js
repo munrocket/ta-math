@@ -1,4 +1,4 @@
-import { mean, sd, mae, mape, mad, rmse, nrmse, pointwise } from '../src/core';
+import { mean, sd, mae, mape, rmse, nrmse } from '../src/core';
 import TA from '../src/main';
 //import { holtWinters } from '../src/forecasting';
 import assert from 'assert';
@@ -593,10 +593,9 @@ describe('ROC', () => {
   let c = [11045.27,11167.32,11008.61,11151.83,10926.77,10868.12,10520.32,10380.43,10785.14,10748.26,
     10896.91,10782.95,10620.16,10625.83,10510.95,10444.37,10068.01,10193.39,10066.57,10043.75];
   let expected = [NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,-3.85,-4.85,-4.52,-6.34,-7.86,-6.21,-4.31,-3.24];
-  let actual = new TA([c,c,c,c,c,c], TA.simpleFormat).roc();
-  it('Finite test', () => assert.ok(actual.slice(12).every(isFinite)));
-  actual = new TA([c,c,c,c,c,c], TA.simpleFormat).roc(13);
-  let delta = nrmse(expected.slice(12), actual.slice(12));
+  let actual = new TA([c,c,c,c,c,c], TA.simpleFormat).roc(12);
+  let delta = nrmse(expected.slice(14), actual.slice(14));
+  it('Finite test', () => assert.ok(actual.slice(14).every(isFinite)));
   it(`Precision test (NRMSE=${delta.toFixed(5)})`, () => assert.ok(delta < 1e-2));
 })
 
@@ -624,23 +623,23 @@ describe('KST', () => {
     1404.11,1403.93,1405.53,1415.51,1418.16,1418.13,1413.17,1413.49,1402.08,1411.13,1410.44];
   let expected = [NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,
     NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,36.60,37.23,38.38,38.78,37.54,36.25];
-  let actual = new TA([c,c,c,c,c,c], TA.simpleFormat).kst();
-  // it('Finite test', () => assert.ok(actual.every(isFinite)));
-  // let delta = nrmse(expected.slice(45), actual.slice(45));
-  // it(`Precision test (NRMSE=${delta.toFixed(5)})`, () => assert.ok(delta < 1e-2));
+  let actual = new TA([c,c,c,c,c,c], TA.simpleFormat).kst().line;
+  it('Finite test', () => assert.ok(actual.slice(44).every(isFinite)));
+  let delta = nrmse(expected.slice(45), actual.slice(45));
+  it(`Precision test (NRMSE=${delta.toFixed(5)})`, () => assert.ok(delta < 1e-2));
 })
 
-describe('BBPB', () => {
+describe('BBP', () => {
   let c = [86.16,89.09,88.78,90.32,89.07,91.15,89.44,89.18,86.93,87.68,86.96,89.43,89.32,88.72,
     87.45,87.26,89.50,87.90,89.13,90.70,92.90,92.98,91.80,92.66,92.68,92.30,92.77,92.54,92.95,
     93.20,91.07,89.83,89.74,90.40,90.74,88.02,88.09,88.84,90.78,90.54,91.39,90.65];
   // let expected = [NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,86.12,
   //   86.14,85.87,85.85,85.70,85.65,85.59,85.56,85.60,85.98,86.27,86.82,86.87,86.91,87.12,87.63,87.83,
   //   87.56,87.76,87.97,87.95,87.96,87.95];
-  let actual = new TA([c,c,c,c,c,c], TA.simpleFormat).bbpb();
+  let actual = new TA([c,c,c,c,c,c], TA.simpleFormat).bbp();
   it('Finite test', () => assert.ok(actual.slice(1).every(isFinite)));
-  // let delta = nrmse(expected.slice(19), bb.lower.slice(19));
-  // it(`Precision test on lower (NRMSE=${delta.toFixed(5)})`, () => assert.ok(delta < 1e-2));
+  //let delta = nrmse(expected.slice(19), actual.slice(19));
+  //it(`Precision test on lower (NRMSE=${delta.toFixed(5)})`, () => assert.ok(delta < 1e-2));
 })
 
 describe('CHO', () => {
@@ -649,7 +648,7 @@ describe('CHO', () => {
   let c = [62.15,60.81,60.45,59.18,59.24,60.20,58.48,58.24];
   let v = [7849,11692,10575,13059,20734,29630,17705,7259];
   //let expected = [4774,-4855,-12019,-18249,-21006,-39976,-48785,-52785];
-  let actual = new TA([c,c,h,l,c,v], TA.simpleFormat).cho();
+  let actual = new TA([c,c,h,l,c,v], TA.simpleFormat).cho(13);
   //let delta = nrmse(expected, actual);
   it('Finite test', () => assert.ok(actual.every(isFinite)));
   //it(`Precision test (NRMSE=${delta.toFixed(5)})`, () => assert.ok(delta < 1e-2));

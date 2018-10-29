@@ -5,8 +5,8 @@ Technical analysis math
 ![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg)
 [![Build Status](https://travis-ci.org/munrocket/ta-math.svg?branch=master)](https://travis-ci.org/munrocket/ta-math)
 [![Codecov](https://img.shields.io/codecov/c/github/munrocket/ta-math.svg)](https://codecov.io/gh/munrocket/ta-math)
-[![dependencies Status](https://david-dm.org/munrocket/ta-math/status.svg)](https://david-dm.org/munrocket/ta-math)
 [![install size](https://packagephobia.now.sh/badge?p=ta-math)](https://packagephobia.now.sh/result?p=ta-math)
+[![dependencies Status](https://david-dm.org/munrocket/ta-math/status.svg)](https://david-dm.org/munrocket/ta-math)
 
 Well tested library for calculating technical indicators and overlays from price data in any format. You choose format and data by yourself and library return charts data. Written in es6 javascript, but also distributed in es5. 
 
@@ -42,7 +42,7 @@ You can check [example](https://cdn.rawgit.com/munrocket/ta-math/9436df09/test/t
 | cho       | Chaikin Oscillator                    | :suspect: | Marc Chaikin                    |      |
 | expdev    | Exponential Weighted Deviation        |   ✔️    |                                   |      |
 | fi        | Force Index                           |   ✔️    |                                   |      |
-| kst       | Know Sure Thing                       |   ❌    |                                   |      |
+| kst       | Know Sure Thing                       |   ✔️    |                                   |      |
 | macd      | Moving Average Convergence/Divergence |   ✔️    | Gerald Appel                      | 1979 |
 | madev     | Mean Absolute Deviation               |   ✔️    |                                   |      |
 | mfi       | Money Flow Index (volume-weighted RSI)|   ✔️    | Gene Quong and Avrum Soudack      | 1989 |

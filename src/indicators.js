@@ -29,7 +29,7 @@ export function adx($high, $low, $close, window) {
   return {dip: dip, dim: dim, adx: new Array(14).fill(NaN).concat(ema(dx.slice(14), 2 * window - 1))};
 }
 
-export function bbpb($close, window, mult) {
+export function bbp($close, window, mult) {
   let band = bb($close, window, mult);
   return pointwise((p, u, l) => (p - l) / (u - l), $close, band.upper, band.lower);
 }
@@ -57,7 +57,7 @@ export function kst($close, w1, w2, w3, w4, s1, s2, s3, s4, sig) {
   let rcma2 = sma(roc($close, w2), s2);
   let rcma3 = sma(roc($close, w3), s3);
   let rcma4 = sma(roc($close, w4), s4);
-  let line = pointwise((a, b, c, d) => a + b + c + d, rcma1, rcma2, rcma3, rcma4);
+  let line = pointwise((a, b, c, d) => a + b * 2 + c * 3 + d * 4, rcma1, rcma2, rcma3, rcma4);
   return { line: line, signal: sma(line, sig) };
 }
 
@@ -90,7 +90,11 @@ export function obv($close, $volume, signal) {
 }
 
 export function roc($close, window) {
-  return rolling(x => 100 * (x[x.length - 1] - x[0]) / x[0], window, $close);
+  let result = new Array(window).fill(NaN);
+  for (let i = window, len = $close.length; i < len; i++) {
+    result.push(100 * ($close[i] - $close[i - window]) / $close[i - window])
+  }
+  return result;
 }
 
 export function rsi($close, window) {

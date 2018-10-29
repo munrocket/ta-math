@@ -40,7 +40,7 @@ export default class TA {
   static atr($high, $low, $close, window = 14)                                      { return core.atr($high, $low, $close, window) }
   static adx($high, $low, $close, window = 14)                                      { return indicators.adx($high, $low, $close, window) }
   static bb($close, window = 15, mult = 2)                                          { return overlays.bb($close, window, mult) }
-  static bbpb($close, window = 15, mult = 2)                                        { return indicators.bbpb($close, window, mult) }
+  static bbp($close, window = 15, mult = 2)                                         { return indicators.bbp($close, window, mult) }
   static cci($high, $low, $close, window = 20, mult = 0.015)                        { return indicators.cci($high, $low, $close, window, mult) }
   static cho($high, $low, $close, $volume, winshort = 3, winlong = 10)              { return indicators.cho($high, $low, $close, $volume, winshort, winlong) }
   static dema($close, window = 10)                                                  { return overlays.dema($close, window) }
@@ -73,7 +73,7 @@ export default class TA {
   atr(window = 14)                                                      { return TA.atr(this.$high, this.$low, this.$close, window) }
   adx(window = 14)                                                      { return TA.adx(this.$high, this.$low, this.$close, window) }
   bb(window = 15, mult = 2)                                             { return TA.bb(this.$close, window, mult) }
-  bbpb(window = 15, mult = 2)                                           { return TA.bbpb(this.$close, window, mult) }
+  bbp(window = 15, mult = 2)                                            { return TA.bbp(this.$close, window, mult) }
   cci(window = 20, mult = 0.015)                                        { return TA.cci(this.$high, this.$low, this.$close, window, mult) }
   cho(winshort = 3, winlong = 10)                                       { return TA.cho(this.$high, this.$low, this.$close, this.$volume, winshort, winlong) }
   dema(window = 10)                                                     { return TA.dema(this.$close, window) }
