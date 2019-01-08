@@ -101,15 +101,13 @@ You can check [example](https://cdn.rawgit.com/munrocket/ta-math/9436df09/test/t
 Install npm package `npm i ta-math` or add `ta-math.iife.js` script file on web page.
 
 ### 2do list
-
 - [X] basic indicators and overlays
 - [X] unit tests
 - [X] es5 with babel
 - [X] coverage
 - [X] good looking example
 - [ ] forecasting and strategies (Holt-Winters, ARIMA, FFT [etc](https://www.quantstart.com/articles#time-series-analysis))
-- [ ] test for default parameters and not enough length
+- [ ] Js2Py?
 
 ### Contributing
-
-Feel free to contribute. Here [reference](http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators) how to implement new indicators. There are test samples in the .xls files, also you can generate testing data with 'generator.py' file. To convert columns into rows use this [tool](https://www.browserling.com/tools/text-columns-to-rows).
+Feel free to contribute. Here [reference](http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators) how to implement new indicators. There are test samples in the .xls files, also you can generate testing data with 'generator.py' file. To convert columns into rows in .xls you can use this [tool](https://www.browserling.com/tools/text-columns-to-rows).

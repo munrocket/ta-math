@@ -25,7 +25,6 @@ export function adx($high, $low, $close, window) {
   let dip = pointwise((a, b) => 100 * a / b, dmp, str);
   let dim = pointwise((a, b) => 100 * a / b, dmm, str);
   let dx = pointwise((a, b) => 100 * Math.abs(a - b) / (a + b), dip, dim);
-  //console.log("dip,dim", pointwise((a, b, c) => [a, b, c], dip, dim, dx));
   return {dip: dip, dim: dim, adx: new Array(14).fill(NaN).concat(ema(dx.slice(14), 2 * window - 1))};
 }
 

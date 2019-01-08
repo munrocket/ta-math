@@ -28,6 +28,13 @@
       "text"
     ]
   },
+  "babel": {
+    "presets": [
+      ["env", {
+        "modules": false
+      }]
+    ]
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/munrocket/ta-math.git"
