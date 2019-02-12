@@ -86,15 +86,15 @@ You can check [example](https://cdn.rawgit.com/munrocket/ta-math/9436df09/test/t
 [//]: # (| holtWinters  | Holt-Winters Filtering          |    ❌   | C. C. Holt and P. R. Winters   | 1957 |)
 
 ### Usage
-```
-  var ohlcv = [[t,o,h,l,c,v], [t2,o2,h2,l2,c2,v2],  ...  ,[tN,oN,hN,lN,cN,vN]];
-  var ta = new TA(ohlcv, TA.exchangeFormat);
-  var emaShort = ta.ema(10);
-  var emaLong = ta.ema(21);
-  var bband = ta.bb(15, 2);
-  var bbUpper = bband.upper;
-  var bbLower = bband.lower;
-  var smaOpenPrice = TA.sma(ta.$open);
+```javascript
+  const ohlcv = [[t,o,h,l,c,v], [t2,o2,h2,l2,c2,v2],  ...  ,[tN,oN,hN,lN,cN,vN]];
+  const ta = new TA(ohlcv, TA.exchangeFormat);
+  const emaShort = ta.ema(10);
+  const emaLong = ta.ema(21);
+  const bband = ta.bb(15, 2);
+  const bbUpper = bband.upper;
+  const bbLower = bband.lower;
+  const smaOpenPrice = TA.sma(ta.$open);
 ```
 
 ### Installation
