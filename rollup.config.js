@@ -9,8 +9,7 @@ export default [
 		output: { name: 'TA', file: pkg.browser, format: 'iife' },
 		plugins: [
 			babel({
-				exclude: 'node_modules/**',
-				plugins: "external-helpers"
+				exclude: 'node_modules/**'
 			})
 		]
 	},

@@ -1,6 +1,6 @@
 {
   "name": "ta-math",
-  "version": "0.3.10",
+  "version": "0.3.11",
   "description": "Technical analysis library in javascript. Calculates indicators and overlays from ohlcv data",
   "main": "dist/ta-math.cjs.js",
   "module": "dist/ta-math.esm.js",
@@ -30,12 +30,7 @@
   },
   "babel": {
     "presets": [
-      [
-        "env",
-        {
-          "modules": false
-        }
-      ]
+      "@babel/preset-env"
     ]
   },
   "repository": {
@@ -57,9 +52,8 @@
   "homepage": "https://github.com/munrocket/ta-math#readme",
   "dependencies": {},
   "devDependencies": {
-    "babel-core": "^6.26.3",
-    "babel-plugin-external-helpers": "^6.22.0",
-    "babel-preset-env": "^1.7.0",
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.3.1",
     "codecov": "^3.1.0",
     "mocha": "^5.2.0",
     "nyc": "^13.2.0",
