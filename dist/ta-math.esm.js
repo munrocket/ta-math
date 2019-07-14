@@ -350,8 +350,8 @@ function vi($high, $low, $close, window) {
   }
   let apv = rolling(x => x.reduce((sum, x) => {return sum + x}, 0), window, pv);
   let anv = rolling(x => x.reduce((sum, x) => {return sum + x}, 0), window, nv);
-  let atr$$1 = rolling(x => x.reduce((sum, x) => {return sum + x}, 0), window, trueRange($high, $low, $close));
-  return { plus: pointwise((a, b) => a / b, apv, atr$$1), minus: pointwise((a, b) => a / b, anv, atr$$1) };
+  let atr = rolling(x => x.reduce((sum, x) => {return sum + x}, 0), window, trueRange($high, $low, $close));
+  return { plus: pointwise((a, b) => a / b, apv, atr), minus: pointwise((a, b) => a / b, anv, atr) };
 }
 
 function williams($high, $low, $close, window) {

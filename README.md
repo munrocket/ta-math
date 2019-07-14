@@ -37,9 +37,9 @@ You can check [example](https://cdn.rawgit.com/munrocket/ta-math/9436df09/test/t
 | adl       | Accumulation / Distribution line      |   ✔️    | Marc Chaikin                      | 1970s|
 | atr       | Average True Range                    |   ✔️    | Welles Wilder                     | 1978 |
 | adx       | Average Directional Index             |   ✔️    | Welles Wilder                     | 1978 |
-| bbp       | Bollinger Bands Percent Bandwidth %B  | :suspect: |                                 |      |
+| bbp       | Bollinger Bands Percent Bandwidth %B  |   👌     |                                  |      |
 | cci       | Commodity Channel Index               |   ✔️    | Donald Lambert                    | 1980 |
-| cho       | Chaikin Oscillator                    | :suspect: | Marc Chaikin                    |      |
+| cho       | Chaikin Oscillator                    |   👌     | Marc Chaikin                     |      |
 | expdev    | Exponential Weighted Deviation        |   ✔️    |                                   |      |
 | fi        | Force Index                           |   ✔️    |                                   |      |
 | kst       | Know Sure Thing                       |   ✔️    |                                   |      |
