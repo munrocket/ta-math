@@ -56,7 +56,7 @@
     "@babel/preset-env": "7.5.5",
     "@joseph184/rollup-plugin-node-builtins": "2.1.4",
     "codecov": "3.5.0",
-    "lodash": "4.17.14",
+    "lodash": "4.17.15",
     "mocha": "6.1.4",
     "nyc": "14.1.1",
     "rollup": "1.16.7",
