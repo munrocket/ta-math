@@ -52,15 +52,15 @@
   "homepage": "https://github.com/munrocket/ta-math#readme",
   "dependencies": {},
   "devDependencies": {
-    "@babel/core": "^7.5.4",
-    "@babel/preset-env": "^7.5.4",
-    "@joseph184/rollup-plugin-node-builtins": "^2.1.4",
-    "codecov": "^3.5.0",
-    "lodash": ">=4.17.13",
-    "mocha": "^6.1.4",
-    "nyc": "^14.1.1",
-    "rollup": "^1.16.7",
-    "rollup-plugin-babel": "^4.3.3",
-    "rollup-plugin-istanbul": "^2.0.1"
+    "@babel/core": "7.5.4",
+    "@babel/preset-env": "7.5.4",
+    "@joseph184/rollup-plugin-node-builtins": "2.1.4",
+    "codecov": "3.5.0",
+    "lodash": "4.17.14",
+    "mocha": "6.1.4",
+    "nyc": "14.1.1",
+    "rollup": "1.16.7",
+    "rollup-plugin-babel": "4.3.3",
+    "rollup-plugin-istanbul": "2.0.1"
   }
 }
