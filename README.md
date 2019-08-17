@@ -12,7 +12,7 @@ Well tested library for calculating technical indicators and overlays from price
 
 ![btc-with-bollinger-bands](https://i.imgur.com/moDdzmM.png)
 
-You can check [example](https://cdn.rawgit.com/munrocket/ta-math/9436df09/test/test.html) with plotly library, ccxt data provider and BTC prices from Binance exchange.
+You can check [example](https://munrocket.github.io/ta-math/) with plotly library, ccxt data provider and BTC prices from Binance exchange.
 
 [//]: # (used emoji ➖✔️️❔❌:suspect:)
 
