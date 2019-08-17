@@ -52,8 +52,8 @@
   "homepage": "https://github.com/munrocket/ta-math#readme",
   "dependencies": {},
   "devDependencies": {
-    "@babel/core": "7.5.4",
-    "@babel/preset-env": "7.5.4",
+    "@babel/core": "7.5.5",
+    "@babel/preset-env": "7.5.5",
     "@joseph184/rollup-plugin-node-builtins": "2.1.4",
     "codecov": "3.5.0",
     "lodash": "4.17.14",
