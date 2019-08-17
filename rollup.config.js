@@ -6,11 +6,9 @@ import pkg from './package.json';
 export default [
 	{
 		input: 'src/main.js',
-		output: { name: 'TA', file: pkg.browser, format: 'iife' },
+		output: { file: pkg.browser, name: 'TA', format: 'iife' },
 		plugins: [
-			babel({
-				exclude: 'node_modules/**'
-			})
+			babel({ exclude: 'node_modules/**' })
 		]
 	},
 	{

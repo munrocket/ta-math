@@ -1,22 +1,21 @@
 {
   "name": "ta-math",
-  "version": "0.3.11",
+  "version": "0.3.12",
   "description": "Technical analysis library in javascript. Calculates indicators and overlays from ohlcv data",
   "main": "dist/ta-math.cjs.js",
-  "module": "dist/ta-math.esm.js",
-  "browser": "dist/ta-math.iife.js",
+  "module": "dist/ta-math.module.js",
+  "browser": "dist/ta-math.js",
   "files": [
     "dist"
   ],
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -c -w",
+    "examples": "open-cli examples",
+    "travis": "npm run build && npm run test",
     "test": "nyc mocha ./coverage/test.js",
-    "browser": "start ./test/test.html",
-    "ci": "npm run build && npm run test",
     "coverage": "nyc report --reporter=lcov",
-    "expected": "python ./test/expected.py",
-    "antlr": "antlr4 -Dlanguage=JavaScript -lib lib -o build -Xexact-output-dir lib/ECMAScript.g4 -visitor"
+    "expected": "python ./test/expected.py"
   },
   "eslintIgnore": [
     "dist",
@@ -28,14 +27,16 @@
       "text"
     ]
   },
-  "babel": {
-    "presets": [
-      "@babel/preset-env"
-    ]
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/munrocket/ta-math.git"
+  "devDependencies": {
+    "@babel/core": "7.5.5",
+    "@babel/preset-env": "7.5.5",
+    "@joseph184/rollup-plugin-node-builtins": "2.1.4",
+    "codecov": "3.5.0",
+    "mocha": "6.1.4",
+    "nyc": "14.1.1",
+    "rollup": "1.16.7",
+    "rollup-plugin-babel": "4.3.3",
+    "rollup-plugin-istanbul": "2.0.1"
   },
   "keywords": [
     "technical-indicators",
@@ -44,23 +45,10 @@
     "correlation-matrix",
     "finance"
   ],
-  "author": "munrocket",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/munrocket/ta-math/issues"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/munrocket/ta-math.git"
   },
-  "homepage": "https://github.com/munrocket/ta-math#readme",
-  "dependencies": {},
-  "devDependencies": {
-    "@babel/core": "7.5.5",
-    "@babel/preset-env": "7.5.5",
-    "@joseph184/rollup-plugin-node-builtins": "2.1.4",
-    "codecov": "3.5.0",
-    "lodash": "4.17.15",
-    "mocha": "6.1.4",
-    "nyc": "14.1.1",
-    "rollup": "1.16.7",
-    "rollup-plugin-babel": "4.3.3",
-    "rollup-plugin-istanbul": "2.0.1"
-  }
+  "author": "munrocket",
+  "license": "MIT"
 }
