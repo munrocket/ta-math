@@ -32,7 +32,7 @@
     "@babel/preset-env": "7.5.5",
     "@joseph184/rollup-plugin-node-builtins": "2.1.4",
     "codecov": "3.5.0",
-    "mocha": "6.1.4",
+    "mocha": "6.2.0",
     "nyc": "14.1.1",
     "rollup": "1.16.7",
     "rollup-plugin-babel": "4.3.3",
