@@ -1,6 +1,6 @@
 {
   "name": "ta-math",
-  "version": "0.3.12",
+  "version": "0.3.13",
   "description": "Technical analysis library in javascript. Calculates indicators and overlays from ohlcv data",
   "main": "dist/ta-math.cjs.js",
   "module": "dist/ta-math.module.js",
@@ -11,8 +11,8 @@
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -c -w",
-    "examples": "open-cli examples",
-    "travis": "npm run build && npm run test",
+    "examples": "open-cli docs/index.html",
+    "ci": "npm run build && npm run test",
     "test": "nyc mocha ./coverage/test.js",
     "coverage": "nyc report --reporter=lcov",
     "expected": "python ./test/expected.py"
@@ -34,6 +34,7 @@
     "codecov": "3.5.0",
     "mocha": "6.2.0",
     "nyc": "14.1.1",
+    "open-cli": "^5.0.0",
     "rollup": "1.19.4",
     "rollup-plugin-babel": "4.3.3",
     "rollup-plugin-istanbul": "2.0.1"
