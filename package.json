@@ -35,7 +35,7 @@
     "mocha": "6.2.0",
     "nyc": "14.1.1",
     "open-cli": "5.0.0",
-    "rollup": "1.20.1",
+    "rollup": "1.20.3",
     "rollup-plugin-babel": "4.3.3",
     "rollup-plugin-istanbul": "2.0.1"
   },
