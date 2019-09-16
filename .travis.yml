@@ -1,17 +1,15 @@
 language: node_js
-
-node_js:
-- '6'
+node_js: node
 
 script:
-- npm run travis
+- npm run ci
 
 after_success:
-- npm run coverage
 - bash <(curl -s https://codecov.io/bash)
 
 deploy:
   provider: npm
-  email: apifolio@gmail.com
-  api_key:
-    secure: AQZTjcdylPOUdWMtMDB2aYP2CO2hp897Nqmzp/V5F3dSwy+O0yyby41tFC2zIb+vy+xRfSRDrc6i/Hw+DuS/TgxSdbR6wVeCctkTGK1HhPeovmLf6URc4TMBjD6+I+oFDaG2AANvPMZB5j1KD06mvu+IDag3ja1oH8wcDUBXXqip7TaMysxdemAmf1HzTUafLr7TqXU4UkLNQblWCM+3UP0BF1kusSzP6EAYJW7fh76wdQ6amd2xMNSZhMIDV3NZ883O89sGZlTRogyT9HNx98sduR+BlOam94fQokr+ZaQxk9qylFqdMwiOOF5Nmq+/F8sX8r0qY0SAMvc+eFuMo8fRv1+VAEw3huZxOKvuxFYFEyx9m425ukyZnPChg9aiHaAiL7c5tYk2v7089UGkz6JOxKnKcto+Yx3Z4bR7FFL/mesrc3X2V+lohtr6Ggeym3vSdojfLGfq+rb7m8CQFIhgq6cnzAp/e8wQMUkwjkHFTwkHSB71r8U2V3JzG3DKt7dRyKFoE7oqNvgwyufOf5WcFjwEJE4F9U/EdzVghCeHu1Ioax80Pd2CjqKKgzCpNBS25Bnm+qj46FZTwQguVA3R0mTRUnPH93VV7EMcvXymJ8JAuHH/DnLo+c0ClmHrZT9Rnaw2+QOu2LE9MXLClR63j+j/fvNnL3LIKEDzegI=
+  email: $NPM_EMAIL
+  api_key: $NPM_TOKEN
+  on:
+    branch: master

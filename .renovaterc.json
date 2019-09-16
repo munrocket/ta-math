@@ -1,0 +1,6 @@
+{
+  "automerge": true,
+  "automergeType": "branch",
+  "bumpVersion": "minor",
+  "schedule": ["on sunday"]
+}
