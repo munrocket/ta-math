@@ -1,13 +1,3 @@
-# Dependency directories
 node_modules/
-
-# Coverage and tests directory
 coverage/
 .nyc_output
-
-# Editor
-.code
-
-# Next version
-lib/
-build/

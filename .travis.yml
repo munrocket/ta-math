@@ -1,8 +1,15 @@
 language: node_js
-node_js:
-  - 6
+node_js: node
+
 script:
-  - npm run ci
-after_success: 
-  - npm run coverage
-  - bash <(curl -s https://codecov.io/bash)
+- npm run ci
+
+after_success:
+- bash <(curl -s https://codecov.io/bash)
+
+deploy:
+  provider: npm
+  email: $NPM_EMAIL
+  api_key: $NPM_TOKEN
+  on:
+    branch: master

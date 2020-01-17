@@ -1,18 +1,15 @@
 
 Technical analysis math
 =========
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat)](https://egghead.io/courses/how-to-contribute-to-an-open-source-project-on-github) 
-![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg)
+[![bundlephobia](https://badgen.net/bundlephobia/minzip/ta-math)](https://bundlephobia.com/result?p=ta-math)
 [![Build Status](https://travis-ci.org/munrocket/ta-math.svg?branch=master)](https://travis-ci.org/munrocket/ta-math)
 [![Codecov](https://img.shields.io/codecov/c/github/munrocket/ta-math.svg)](https://codecov.io/gh/munrocket/ta-math)
-[![install size](https://packagephobia.now.sh/badge?p=ta-math)](https://packagephobia.now.sh/result?p=ta-math)
-[![dependencies Status](https://david-dm.org/munrocket/ta-math/status.svg)](https://david-dm.org/munrocket/ta-math)
 
 Well tested library for calculating technical indicators and overlays from price data in any format. You choose format and data by yourself and library return charts data. Written in es6 javascript, but also distributed in es5. 
 
 ![btc-with-bollinger-bands](https://i.imgur.com/moDdzmM.png)
 
-You can check [example](https://cdn.rawgit.com/munrocket/ta-math/9436df09/test/test.html) with plotly library, ccxt data provider and BTC prices from Binance exchange.
+You can check [example](https://munrocket.github.io/ta-math/) with plotly library, ccxt data provider and BTC prices from Binance exchange.
 
 [//]: # (used emoji ➖✔️️❔❌:suspect:)
 

@@ -1,6 +1,5 @@
 import { mean, sd, mae, mape, rmse, nrmse } from '../src/core';
 import TA from '../src/main';
-//import { holtWinters } from '../src/forecasting';
 import assert from 'assert';
 
 // random ohlcv
