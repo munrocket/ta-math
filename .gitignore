@@ -1,3 +1,4 @@
 node_modules/
 coverage/
+test/test.js
 .nyc_output

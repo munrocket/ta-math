@@ -2,35 +2,35 @@ import { sma, ema, stdev, expdev, pointwise, atr, typicalPrice} from './core';
 
 /* overlays */
 
-export function bb($close, window, mult) {
+export function bb($close: Array<number>, window: number, mult: number) {
   let ma = sma($close, window);
   let dev = stdev($close, window);
-  let upper = pointwise((a, b) => a + b * mult, ma, dev);
-  let lower = pointwise((a, b) => a - b * mult, ma, dev);
+  let upper = pointwise((a: number, b: number) => a + b * mult, ma, dev);
+  let lower = pointwise((a: number, b: number) => a - b * mult, ma, dev);
   return { lower : lower, middle : ma, upper : upper };
 }
 
-export function dema($close, window) {
+export function dema($close: Array<number>, window: number) {
   let ema1 = ema($close, window);
-  return pointwise((a, b) => 2 * a - b, ema1, ema(ema1, window));
+  return pointwise((a: number, b: number) => 2 * a - b, ema1, ema(ema1, window));
 }
 
-export function ebb($close, window, mult) {
+export function ebb($close: Array<number>, window: number, mult: number) {
   let ma = ema($close, window);
   let dev = expdev($close, window);
-  let upper = pointwise((a, b) => a + b * mult, ma, dev);
-  let lower = pointwise((a, b) => a - b * mult, ma, dev);
+  let upper = pointwise((a: number, b: number) => a + b * mult, ma, dev);
+  let lower = pointwise((a: number, b: number) => a - b * mult, ma, dev);
   return { lower : lower, middle : ma, upper : upper };
 }
 
-export function keltner($high, $low, $close, window, mult) {
+export function keltner($high: Array<number>, $low: Array<number>, $close: Array<number>, window: number, mult: number) {
   let middle = ema($close, window);
-  let upper = pointwise((a, b) => a + mult * b, middle, atr($high, $low, $close, window));
-  let lower = pointwise((a, b) => a - mult * b, middle, atr($high, $low, $close, window));
+  let upper = pointwise((a: number, b: number) => a + mult * b, middle, atr($high, $low, $close, window));
+  let lower = pointwise((a: number, b: number) => a - mult * b, middle, atr($high, $low, $close, window));
   return { lower: lower, middle: middle, upper: upper };
 }
 
-export function psar($high, $low, stepfactor, maxfactor) {
+export function psar($high: Array<number>, $low: Array<number>, stepfactor: number, maxfactor: number) {
   let isUp = true;
   let factor = stepfactor;
   let extreme = Math.max($high[0], $high[1]);
@@ -53,13 +53,13 @@ export function psar($high, $low, stepfactor, maxfactor) {
   return psar;
 }
 
-export function tema($close, window) {
+export function tema($close: Array<number>, window: number) {
   let ema1 = ema($close, window);
   let ema2 = ema(ema1, window);
-  return pointwise((a, b, c) => 3 * a - 3 * b + c, ema1, ema2, ema(ema2, window));
+  return pointwise((a: number, b: number, c: number) => 3 * a - 3 * b + c, ema1, ema2, ema(ema2, window));
 }
 
-export function vbp($close, $volume, zones, left, right) {
+export function vbp($close: Array<number>, $volume: Array<number>, zones: number, left: number, right: number) {
   let total = 0;
   let bottom = Infinity;
   let top = -Infinity;
@@ -76,16 +76,16 @@ export function vbp($close, $volume, zones, left, right) {
   return { bottom: bottom, top: top, volumes: vbp.map((x) => { return x / total }) };
 }
 
-export function vwap($high, $low, $close, $volume) {
+export function vwap($high: Array<number>, $low: Array<number>, $close: Array<number>, $volume: Array<number>) {
   let tp = typicalPrice($high, $low, $close), cumulVTP = [$volume[0] * tp[0]], cumulV = [$volume[0]];
   for(let i = 1, len = $close.length; i < len; i++) {
     cumulVTP[i] = cumulVTP[i - 1] + $volume[i] * tp[i];
     cumulV[i] = cumulV[i - 1] + $volume[i];
   }
-  return pointwise((a, b) => a / b, cumulVTP, cumulV)
+  return pointwise((a: number, b: number) => a / b, cumulVTP, cumulV)
 }
 
-export function zigzag($time, $high, $low, percent) {
+export function zigzag($time: Array<number>, $high: Array<number>, $low: Array<number>, percent: number) {
   let lowest = $low[0],         thattime = $time[0],    isUp = false;
   let highest = $high[0],       time = [],              zigzag = [];
   for (let i = 1, len = $time.length; i < len; i++) {

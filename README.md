@@ -5,7 +5,7 @@ Technical analysis math
 [![Build Status](https://travis-ci.org/munrocket/ta-math.svg?branch=master)](https://travis-ci.org/munrocket/ta-math)
 [![Codecov](https://img.shields.io/codecov/c/github/munrocket/ta-math.svg)](https://codecov.io/gh/munrocket/ta-math)
 
-Well tested library for calculating technical indicators and overlays from price data in any format. You choose format and data by yourself and library return charts data. Written in es6 javascript, but also distributed in es5. 
+Well tested library for calculating technical indicators and overlays from price data in any format. You choose format and data by yourself and library return charts data. Written in typescript, but distributed in es6/es5.
 
 ![btc-with-bollinger-bands](https://i.imgur.com/moDdzmM.png)
 
@@ -95,7 +95,7 @@ You can check [example](https://munrocket.github.io/ta-math/) with plotly librar
 ```
 
 ### Installation
-Install npm package `npm i ta-math` or add `ta-math.iife.js` script file on web page.
+Install npm package `npm i ta-math` or add `ta-math.js` script file on web page.
 
 ### 2do list
 - [X] basic indicators and overlays

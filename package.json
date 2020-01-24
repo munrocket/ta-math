@@ -1,20 +1,21 @@
 {
   "name": "ta-math",
-  "version": "0.3.14",
+  "version": "0.3.15",
   "description": "Technical analysis library in javascript. Calculates indicators and overlays from ohlcv data",
-  "main": "dist/ta-math.cjs.js",
-  "module": "dist/ta-math.module.js",
-  "browser": "dist/ta-math.js",
+  "main": "dist/ta-math.js",
+  "types": "dist/ta-math.d.ts",
+  "module": "dist/ta-math.esm.js",
+  "browser": "dist/ta-math.es5.js",
   "files": [
     "dist"
   ],
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -c -w",
-    "examples": "open-cli docs/index.html",
+    "test": "node --experimental-modules --no-warnings ./test/test.js",
     "ci": "npm run build && npm run test",
-    "test": "nyc mocha ./coverage/test.js",
-    "coverage": "nyc report --reporter=lcov",
+    "cov": "nyc report --reporter=lcov",
+    "examples": "http-server -p 1234 -c-1",
     "expected": "python ./test/expected.py"
   },
   "eslintIgnore": [
@@ -25,19 +26,20 @@
     "reporter": [
       "lcov",
       "text"
-    ]
+    ],
+    "include": "**/ta-math**"
   },
   "devDependencies": {
-    "@babel/core": "7.6.0",
-    "@babel/preset-env": "7.6.0",
-    "@joseph184/rollup-plugin-node-builtins": "2.1.4",
+    "@babel/core": "7.8.3",
+    "@babel/preset-env": "7.8.3",
+    "@rollup/plugin-node-resolve": "^7.0.0",
     "codecov": "3.6.1",
-    "mocha": "6.2.0",
-    "nyc": "14.1.1",
-    "open-cli": "5.0.0",
-    "rollup": "1.21.4",
+    "nyc": "15.0.0",
+    "rollup": "1.29.0",
     "rollup-plugin-babel": "4.3.3",
-    "rollup-plugin-istanbul": "2.0.1"
+    "rollup-plugin-typescript2": "^0.25.3",
+    "typescript": "^3.7.5",
+    "zora": "^3.1.8"
   },
   "keywords": [
     "technical-indicators",

@@ -1,31 +1,48 @@
-import builtins from '@joseph184/rollup-plugin-node-builtins';
 import babel from 'rollup-plugin-babel';
-import istanbul from 'rollup-plugin-istanbul';
 import pkg from './package.json';
+import typescript from 'rollup-plugin-typescript2';
+import resolve from '@rollup/plugin-node-resolve';
+
+const tsconfig = {
+  'compilerOptions': {
+    'target': 'es6',
+    'module': 'es6',
+    'moduleResolution': 'node',
+    'noImplicitAny': true,
+    'removeComments': true,
+    'preserveConstEnums': true,
+    'outDir': './dist',
+    'sourceMap': false,
+    //'declaration': true,
+    'lib': ['es2018']
+  },
+  'include': ['src/**/*.ts'],
+  'exclude': ['node_modules', '**/*.spec.ts']
+}
 
 export default [
 	{
-		input: 'src/main.js',
+		input: 'src/index.ts',
 		output: { file: pkg.browser, name: 'TA', format: 'iife' },
 		plugins: [
+			typescript({ tsconfigOverride: tsconfig }),
 			babel({ exclude: 'node_modules/**' })
 		]
 	},
 	{
-		input: 'src/main.js',
+		input: 'src/index.ts',
 		output: [
-			{ file: pkg.main, format: 'cjs' },
-			{ file: pkg.module, format: 'esm' }
-		]
+			{ file: pkg.main, name: 'TA', format: 'umd' },
+			{ file: pkg.module, format: 'esm', sourcemap: 'inline' }
+		],
+		plugins: [ typescript({ tsconfigOverride: tsconfig }) ]
 	},
 	{
-		input: 'test/test.js',
-		output: { file: 'coverage/test.js', format: 'cjs', sourcemap: 'inline' },
+		input: 'test/test.ts',
+		output: { file: 'test/test.js', format: 'esm', sourcemap: 'inline' },
 		plugins: [
-			builtins(),
-			istanbul({
-				exclude: ['dist']
-			})
+			typescript({ tsconfigOverride: tsconfig }),
+			resolve()
 		]
 	}
 ];

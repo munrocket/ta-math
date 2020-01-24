@@ -1,5 +1,7 @@
 node_modules/
 coverage/
+src/
+test/
 .nyc_output
 .eslintrc
 .gitignore
