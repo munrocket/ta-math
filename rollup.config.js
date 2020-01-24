@@ -1,7 +1,6 @@
 import babel from 'rollup-plugin-babel';
 import pkg from './package.json';
 import typescript from 'rollup-plugin-typescript2';
-import resolve from '@rollup/plugin-node-resolve';
 
 const tsconfig = {
   'compilerOptions': {
@@ -12,9 +11,11 @@ const tsconfig = {
     'removeComments': true,
     'preserveConstEnums': true,
     'outDir': './dist',
-    'sourceMap': false,
-    //'declaration': true,
-    'lib': ['es2018']
+		'sourceMap': false,
+		'declaration': false,
+		"moduleResolution": "node",
+		"esModuleInterop": true,
+    'lib': ['es6', 'dom']
   },
   'include': ['src/**/*.ts'],
   'exclude': ['node_modules', '**/*.spec.ts']
@@ -40,9 +41,6 @@ export default [
 	{
 		input: 'test/test.ts',
 		output: { file: 'test/test.js', format: 'esm', sourcemap: 'inline' },
-		plugins: [
-			typescript({ tsconfigOverride: tsconfig }),
-			resolve()
-		]
+		plugins: [ typescript({ tsconfigOverride: tsconfig }) ]
 	}
 ];

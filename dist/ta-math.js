@@ -2,7 +2,7 @@
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
   (global = global || self, global.TA = factory());
-}(this, function () { 'use strict';
+}(this, (function () { 'use strict';
 
   function mean(series) {
       let sum = 0;
@@ -587,4 +587,4 @@
 
   return TA;
 
-}));
+})));
