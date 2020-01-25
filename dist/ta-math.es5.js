@@ -314,9 +314,9 @@ var TA = (function () {
           pv.push(Math.abs($high[i] - $low[i - 1]));
           nv.push(Math.abs($high[i - 1] - $low[i]));
       }
-      let apv = rolling((s) => s.reduce((sum, x) => { return sum + x; }, 0), pv, window);
-      let anv = rolling((s) => s.reduce((sum, x) => { return sum + x; }, 0), nv, window);
-      let atr = rolling((s) => s.reduce((sum, x) => { return sum + x; }, 0), trueRange($high, $low, $close), window);
+      let apv = rolling((s) => s.reduce((sum, x) => sum + x, 0), pv, window);
+      let anv = rolling((s) => s.reduce((sum, x) => sum + x, 0), nv, window);
+      let atr = rolling((s) => s.reduce((sum, x) => sum + x, 0), trueRange($high, $low, $close), window);
       return { plus: pointwise((a, b) => a / b, apv, atr), minus: pointwise((a, b) => a / b, anv, atr) };
   }
   function williams($high, $low, $close, window) {

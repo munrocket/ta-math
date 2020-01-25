@@ -1,21 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang='en'>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Testing page</title>
-  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/ccxt@1.17.229/build/ccxt.browser.js"></script>
-  <script src="../dist/ta-math.js"></script>
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <meta http-equiv='X-UA-Compatible' content='ie=edge'>
+  <title>Example</title>
+  <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+  <script src='https://cdn.jsdelivr.net/npm/ccxt@1.17.229/build/ccxt.browser.js'></script>
+  <script src='../dist/ta-math.js'></script>
 </head>
 <body>
 
 <!-- Plotly chart -->
-<div id="plotly-chart" style="width: 800px; height: 500px;"></div>
+<div id='plotly-chart' style='width: 800px; height: 500px;'></div>
 
 <!-- Plotly heat map -->
-<div id="plotly-heat-map" style="width: 400px; height: 400px;"></div>
+<div id='plotly-heat-map' style='width: 400px; height: 400px;'></div>
 
 <script>
 var fetchBinance = function(x, nmonths) { return new ccxt.binance({'proxy': 'https://cors-anywhere.herokuapp.com/'}).fetchOHLCV(x, '1d', Date.now() - 1000*60*60*24*30*nmonths) };
@@ -23,8 +23,8 @@ var fetchBinance = function(x, nmonths) { return new ccxt.binance({'proxy': 'htt
 fetchBinance('BTC/USDT', 5).then( function(ohlcv) {
   renderChart(new TA(ohlcv));
 }).catch( function(err) {
-  Plotly.d3.csv("https://raw.githubusercontent.com/munrocket/ta-math/master/test/data.csv", function (err, rows) {
-    window.alert("CORS/Binance server not answer. CSV data will be used")
+  Plotly.d3.csv('https://raw.githubusercontent.com/munrocket/ta-math/master/test/data.csv', function (err, rows) {
+    setTimeout(window.alert('CORS/Binance server not answer. CSV data will be used'), 0);
     function unpack(rows, columns) {
       return rows.map(function (row) {
         return columns.reduce(function(result, column) {
@@ -68,22 +68,30 @@ function renderHeatMap(heatMap) {
 };
 
 function renderChart(ta) {
-  //note that this is not a production ready code and just quick hack
+
+  ////////////////////////////////////////////////////////////////////////
+  // note that this is not a production ready code and just quick hack! //
+  ////////////////////////////////////////////////////////////////////////
+
   var charts = [
-    { context: barContext(ta), label: "None" },
-    { context: maContext(ta), label: "Simple Moving Average" },
-    { context: maContext(ta, true), label: "Exponential Moving Average" },
-    { context: bbContext(ta), label: "Bollinger Bands" },
-    { context: bbContext(ta, true), label: "Exponential Bollinger Bands" },
-    { context: macdContext(ta), label: "MACD"}
+    { context: barContext(ta), label: 'None' },
+    { context: maContext(ta), label: 'Simple Moving Average' },
+    { context: maContext(ta, true), label: 'Exponential Moving Average' },
+    { context: bbContext(ta), label: 'Bollinger Bands' },
+    { context: bbContext(ta, true), label: 'Exponential Bollinger Bands' },
+    { context: macdContext(ta), label: 'MACD'}
   ];
   var data = charts.reduce((all, ch) => all.concat(ch.context), []);
 
   function visibleChart(ch, charts) {
-    result = [true];
-    for (let i = 1; i < charts.length; i++) {
-      for (let j = 0; j < charts[i].context.length; j++) {
-        result.push(ch == charts[i] && ch.context.legend != false);
+    result = [];
+    for (let i = 0; i < charts.length; i++) {
+      if (charts[i].label == 'None') {
+        result.push(true);
+      } else {
+        for (let j = 0; j < charts[i].context.length; j++) {
+          result.push(ch == charts[i] && ch.context.legend != false);
+        }
       }
     }
     return result;
@@ -96,12 +104,12 @@ function renderChart(ta) {
     showlegend: true,
     dragmode: 'zoom',
     hovermode: 'closest',
-    legend: { x: 0.3, y: 1.1, "orientation": "h" },
+    legend: { x: 0.3, y: 1.1, 'orientation': 'h' },
     updatemenus: [{
       x: 0,
       y: 1,
-      xanchor: "left",
-      yanchor: "bottom",
+      xanchor: 'left',
+      yanchor: 'bottom',
       buttons: charts.reduce((all, ch) => {all.push(
         { method: 'restyle',
           args: ['visible', visibleChart(ch, charts)],
@@ -111,7 +119,7 @@ function renderChart(ta) {
     }]
   };
   var defaultPlotlyConfiguration = {
-    modeBarButtonsToRemove: ['sendDataToCloud', 'autoScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian', 'lasso2d', 'select2d'],
+    modeBarButtonsToRemove: ['select2d', 'lasso2d', 'hoverCompareCartesian', 'hoverClosestCartesian', 'autoScale2d', 'sendDataToCloud'],
     displaylogo: false,
     showTips: true
   };
@@ -167,7 +175,7 @@ function bbContext(ta, isExp) {
     x: ta.$time,
     y: bb.upper,
     type: 'line',
-    line: {color: 'rgba(188, 92, 242,0.7)'},
+    line: { color: 'rgba(188, 194, 252, 0.)' },
     visible: false
   }
 
@@ -176,16 +184,17 @@ function bbContext(ta, isExp) {
     x: ta.$time,
     y: bb.middle,
     type: 'line',
-    line: {color: 'rgba(170, 120, 34, 0.7)'},
+    line: { color: 'rgba(223, 170, 245, 0.7)' },
     visible: false
   }
 
   var bbLower = {
-    name: isExp ? 'lower' : 'lower',
+    name: isExp ? 'lower EBB(15,2)' : 'lower BB(15,2)',
     x: ta.$time,
     y: bb.lower,
+    fill: 'tonexty',
     type: 'line',
-    line: {color: 'rgba(63, 64, 208, 0.7)'},
+    line: { color: 'rgba(188, 194, 252, 0.)' },
     visible: false
   }
 

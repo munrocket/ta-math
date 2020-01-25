@@ -1,6 +1,6 @@
 {
   "name": "ta-math",
-  "version": "0.3.50",
+  "version": "0.4.2",
   "lockfileVersion": 1,
   "requires": true,
   "dependencies": {
@@ -1306,6 +1306,16 @@
       "integrity": "sha1-7L0W+JSbFXGDcRsb2jNPN4QBhas=",
       "dev": true
     },
+    "assemblyscript": {
+      "version": "0.8.1",
+      "resolved": "https://registry.npmjs.org/assemblyscript/-/assemblyscript-0.8.1.tgz",
+      "integrity": "sha512-AEpb4Aq5g77XOxSvWn9ZFjIdfyypGavO5oKOAXUo22tnSpebGHdrx0iyVindGKkDlxWhHUc87B0fvM/w1fnpDg==",
+      "dev": true,
+      "requires": {
+        "binaryen": "89.0.0-nightly.20191113",
+        "long": "^4.0.0"
+      }
+    },
     "babel-plugin-dynamic-import-node": {
       "version": "2.3.0",
       "resolved": "https://registry.npmjs.org/babel-plugin-dynamic-import-node/-/babel-plugin-dynamic-import-node-2.3.0.tgz",
@@ -1319,6 +1329,12 @@
       "version": "1.0.0",
       "resolved": "https://registry.npmjs.org/balanced-match/-/balanced-match-1.0.0.tgz",
       "integrity": "sha1-ibTRmasr7kneFk6gK4nORi1xt2c=",
+      "dev": true
+    },
+    "binaryen": {
+      "version": "89.0.0-nightly.20191113",
+      "resolved": "https://registry.npmjs.org/binaryen/-/binaryen-89.0.0-nightly.20191113.tgz",
+      "integrity": "sha512-scODswmj6Xf/Adjy1PRsjf8fHxpIIUYpH7HjKUaZ/RdZYjqB1Zq3X4izpLfcK+hKGNah92DpAJ3i/adEayMe9g==",
       "dev": true
     },
     "brace-expansion": {
@@ -1989,6 +2005,12 @@
       "version": "4.4.0",
       "resolved": "https://registry.npmjs.org/lodash.flattendeep/-/lodash.flattendeep-4.4.0.tgz",
       "integrity": "sha1-+wMJF/hqMTTlvJvsDWngAT3f7bI=",
+      "dev": true
+    },
+    "long": {
+      "version": "4.0.0",
+      "resolved": "https://registry.npmjs.org/long/-/long-4.0.0.tgz",
+      "integrity": "sha512-XsP+KhQif4bjX1kbuSiySJFNAehNxgLb6hPRGJ9QsUr8ajHkuXGdrHmFUTUUXhDwVX2R5bY4JNZEwbUiMhV+MA==",
       "dev": true
     },
     "loose-envify": {
