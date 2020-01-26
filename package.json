@@ -13,7 +13,7 @@
     "build": "rollup -c",
     "watch": "rollup -cw",
     "test": "node -r esm ./test/test.js",
-    "wasm": "asc src/index.ts -b dist/ta-math.wasm -O3 --runtime=half",
+    "wasm": "asc src/index.ts -b dist/ta-math.wasm -O3",
     "ci": "npm run build && npm run test",
     "cov": "nyc report --reporter=lcov",
     "http": "http-server -p 1234 -c-1",
@@ -22,7 +22,7 @@
   "devDependencies": {
     "@babel/core": "7.8.3",
     "@babel/preset-env": "7.8.3",
-    "assemblyscript": "^0.8.1",
+    "assemblyscript": "^0.9.0",
     "codecov": "3.6.1",
     "esm": "^3.2.25",
     "nyc": "15.0.0",

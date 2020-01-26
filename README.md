@@ -6,7 +6,7 @@ Technical analysis math
 [![Codecov](https://img.shields.io/codecov/c/github/munrocket/ta-math.svg)](https://codecov.io/gh/munrocket/ta-math)
 
 Well tested library for calculating technical indicators and overlays. You can choose format of price data
-from provider and library will return result. It distributed with Typescript, ES6 and ES5.
+from provider and library will return result. It distributed with WebAssebly, Typescript, ES6 and ES5.
 
 ![btc-with-bollinger-bands](https://i.imgur.com/moDdzmM.png)
 
@@ -85,6 +85,7 @@ Check [example](https://munrocket.github.io/ta-math/) with plotly library, ccxt 
 
 ### Usage
 ```javascript
+  import { TA } from 'ta-math';
   const ohlcv = [[t,o,h,l,c,v], [t2,o2,h2,l2,c2,v2],  ...  ,[tN,oN,hN,lN,cN,vN]];
   const ta = new TA(ohlcv, TA.exchangeFormat);
   const emaShort = ta.ema(10);

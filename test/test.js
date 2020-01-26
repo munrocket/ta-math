@@ -1,4 +1,4 @@
-import TA from '../dist/ta-math';
+import { TA } from '../dist/ta-math';
 import { mean, sd, mae, mape, rmse, nrmse } from '../temp/core';
 import { test } from 'zora';
  

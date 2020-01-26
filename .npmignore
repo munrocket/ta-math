@@ -8,4 +8,5 @@ temp
 .npmignore
 .renovaterc
 .travis.yml
+index.html
 rollup.config.js

@@ -1,183 +1,80 @@
 import * as core from './core';
 import * as indicators from './indicators';
 import * as overlays from './overlays';
-import * as formats from './formats';
-import { Format } from './formats';
+import * as structs from './types';
+import { float, int } from './types';
 
-interface ILookup                 { [index: string]: any; }
-class CLookup implements ILookup  { [index: string]: any; }
-
-export default class TA extends CLookup {
-
-  format: Format;
-  ohlcv: any;
-  time: Array<number>;
-  open: Array<number>;
-  high: Array<number>;
-  low: Array<number>;
-  close: Array<number>;
-  volume: Array<number>;
-
-  constructor(ohlcv: any, format: Format) {
-    super();
-    this.ohlcv = ohlcv;
-    this.format = (format === undefined) ? TA.exchangeFormat : format;
-  }
-
-  /* price getters */
-  initGetter(name: string) {
-    let result = [], length = this.format(this.ohlcv)['length'];
-    for(let i = 0; i < length; i++) { result.push(this.format(this.ohlcv)[name](i)) }
-    this[name] = result;
-    return result;
-  }
-  get $time() { return (this.time === undefined) ? this.initGetter('time') : this.time }
-  get $open() { return (this.open === undefined) ? this.initGetter('open') : this.open }
-  get $high() { return (this.high === undefined) ? this.initGetter('high') : this.high }
-  get $low() { return (this.low === undefined) ? this.initGetter('low') : this.low }
-  get $close() { return (this.close === undefined) ? this.initGetter('close') : this.close }
-  get $volume() { return (this.volume === undefined) ? this.initGetter('volume') : this.volume }
-
-  /* formats */
-  static get simpleFormat() {
-    return formats.simpleFormat }
-  static get exchangeFormat() {
-    return formats.exchangeFormat }
-  static get objectFormat() {
-    return formats.objectFormat }
+export class TA {
   
   /* correlation and covariance */
-  static cov(f: Array<number>, g: Array<number>) {
+  static cov(f: Array<float>, g: Array<float>): float {
     return core.cov(f, g) }
-  static cor(f: Array<number>, g: Array<number>) {
+  static cor(f: Array<float>, g: Array<float>): float {
     return core.cor(f, g) }
-  
-  /* member defenition of technical analysis methods */
-  adl() {
-    return TA.adl(this.$high, this.$low, this.$close, this.$volume) }
-  atr(window = 14) {
-    return TA.atr(this.$high, this.$low, this.$close, window) }
-  adx(window = 14) {
-    return TA.adx(this.$high, this.$low, this.$close, window) }
-  bb(window = 15, mult = 2) {
-    return TA.bb(this.$close, window, mult) }
-  bbp(window = 15, mult = 2) {
-    return TA.bbp(this.$close, window, mult) }
-  cci(window = 20, mult = 0.015) {
-    return TA.cci(this.$high, this.$low, this.$close, window, mult) }
-  cho(winshort = 3, winlong = 10) {
-    return TA.cho(this.$high, this.$low, this.$close, this.$volume, winshort, winlong) }
-  dema(window = 10) {
-    return TA.dema(this.$close, window) }
-  ebb(window = 10, mult = 2) {
-    return TA.ebb(this.$close, window, mult) }
-  ema(window = 10) {
-    return TA.ema(this.$close, window) }
-  expdev(window = 15) {
-    return TA.expdev(this.$close, window) }
-  fi(window = 13) {
-    return TA.fi(this.$close, this.$volume, window) }
-  keltner(window = 14, mult = 2) {
-    return TA.keltner(this.$high, this.$low, this.$close, window, mult) }
-  kst(w1=10, w2=15, w3=20, w4=30, s1=10, s2=10, s3=10, s4=15, sig=9) {
-    return TA.kst(this.$close, w1, w2, w3, w4, s1, s2, s3, s4, sig) }
-  macd(winshort = 12, winlong = 26, winsig = 9) {
-    return TA.macd(this.$close, winshort, winlong, winsig) }
-  madev(window = 15) {
-    return TA.madev(this.$close, window) }
-  mfi(window = 14) {
-    return TA.mfi(this.$high, this.$low, this.$close, this.$volume, window) }
-  obv(signal = 10) {
-    return TA.obv(this.$close, this.$volume, signal) }  
-  psar(factor = 0.02, maxfactor = 0.2) {
-    return TA.psar(this.$high, this.$low, factor, maxfactor) }
-  roc(window = 14) {
-    return TA.roc(this.$close, window) }
-  rsi(window = 14) {
-    return TA.rsi(this.$close, window) }
-  sma(window = 15) {
-    return TA.sma(this.$close, window) }
-  stdev(window = 15) {
-    return TA.stdev(this.$close, window) }
-  stoch(window = 14, signal = 3, smooth = 1) {
-    return TA.stoch(this.$high, this.$low, this.$close, window, signal, smooth) }
-  stochRsi(window = 14, signal = 3, smooth = 1) {
-    return TA.stochRsi(this.$close, window, signal, smooth) }
-  tema(window = 10) {
-    return TA.tema(this.$close, window) }
-  vbp(zones = 12, left = 0, right = NaN) {
-    return TA.vbp(this.$close, this.$volume, zones, left, right) }
-  vi(window = 14) {
-    return TA.vi(this.$high, this.$low, this.$close, window) }
-  vwap() {
-    return TA.vwap(this.$high, this.$low, this.$close, this.$volume) }
-  williams(window = 14) {
-    return TA.williams(this.$high, this.$low, this.$close, window) }
-  zigzag(percent = 15) {
-    return TA.zigzag(this.$time, this.$high, this.$low, percent) }
 
-  /* static defenition of technical analysis methods */
-  static adl($high: Array<number>, $low: Array<number>, $close: Array<number>, $volume: Array<number>) {
+  /* technical analysis methods */
+  
+  static adl($high: Array<float>, $low: Array<float>, $close: Array<float>, $volume: Array<float>): Array<float> {
     return indicators.adl($high, $low, $close, $volume) }
-  static atr($high: Array<number>, $low: Array<number>, $close: Array<number>, window = 14) {
-    return core.atr($high, $low, $close, window) }
-  static adx($high: Array<number>, $low: Array<number>, $close: Array<number>, window = 14) {
-    return indicators.adx($high, $low, $close, window) }
-  static bb($close: Array<number>, window = 15, mult = 2) {
+  // static atr($high: Array<float>, $low: Array<float>, $close: Array<float>, window: int = 14): Array<float> {
+  //   return core.atr($high, $low, $close, window) }
+  // static adx($high: Array<float>, $low: Array<float>, $close: Array<float>, window: int = 14): structs.AdxStruct {
+  //   return indicators.adx($high, $low, $close, window) }
+  static bb($close: Array<float>, window: int = 15, mult: float = 2.): structs.BandStruct {
     return overlays.bb($close, window, mult) }
-  static bbp($close: Array<number>, window = 15, mult = 2) {
-    return indicators.bbp($close, window, mult) }
-  static cci($high: Array<number>, $low: Array<number>, $close: Array<number>, window = 20, mult = 0.015) {
-    return indicators.cci($high, $low, $close, window, mult) }
-  static cho($high: Array<number>, $low: Array<number>, $close: Array<number>, $volume: Array<number>, winshort = 3, winlong = 10) {
-    return indicators.cho($high, $low, $close, $volume, winshort, winlong) }
-  static dema($close: Array<number>, window = 10) {
-    return overlays.dema($close, window) }
-  static ebb($close: Array<number>, window = 10, mult = 2) {
-    return overlays.ebb($close, window, mult) }
-  static ema($close: Array<number>, window = 10) {
-    return core.ema($close, window) }
-  static expdev($close: Array<number>, window = 15) {
-    return core.expdev($close, window) }  
-  static fi($close: Array<number>, $volume: Array<number>, window = 13) {
-    return indicators.fi($close, $volume, window) }
-  static keltner($high: Array<number>, $low: Array<number>, $close: Array<number>, window = 14, mult = 2) {
-    return overlays.keltner($high, $low, $close, window, mult) }
-  static kst($close: Array<number>, w1=10, w2=15, w3=20, w4=30, s1=10, s2=10, s3=10, s4=15, sig=9) {
-    return indicators.kst($close, w1, w2, w3, w4, s1, s2, s3, s4, sig) }
-  static macd($close: Array<number>, winshort = 12, winlong = 26, winsig = 9) {
-    return indicators.macd($close, winshort, winlong, winsig) }
-  static madev($close: Array<number>, window = 15) {
-    return core.madev($close, window) }
-  static mfi($high: Array<number>, $low: Array<number>, $close: Array<number>, $volume: Array<number>, window = 14) {
-    return indicators.mfi($high, $low, $close, $volume, window) }
-  static obv($close: Array<number>, $volume: Array<number>, signal = 10) {
-    return indicators.obv($close, $volume, signal) }
-  static psar($high: Array<number>, $low: Array<number>, factor = 0.02, maxfactor = 0.2) {
-    return overlays.psar($high, $low, factor, maxfactor) }
-  static roc($close: Array<number>, window = 14) {
-    return indicators.roc($close, window) }
-  static rsi($close: Array<number>, window = 14) {
-    return indicators.rsi($close, window) }
-  static sma($close: Array<number>, window = 15) {
-    return core.sma($close, window) }
-  static stdev($close: Array<number>, window = 15) {
-    return core.stdev($close, window) }
-  static stoch($high: Array<number>, $low: Array<number>, $close: Array<number>, window = 14, signal = 3, smooth = 1) {
-    return indicators.stoch($high, $low, $close, window, signal, smooth) }
-  static stochRsi($close: Array<number>, window = 14, signal = 3, smooth = 1) {
-    return indicators.stochRsi($close, window, signal, smooth) }
-  static tema($close: Array<number>, window = 10) {
-    return overlays.tema($close, window) }
-  static vbp($close: Array<number>, $volume: Array<number>, zones = 12, left = 0, right = NaN) {
-    return overlays.vbp($close, $volume, zones, left, right) }
-  static vi($high: Array<number>, $low: Array<number>, $close: Array<number>, window = 14) {
-    return indicators.vi($high, $low, $close, window) }
-  static vwap($high: Array<number>, $low: Array<number>, $close: Array<number>, $volume: Array<number>) {
-    return overlays.vwap($high, $low, $close, $volume) }
-  static williams($high: Array<number>, $low: Array<number>, $close: Array<number>, window = 14) {
-    return indicators.williams($high, $low, $close, window) }
-  static zigzag($time: Array<number>, $high: Array<number>, $low: Array<number>, percent = 15) {
-    return overlays.zigzag($time, $high, $low, percent) }        
+  // static bbp($close: Array<float>, window: int = 15, mult: float = 2.): Array<float> {
+  //   return indicators.bbp($close, window, mult) }
+  // static cci($high: Array<float>, $low: Array<float>, $close: Array<float>, window: int = 20, mult: float = 0.015): Array<float> {
+  //   return indicators.cci($high, $low, $close, window, mult) }
+  // static cho($high: Array<float>, $low: Array<float>, $close: Array<float>, $volume: Array<float>, winshort: int = 3, winlong: int = 10): Array<float> {
+  //   return indicators.cho($high, $low, $close, $volume, winshort, winlong) }
+  // static dema($close: Array<float>, window: int = 10): Array<float> {
+  //   return overlays.dema($close, window) }
+  // static ebb($close: Array<float>, window: int = 10, mult: float = 2.): structs.BandStruct {
+  //   return overlays.ebb($close, window, mult) }
+  // static ema($close: Array<float>, window: int = 10): Array<float> {
+  //   return core.ema($close, window) }
+  // static expdev($close: Array<float>, window: int = 15): Array<float> {
+  //   return core.expdev($close, window) }  
+  // static fi($close: Array<float>, $volume: Array<float>, window: int = 13): Array<float> {
+  //   return indicators.fi($close, $volume, window) }
+  // static keltner($high: Array<float>, $low: Array<float>, $close: Array<float>, window: int = 14, mult: float = 2.): structs.BandStruct {
+  //   return overlays.keltner($high, $low, $close, window, mult) }
+  // static kst($close: Array<float>, w1: int = 10, w2: int = 15, w3: int = 20, w4: int = 30, s1: int = 10, s2: int = 10, s3: int = 10, s4: int = 15, sig: int = 9): structs.LineSignalStruct {
+  //   return indicators.kst($close, w1, w2, w3, w4, s1, s2, s3, s4, sig) }
+  // static macd($close: Array<float>, winshort: int = 12, winlong: int = 26, winsig: int = 9): structs.MacdStruct {
+  //   return indicators.macd($close, winshort, winlong, winsig) }
+  // static madev($close: Array<float>, window: int = 15): Array<float> {
+  //   return core.madev($close, window) }
+  // static mfi($high: Array<float>, $low: Array<float>, $close: Array<float>, $volume: Array<float>, window: int = 14): Array<float> {
+  //   return indicators.mfi($high, $low, $close, $volume, window) }
+  // static obv($close: Array<float>, $volume: Array<float>, signal: int = 10): structs.LineSignalStruct {
+  //   return indicators.obv($close, $volume, signal) }
+  // static psar($high: Array<float>, $low: Array<float>, factor = 0.02, maxfactor = 0.2): Array<float> {
+  //   return overlays.psar($high, $low, factor, maxfactor) }
+  // static roc($close: Array<float>, window: int = 14): Array<float> {
+  //   return indicators.roc($close, window) }
+  // static rsi($close: Array<float>, window: int = 14): Array<float> {
+  //   return indicators.rsi($close, window) }
+  // static sma($close: Array<float>, window: int = 15): Array<float> {
+  //   return core.sma($close, window) }
+  // static stdev($close: Array<float>, window: int = 15): Array<float> {
+  //   return core.stdev($close, window) }
+  // static stoch($high: Array<float>, $low: Array<float>, $close: Array<float>, window: int = 14, signal: float = 3, smooth: float = 1): structs.LineSignalStruct {
+  //   return indicators.stoch($high, $low, $close, window, signal, smooth) }
+  // static stochRsi($close: Array<float>, window: int = 14, signal: float = 3, smooth: float = 1): structs.LineSignalStruct {
+  //   return indicators.stochRsi($close, window, signal, smooth) }
+  // static tema($close: Array<float>, window: int = 10): Array<float> {
+  //   return overlays.tema($close, window) }
+  // static vbp($close: Array<float>, $volume: Array<float>, zones: float = 12, left: float = 0, right: float = NaN): structs.VbpStruct {
+  //   return overlays.vbp($close, $volume, zones, left, right) }
+  // static vi($high: Array<float>, $low: Array<float>, $close: Array<float>, window: int = 14): structs.PlusMinusStruct {
+  //   return indicators.vi($high, $low, $close, window) }
+  // static vwap($high: Array<float>, $low: Array<float>, $close: Array<float>, $volume: Array<float>): Array<float> {
+  //   return overlays.vwap($high, $low, $close, $volume) }
+  // static williams($high: Array<float>, $low: Array<float>, $close: Array<float>, window: int = 14): Array<float> {
+  //   return indicators.williams($high, $low, $close, window) }
+  // static zigzag($time: Array<float>, $high: Array<float>, $low: Array<float>, percent: float = 15): structs.ZigzagStruct {
+  //   return overlays.zigzag($time, $high, $low, percent) }        
 
 }
