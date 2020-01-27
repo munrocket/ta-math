@@ -5,11 +5,12 @@ Technical analysis math
 [![Build Status](https://travis-ci.org/munrocket/ta-math.svg?branch=master)](https://travis-ci.org/munrocket/ta-math)
 [![Codecov](https://img.shields.io/codecov/c/github/munrocket/ta-math.svg)](https://codecov.io/gh/munrocket/ta-math)
 
-Well tested library for calculating technical indicators and overlays from price data in any format. You choose format and data by yourself and library return charts data. Written in typescript, but distributed in es6/es5.
+Well tested library for calculating technical indicators and overlays. You can choose format of price data
+from provider and library will return result. It distributed with Typescript, ES6 and ES5.
 
 ![btc-with-bollinger-bands](https://i.imgur.com/moDdzmM.png)
 
-You can check [example](https://munrocket.github.io/ta-math/) with plotly library, ccxt data provider and BTC prices from Binance exchange.
+Check [example](https://munrocket.github.io/ta-math/example/index.html) with plotly library, ccxt data provider and BTC prices from Binance exchange.
 
 [//]: # (used emoji ➖✔️️❔❌:suspect:)
 
@@ -103,8 +104,11 @@ Install npm package `npm i ta-math` or add `ta-math.js` script file on web page.
 - [X] es5 with babel
 - [X] coverage
 - [X] good looking example
-- [ ] forecasting and strategies (Holt-Winters, ARIMA, FFT [etc](https://www.quantstart.com/articles#time-series-analysis))
-- [ ] Js2Py?
+- [ ] WASM
+- [ ] Forecasting (Holt-Winters, ARIMA, FFT [etc](https://www.quantstart.com/articles#time-series-analysis))
 
 ### Contributing
-Feel free to contribute. Here [reference](http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators) how to implement new indicators. There are test samples in the .xls files, also you can generate testing data with 'generator.py' file. To convert columns into rows in .xls you can use this [tool](https://www.browserling.com/tools/text-columns-to-rows).
+Feel free to contribute. Here [reference](http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators)
+how to implement new indicators. There are test samples in the .xls files, also you can generate testing data
+with 'generator.py' file. To convert columns into rows in .xls you can use this
+[tool](https://www.browserling.com/tools/text-columns-to-rows).

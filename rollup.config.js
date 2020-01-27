@@ -22,7 +22,8 @@ const tsconfig = {
 }
 
 export default [
-	{
+	
+	{ /* es5 */
 		input: 'src/index.ts',
 		output: { file: pkg.browser, name: 'TA', format: 'iife' },
 		plugins: [
@@ -30,7 +31,8 @@ export default [
 			babel({ exclude: 'node_modules/**' })
 		]
 	},
-	{
+
+	{ /* es6/esm */
 		input: 'src/index.ts',
 		output: [
 			{ file: pkg.main, name: 'TA', format: 'umd' },
@@ -38,9 +40,10 @@ export default [
 		],
 		plugins: [ typescript({ tsconfigOverride: tsconfig }) ]
 	},
-	{
-		input: 'test/test.ts',
-		output: { file: 'test/test.js', format: 'esm', sourcemap: 'inline' },
+
+	{	/* temp4test */
+		input: 'src/core.ts',
+		output: { file: 'temp/core.js', format: 'esm', sourcemap: 'inline' },
 		plugins: [ typescript({ tsconfigOverride: tsconfig }) ]
 	}
 ];

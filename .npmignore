@@ -1,10 +1,11 @@
-node_modules/
-coverage/
-src/
-test/
 .nyc_output
-.eslintrc
+node_modules
+coverage
+src
+test
+temp
 .gitignore
+.npmignore
 .renovaterc
 .travis.yml
-LICENSE
+rollup.config.js

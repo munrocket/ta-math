@@ -1,6 +1,6 @@
 {
   "name": "ta-math",
-  "version": "0.3.50",
+  "version": "0.4.8",
   "description": "Technical analysis library in javascript. Calculates indicators and overlays from ohlcv data",
   "main": "dist/ta-math.js",
   "types": "dist/ta-math.d.ts",
@@ -11,35 +11,38 @@
   ],
   "scripts": {
     "build": "rollup -c",
-    "watch": "rollup -c -w",
+    "watch": "rollup -cw",
     "test": "node -r esm ./test/test.js",
+    "wasm": "asc src/index.ts -b dist/ta-math.wasm -O3 --runtime=half",
     "ci": "npm run build && npm run test",
     "cov": "nyc report --reporter=lcov",
-    "examples": "http-server -p 1234 -c-1",
-    "expected": "python ./test/expected.py"
+    "http": "http-server -p 1234 -c-1",
+    "python": "python ./test/expected.py"
   },
-  "eslintIgnore": [
-    "dist",
-    "lib"
-  ],
+  "devDependencies": {
+    "@babel/core": "7.8.3",
+    "@babel/preset-env": "7.8.3",
+    "assemblyscript": "^0.9.0",
+    "codecov": "3.6.2",
+    "esm": "^3.2.25",
+    "nyc": "15.0.0",
+    "rollup": "1.29.1",
+    "rollup-plugin-babel": "4.3.3",
+    "rollup-plugin-typescript2": "^0.25.3",
+    "typescript": "^3.7.5",
+    "zora": "^3.1.8"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ]
+  },
   "nyc": {
     "reporter": [
       "lcov",
       "text"
     ],
     "include": "**/ta-math**"
-  },
-  "devDependencies": {
-    "@babel/core": "7.8.3",
-    "@babel/preset-env": "7.8.3",
-    "codecov": "3.6.1",
-    "esm": "^3.2.25",
-    "nyc": "15.0.0",
-    "rollup": "1.29.0",
-    "rollup-plugin-babel": "4.3.3",
-    "rollup-plugin-typescript2": "^0.25.3",
-    "typescript": "^3.7.5",
-    "zora": "^3.1.8"
   },
   "keywords": [
     "technical-indicators",
