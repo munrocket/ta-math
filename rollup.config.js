@@ -13,7 +13,6 @@ const tsconfig = {
     'outDir': './dist',
 		'sourceMap': false,
 		'declaration': false,
-		"moduleResolution": "node",
 		"esModuleInterop": true,
     'lib': ['es6', 'dom']
   },
@@ -22,7 +21,7 @@ const tsconfig = {
 }
 
 export default [
-	
+
 	{ /* es5 */
 		input: 'src/index.ts',
 		output: { file: pkg.browser, name: 'TA', format: 'iife' },

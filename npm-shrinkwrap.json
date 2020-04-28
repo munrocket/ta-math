@@ -1,6 +1,6 @@
 {
   "name": "ta-math",
-  "version": "0.4.8",
+  "version": "0.4.33",
   "lockfileVersion": 1,
   "requires": true,
   "dependencies": {
@@ -1237,9 +1237,9 @@
       "dev": true
     },
     "acorn": {
-      "version": "7.1.0",
-      "resolved": "https://registry.npmjs.org/acorn/-/acorn-7.1.0.tgz",
-      "integrity": "sha512-kL5CuoXA/dgxlBbVrflsflzQ3PAas7RYZB52NOm/6839iVYJgKMJ3cQJD+t2i5+qFa8h3MDpEOJiS64E8JLnSQ==",
+      "version": "7.1.1",
+      "resolved": "https://registry.npmjs.org/acorn/-/acorn-7.1.1.tgz",
+      "integrity": "sha512-add7dgA5ppRPxCFJoAGfMDi7PIBXq1RtGo7BhbLaxwrXPOmw8gq48Y9ozT01hUKy9byMjlR20EJhu5zlkErEkg==",
       "dev": true
     },
     "agent-base": {
@@ -1307,12 +1307,12 @@
       "dev": true
     },
     "assemblyscript": {
-      "version": "0.9.0",
-      "resolved": "https://registry.npmjs.org/assemblyscript/-/assemblyscript-0.9.0.tgz",
-      "integrity": "sha512-HDDoaDfdnp0Ki/k272ib12sKz3ytVlXsIDise5meamInLC1qZAcmwwO+aqNyiVksmPYyLhQlaVZRPKWibHqo3g==",
+      "version": "0.9.4",
+      "resolved": "https://registry.npmjs.org/assemblyscript/-/assemblyscript-0.9.4.tgz",
+      "integrity": "sha512-GabjIxYt5uI3nyZNYzw6VtHyZcjVtcw8tbtEbXGvbrp3+A5p3zQ2yrU03tSiRR+WTeGx2aS8c6T+y2gGfjyvqw==",
       "dev": true,
       "requires": {
-        "binaryen": "90.0.0-nightly.20200111",
+        "binaryen": "91.0.0-nightly.20200310",
         "long": "^4.0.0"
       }
     },
@@ -1332,9 +1332,9 @@
       "dev": true
     },
     "binaryen": {
-      "version": "90.0.0-nightly.20200111",
-      "resolved": "https://registry.npmjs.org/binaryen/-/binaryen-90.0.0-nightly.20200111.tgz",
-      "integrity": "sha512-2uihf1tqfkG2OJB54LjIDu5/fqbGgbj9VSwnj8hYtsRfML61y0uHeMkPfWctyl99m7hsgyDu7xUbJ7iyqBz6BA==",
+      "version": "91.0.0-nightly.20200310",
+      "resolved": "https://registry.npmjs.org/binaryen/-/binaryen-91.0.0-nightly.20200310.tgz",
+      "integrity": "sha512-MmDzq267aa61HdEQeYiz+7guJlsYk2/6NxWC8I4w1jijqDwoqyZZxi7UYnTH7QvfLrNdMjweEgfT7FHjkvkPmQ==",
       "dev": true
     },
     "brace-expansion": {
@@ -2044,9 +2044,9 @@
       }
     },
     "minimist": {
-      "version": "1.2.0",
-      "resolved": "https://registry.npmjs.org/minimist/-/minimist-1.2.0.tgz",
-      "integrity": "sha1-o1AIsg9BOD7sH7kU9M1d95omQoQ=",
+      "version": "1.2.5",
+      "resolved": "https://registry.npmjs.org/minimist/-/minimist-1.2.5.tgz",
+      "integrity": "sha512-FM9nNUYrRBAELZQT3xeZQ7fmMOBg6nWNmJKTcgsJeaLstP/UODVpGsr5OhXhhXg6f+qtJ8uiZ+PUxkDWcgIXLw==",
       "dev": true
     },
     "ms": {
@@ -2647,9 +2647,9 @@
       }
     },
     "typescript": {
-      "version": "3.7.5",
-      "resolved": "https://registry.npmjs.org/typescript/-/typescript-3.7.5.tgz",
-      "integrity": "sha512-/P5lkRXkWHNAbcJIiHPfRoKqyd7bsyCma1hZNUGfn20qm64T6ZBlrzprymeu918H+mB/0rIg2gGK/BXkhhYgBw==",
+      "version": "3.8.3",
+      "resolved": "https://registry.npmjs.org/typescript/-/typescript-3.8.3.tgz",
+      "integrity": "sha512-MYlEfn5VrLNsgudQTVJeNaQFUAI7DkhnOjdpAp4T+ku1TfQClewlbSuTVHiA+8skNBgaf02TL/kLOvig4y3G8w==",
       "dev": true
     },
     "unicode-canonical-property-names-ecmascript": {

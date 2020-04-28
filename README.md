@@ -4,6 +4,7 @@ Technical analysis math
 [![bundlephobia](https://badgen.net/bundlephobia/minzip/ta-math)](https://bundlephobia.com/result?p=ta-math)
 [![Build Status](https://travis-ci.org/munrocket/ta-math.svg?branch=master)](https://travis-ci.org/munrocket/ta-math)
 [![Codecov](https://img.shields.io/codecov/c/github/munrocket/ta-math.svg)](https://codecov.io/gh/munrocket/ta-math)
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/munrocket/ta-math.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/munrocket/ta-math/alerts/)
 
 Well tested library for calculating technical indicators and overlays. You can choose format of price data
 from provider and library will return result. It distributed with Typescript, ES6 and ES5.
@@ -104,8 +105,7 @@ Install npm package `npm i ta-math` or add `ta-math.js` script file on web page.
 - [X] es5 with babel
 - [X] coverage
 - [X] good looking example
-- [ ] WASM
-- [ ] Forecasting (Holt-Winters, ARIMA, FFT [etc](https://www.quantstart.com/articles#time-series-analysis))
+- [ ] fix PSAR
 
 ### Contributing
 Feel free to contribute. Here [reference](http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators)

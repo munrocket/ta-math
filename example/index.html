@@ -84,7 +84,7 @@ function renderChart(ta) {
   var data = charts.reduce((all, ch) => all.concat(ch.context), []);
 
   function visibleChart(ch, charts) {
-    result = [];
+    var result = [];
     for (let i = 0; i < charts.length; i++) {
       if (charts[i].label == 'None') {
         result.push(true);
@@ -98,8 +98,8 @@ function renderChart(ta) {
   }
 
   var layout = {
-    margin: { r: 5, t: 5, b: 50, l: 5 }, 
-    xaxis: { autorange: true, type: 'date' }, 
+    margin: { r: 5, t: 5, b: 50, l: 5 },
+    xaxis: { autorange: true, type: 'date' },
     yaxis: { autorange: true, type: 'linear' },
     showlegend: true,
     dragmode: 'zoom',
@@ -130,15 +130,15 @@ function renderChart(ta) {
 function barContext(ta) {
   return [{
     name: 'BTC/USDT',
-    x: ta.$time, 
-    close: ta.$close, 
-    high: ta.$high, 
-    low: ta.$low, 
-    open: ta.$open, 
-    type: 'candlestick', 
-    decreasing: {line: {color: '#9a49e5'}}, 
+    x: ta.$time,
+    close: ta.$close,
+    high: ta.$high,
+    low: ta.$low,
+    open: ta.$open,
+    type: 'candlestick',
+    decreasing: {line: {color: '#9a49e5'}},
     increasing: {line: {color: '#28C2ED'}},
-    xaxis: 'x', 
+    xaxis: 'x',
     yaxis: 'y'
   }];
 }
@@ -204,7 +204,7 @@ function bbContext(ta, isExp) {
 function macdContext(ta) {
   var macd = ta.macd();
   var mult = 2.5;
-  var shift = ta.low.reduce((min, item) => (item < min) ? item : min, Infinity) - 
+  var shift = ta.low.reduce((min, item) => (item < min) ? item : min, Infinity) -
     macd.line.reduce((max, item) => (item > max) ? item : max, -Infinity) * mult;
 
   var line = {
@@ -228,14 +228,14 @@ function macdContext(ta) {
   var hist = {
     name: 'hist',
     x: ta.$time,
-    open: macd.hist.map(x => shift),  
-    high: macd.hist.map(x => (x > 0) ? shift + mult * x : shift), 
-    low: macd.hist.map(x => (x < 0) ? shift + mult * x : shift), 
+    open: macd.hist.map(x => shift),
+    high: macd.hist.map(x => (x > 0) ? shift + mult * x : shift),
+    low: macd.hist.map(x => (x < 0) ? shift + mult * x : shift),
     close: macd.hist.map(x => (x > 0) ? shift : shift * (1 - 1e-15)),
-    type: 'candlestick', 
-    decreasing: {line: {color: '#9a49e5'}}, 
+    type: 'candlestick',
+    decreasing: {line: {color: '#9a49e5'}},
     increasing: {line: {color: '#28C2ED'}},
-    xaxis: 'x', 
+    xaxis: 'x',
     yaxis: 'y',
     visible: false
   }
