@@ -105,6 +105,7 @@ Install npm package `npm i ta-math` or add `ta-math.js` script file on web page.
 - [X] es5 with babel
 - [X] coverage
 - [X] good looking example
+- [X] migrate to typescript
 - [ ] fix PSAR
 
 ### Contributing
