@@ -1,6 +1,6 @@
 {
   "name": "ta-math",
-  "version": "0.4.39",
+  "version": "0.4.40",
   "lockfileVersion": 1,
   "requires": true,
   "dependencies": {
@@ -1523,24 +1523,6 @@
       "integrity": "sha512-rr+OQyAjxze7GgWrSaJwydHStIhHq2lvY3BOC2Mj7KnzI7XK0Uw1TOOdI9lDoajEbSWLiYgoo4f1R51erQfhPQ==",
       "dev": true
     },
-    "@types/estree": {
-      "version": "0.0.42",
-      "resolved": "https://registry.npmjs.org/@types/estree/-/estree-0.0.42.tgz",
-      "integrity": "sha512-K1DPVvnBCPxzD+G51/cxVIoc2X8uUVl1zpJeE6iKcgHMj4+tbat5Xu4TjV7v2QSDbIeAfLi2hIk+u2+s0MlpUQ==",
-      "dev": true
-    },
-    "@types/node": {
-      "version": "13.5.0",
-      "resolved": "https://registry.npmjs.org/@types/node/-/node-13.5.0.tgz",
-      "integrity": "sha512-Onhn+z72D2O2Pb2ql2xukJ55rglumsVo1H6Fmyi8mlU9SvKdBk/pUSUAiBY/d9bAOF7VVWajX3sths/+g6ZiAQ==",
-      "dev": true
-    },
-    "acorn": {
-      "version": "7.1.1",
-      "resolved": "https://registry.npmjs.org/acorn/-/acorn-7.1.1.tgz",
-      "integrity": "sha512-add7dgA5ppRPxCFJoAGfMDi7PIBXq1RtGo7BhbLaxwrXPOmw8gq48Y9ozT01hUKy9byMjlR20EJhu5zlkErEkg==",
-      "dev": true
-    },
     "agent-base": {
       "version": "6.0.0",
       "resolved": "https://registry.npmjs.org/agent-base/-/agent-base-6.0.0.tgz",
@@ -1922,6 +1904,13 @@
       "resolved": "https://registry.npmjs.org/fs.realpath/-/fs.realpath-1.0.0.tgz",
       "integrity": "sha1-FQStJSMVjKpA20onh8sBQRmU6k8=",
       "dev": true
+    },
+    "fsevents": {
+      "version": "2.1.3",
+      "resolved": "https://registry.npmjs.org/fsevents/-/fsevents-2.1.3.tgz",
+      "integrity": "sha512-Auw9a4AxqWpa9GUfj370BMPzzyncfBABW8Mab7BGWBYDj4Isgq+cDKtx0i6u9jcX9pQDnswsaaOTgTmA5pEjuQ==",
+      "dev": true,
+      "optional": true
     },
     "function-bind": {
       "version": "1.1.1",
@@ -2694,14 +2683,12 @@
       }
     },
     "rollup": {
-      "version": "1.29.1",
-      "resolved": "https://registry.npmjs.org/rollup/-/rollup-1.29.1.tgz",
-      "integrity": "sha512-dGQ+b9d1FOX/gluiggTAVnTvzQZUEkCi/TwZcax7ujugVRHs0nkYJlV9U4hsifGEMojnO+jvEML2CJQ6qXgbHA==",
+      "version": "2.7.6",
+      "resolved": "https://registry.npmjs.org/rollup/-/rollup-2.7.6.tgz",
+      "integrity": "sha512-AdHosxHBKyBsdtbT1/AqbWNQ87O4SSxS4N9iMwEpoCDAT6e4Du3uJSy83mp3ckgmCxly5VeXGx0WHsm21Djytg==",
       "dev": true,
       "requires": {
-        "@types/estree": "*",
-        "@types/node": "*",
-        "acorn": "^7.1.0"
+        "fsevents": "~2.1.2"
       }
     },
     "rollup-plugin-babel": {
