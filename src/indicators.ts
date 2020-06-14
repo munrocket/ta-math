@@ -106,7 +106,7 @@ export function rsi($close: Array<number>, window: number) {
     gains.push(diff >= 0 ? diff : 0);
     loss.push(diff < 0 ? -diff : 0);
   }
-  return pointwise((a: number, b: number) => 100 - 100 / (1 + a / b), ema(gains, 2 * window - 1), ema(loss, 2 * window - 1));
+  return pointwise((a: number, b: number) => 100 - 100 / (1 + a / b), ema(gains,  window), ema(loss, window ));
 }
 
 export function stoch($high: Array<number>, $low: Array<number>,
