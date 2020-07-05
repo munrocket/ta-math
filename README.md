@@ -36,9 +36,9 @@ Check [example](https://munrocket.github.io/ta-math/example/index.html) with plo
 | adl       | Accumulation / Distribution line      |   ✔️    | Marc Chaikin                      | 1970s|
 | atr       | Average True Range                    |   ✔️    | Welles Wilder                     | 1978 |
 | adx       | Average Directional Index             |   ✔️    | Welles Wilder                     | 1978 |
-| bbp       | Bollinger Bands Percent Bandwidth %B  |   👌     |                                  |      |
+| bbp       | Bollinger Bands Percent Bandwidth %B  |   👌   |                                   |      |
 | cci       | Commodity Channel Index               |   ✔️    | Donald Lambert                    | 1980 |
-| cho       | Chaikin Oscillator                    |   👌     | Marc Chaikin                     |      |
+| cho       | Chaikin Oscillator                    |   👌   |  Marc Chaikin                     |      |
 | expdev    | Exponential Weighted Deviation        |   ✔️    |                                   |      |
 | fi        | Force Index                           |   ✔️    |                                   |      |
 | kst       | Know Sure Thing                       |   ✔️    |                                   |      |
@@ -49,7 +49,7 @@ Check [example](https://munrocket.github.io/ta-math/example/index.html) with plo
 | roc       | Rate-of-Change                        |   ✔️    |                                   |      |
 | rsi       | Relative Strength Index               |   ✔️    | Welles Wilder                     | 1978 |
 | stdev     | Standard Deviation                    |   ✔️️    |                                   |      |
-| stoch     | Stochastic Oscillator (Full)          |   ✔️    | George Lane                       | 1950s|
+| stoch     | Stochastic Oscillator (Slow/Fast/Full)|   ✔️    | George Lane                       | 1950s|
 | stochRsi  | Combines Stochastics with the RSI     |   ✔️    | Welles Wilder                     | 1994 |
 | vi        | Vortex Indicator                      |   ✔️    | Etienne Botes and Douglas Siepman | 2010 |
 | williams  | Williams %R                           |   ✔️    |                                   |      |
