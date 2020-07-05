@@ -1,8 +1,5 @@
 
-Technical analysis math
-=========
-[![bundlephobia](https://badgen.net/bundlephobia/minzip/ta-math)](https://bundlephobia.com/result?p=ta-math)
-[![Build Status](https://travis-ci.org/munrocket/ta-math.svg?branch=master)](https://travis-ci.org/munrocket/ta-math)
+Technical analysis math [![bundlephobia](https://badgen.net/bundlephobia/minzip/ta-math)](https://bundlephobia.com/result?p=ta-math)
 [![Codecov](https://img.shields.io/codecov/c/github/munrocket/ta-math.svg)](https://codecov.io/gh/munrocket/ta-math)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/munrocket/ta-math.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/munrocket/ta-math/alerts/)
 

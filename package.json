@@ -23,7 +23,6 @@
     "@babel/core": "7.10.4",
     "@babel/preset-env": "7.10.4",
     "assemblyscript": "0.13.3",
-    "codecov": "3.7.0",
     "esm": "3.2.25",
     "nyc": "15.1.0",
     "rollup": "2.19.0",

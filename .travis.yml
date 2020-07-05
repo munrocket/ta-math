@@ -5,9 +5,10 @@ jobs:
   include:
     - name: test
       script: npm run ci
-      after_success: bash <(curl -s https://codecov.io/bash)
+      after_success: npx codecov
 
     - name: publish
+      script: npm run build
       deploy:
         provider: npm
         edge: true
