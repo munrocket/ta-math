@@ -1,6 +1,6 @@
 {
   "name": "ta-math",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Technical analysis library in javascript. Calculates indicators and overlays from ohlcv data",
   "main": "dist/ta-math.js",
   "types": "dist/ta-math.d.ts",
@@ -28,7 +28,7 @@
     "rollup": "2.22.1",
     "rollup-plugin-babel": "4.4.0",
     "rollup-plugin-typescript2": "0.27.1",
-    "typescript": "3.9.6",
+    "typescript": "3.9.7",
     "zora": "4.0.0"
   },
   "babel": {
