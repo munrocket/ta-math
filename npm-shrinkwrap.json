@@ -1,6 +1,6 @@
 {
   "name": "ta-math",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "lockfileVersion": 1,
   "requires": true,
   "dependencies": {
@@ -1373,9 +1373,9 @@
       }
     },
     "assemblyscript": {
-      "version": "0.14.5",
-      "resolved": "https://registry.npmjs.org/assemblyscript/-/assemblyscript-0.14.5.tgz",
-      "integrity": "sha512-HziogbWU7ia9fqz62hdpnbkl54x8oCkOTY4x/rCaVxemqhaOzvrmHzXLw6K61vYIJyZgalzUH3sbWTSZu/jeJw==",
+      "version": "0.14.7",
+      "resolved": "https://registry.npmjs.org/assemblyscript/-/assemblyscript-0.14.7.tgz",
+      "integrity": "sha512-QTCGBmZHvLAvZZ/sezo/2xMNXg0sgoICGTS5PSg1KPCp8QEYwNuh795Zzad/kxZTlhG6u7EHaX5Bh+Upytvbnw==",
       "dev": true,
       "requires": {
         "binaryen": "95.0.0-nightly.20200723",
