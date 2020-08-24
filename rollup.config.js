@@ -11,8 +11,9 @@ const tsconfig = {
     removeComments: true,
     preserveConstEnums: true,
     outDir: "./dist",
-    sourceMap: false,
     declaration: true,
+    declarationDir: "./dist/types",
+    sourceMap: false,
     esModuleInterop: true,
     lib: ["es6", "dom"],
   },
@@ -25,7 +26,10 @@ export default [
     /* es5 */ input: "src/index.ts",
     output: { file: pkg.browser, name: "TA", format: "iife" },
     plugins: [
-      typescript({ tsconfigOverride: tsconfig }),
+      typescript({
+        tsconfigOverride: tsconfig,
+        useTsconfigDeclarationDir: true,
+      }),
       babel({ exclude: "node_modules/**" }),
     ],
   },
