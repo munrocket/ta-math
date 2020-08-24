@@ -287,7 +287,7 @@ var TA = (function () {
           gains.push(diff >= 0 ? diff : 0);
           loss.push(diff < 0 ? -diff : 0);
       }
-      return pointwise((a, b) => 100 - 100 / (1 + a / b), ema(gains, window), ema(loss, window));
+      return pointwise((a, b) => 100 - 100 / (1 + a / b), ema(gains, 2 * window - 1), ema(loss, 2 * window - 1));
   }
   function stoch($high, $low, $close, window, signal, smooth) {
       let lowest = rolling((s) => Math.min(...s), $low, window);
