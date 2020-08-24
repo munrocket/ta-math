@@ -1,51 +1,51 @@
-import babel from "rollup-plugin-babel";
-import typescript from "rollup-plugin-typescript2";
-import pkg from "./package.json";
+import babel from 'rollup-plugin-babel';
+import typescript from 'rollup-plugin-typescript2';
+import pkg from './package.json';
 
 const tsconfig = {
   compilerOptions: {
-    target: "es6",
-    module: "es6",
-    moduleResolution: "node",
+    target: 'es6',
+    module: 'es6',
+    moduleResolution: 'node',
     noImplicitAny: true,
     removeComments: true,
     preserveConstEnums: true,
-    outDir: "./dist",
+    outDir: './dist',
     declaration: true,
-    declarationDir: "./dist/types",
+    declarationDir: './dist/types',
     sourceMap: false,
     esModuleInterop: true,
-    lib: ["es6", "dom"],
+    lib: ['es6', 'dom'],
   },
-  include: ["src/**/*.ts"],
-  exclude: ["node_modules", "**/*.spec.ts"],
+  include: ['src/**/*.ts'],
+  exclude: ['node_modules', '**/*.spec.ts'],
 };
 
 export default [
   {
-    /* es5 */ input: "src/index.ts",
-    output: { file: pkg.browser, name: "TA", format: "iife" },
+    /* es5 */ input: 'src/index.ts',
+    output: { file: pkg.browser, name: 'TA', format: 'iife' },
     plugins: [
       typescript({
         tsconfigOverride: tsconfig,
         useTsconfigDeclarationDir: true,
       }),
-      babel({ exclude: "node_modules/**" }),
+      babel({ exclude: 'node_modules/**' }),
     ],
   },
 
   {
-    /* es6/esm */ input: "src/index.ts",
+    /* es6/esm */ input: 'src/index.ts',
     output: [
-      { file: pkg.main, name: "TA", format: "umd" },
-      { file: pkg.module, format: "esm", sourcemap: "inline" },
+      { file: pkg.main, name: 'TA', format: 'umd' },
+      { file: pkg.module, format: 'esm', sourcemap: 'inline' },
     ],
     plugins: [typescript({ tsconfigOverride: tsconfig })],
   },
 
   {
-    /* temp4test */ input: "src/core.ts",
-    output: { file: "temp/core.js", format: "esm", sourcemap: "inline" },
+    /* temp4test */ input: 'src/core.ts',
+    output: { file: 'temp/core.js', format: 'esm', sourcemap: 'inline' },
     plugins: [typescript({ tsconfigOverride: tsconfig })],
   },
 ];
