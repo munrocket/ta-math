@@ -3,7 +3,7 @@
   "version": "1.0.17",
   "description": "Technical analysis library in javascript. Calculates indicators and overlays from ohlcv data",
   "main": "dist/ta-math.js",
-  "types": "dist/ta-math.d.ts",
+  "types": "dist/index.d.ts",
   "module": "dist/ta-math.esm.js",
   "browser": "dist/ta-math.es5.js",
   "files": [
