@@ -970,12 +970,12 @@ argparse@^1.0.7:
   dependencies:
     sprintf-js "~1.0.2"
 
-assemblyscript@0.14.8:
-  version "0.14.8"
-  resolved "https://registry.yarnpkg.com/assemblyscript/-/assemblyscript-0.14.8.tgz#6db8a149d44013181075dada78aab55af0ce2943"
-  integrity sha512-a8qQ1MWpebqHQvZFdg7rjp+mIlAJKGDivNFOmKUfu5B8u2deNTBhg3xOrp7Ka3irg+zAmGK3JcpJ+ZofqnebqQ==
+assemblyscript@0.14.10:
+  version "0.14.10"
+  resolved "https://registry.yarnpkg.com/assemblyscript/-/assemblyscript-0.14.10.tgz#dc17f5f1b8ba34cf17d79a587f10f250733ddcd3"
+  integrity sha512-XQT2Hpf6bZtf9Cd1OdJ4rVQF3m80WBQUERnNRjymzKAFCYBpgKVAlVG8TDEhfzct+Bs4hsiS736G02K9cNzMaA==
   dependencies:
-    binaryen "95.0.0-nightly.20200723"
+    binaryen "95.0.0-nightly.20200813"
     long "^4.0.0"
 
 babel-plugin-dynamic-import-node@^2.3.3:
@@ -990,10 +990,10 @@ balanced-match@^1.0.0:
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.0.tgz#89b4d199ab2bee49de164ea02b89ce462d71b767"
   integrity sha1-ibTRmasr7kneFk6gK4nORi1xt2c=
 
-binaryen@95.0.0-nightly.20200723:
-  version "95.0.0-nightly.20200723"
-  resolved "https://registry.yarnpkg.com/binaryen/-/binaryen-95.0.0-nightly.20200723.tgz#a6fa324a51e01df41a951c0275b1ffc9b5f3a8f6"
-  integrity sha512-IUO89yU4l20ocuf7RvcBj2T1ZGafO0XNcbqTFne9Dbp63FOLafDSuV7U22n0bTbK4H6qqGogTQtQJQbrV054lQ==
+binaryen@95.0.0-nightly.20200813:
+  version "95.0.0-nightly.20200813"
+  resolved "https://registry.yarnpkg.com/binaryen/-/binaryen-95.0.0-nightly.20200813.tgz#c84b332a7b06d4a9a2096c57b29c3e889130bcfb"
+  integrity sha512-xY+fhSAkVxptBoQAn9X4o21zTFycOjc+PeqbWSwcDqrSmXBXUMeq7qHhz4EWSWlFDKobHeUaiIbzLzlmciDWHw==
 
 brace-expansion@^1.1.7:
   version "1.1.11"
