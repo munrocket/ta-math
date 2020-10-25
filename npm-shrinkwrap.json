@@ -1,6 +1,6 @@
 {
   "name": "ta-math",
-  "version": "1.0.28",
+  "version": "1.0.29",
   "lockfileVersion": 1,
   "requires": true,
   "dependencies": {
@@ -1606,12 +1606,12 @@
       }
     },
     "assemblyscript": {
-      "version": "0.14.11",
-      "resolved": "https://registry.npmjs.org/assemblyscript/-/assemblyscript-0.14.11.tgz",
-      "integrity": "sha512-If7HuhmV5thbOBJH13fP4aPmazYeVXkEuzdZZRgknIBeOkObXWB4v3/rpGPFxkNW4Q5+rc2YWefjOdWK8OVIig==",
+      "version": "0.16.1",
+      "resolved": "https://registry.npmjs.org/assemblyscript/-/assemblyscript-0.16.1.tgz",
+      "integrity": "sha512-btb/Q2cs42O7NaVRLDpUIb4fF+o4H4id0kjOOOzS25KCOx0voiyGBeWYqfnrOeufMQacvDNqGkjJuGkdTJIrQQ==",
       "dev": true,
       "requires": {
-        "binaryen": "97.0.0-nightly.20200919",
+        "binaryen": "97.0.0-nightly.20201008",
         "long": "^4.0.0"
       }
     },
@@ -1631,9 +1631,9 @@
       "dev": true
     },
     "binaryen": {
-      "version": "97.0.0-nightly.20200919",
-      "resolved": "https://registry.npmjs.org/binaryen/-/binaryen-97.0.0-nightly.20200919.tgz",
-      "integrity": "sha512-BqKZxONTh53SVl2QUqVidoSo/nvL6FMKUG21SvB6V46M1Y6EbJrXES5Nt2c9XYveWpJjA297zIoxTUdI/PMDSA==",
+      "version": "97.0.0-nightly.20201008",
+      "resolved": "https://registry.npmjs.org/binaryen/-/binaryen-97.0.0-nightly.20201008.tgz",
+      "integrity": "sha512-GWV30FOQqz+vBIZRbc7GSasLNhh8BNLKH+2u2j5BjqM0WOEqqaP5iSj0mq72We2aVYqpBajJPI/CORY6o2RBxA==",
       "dev": true
     },
     "brace-expansion": {
