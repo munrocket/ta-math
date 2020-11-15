@@ -1,6 +1,6 @@
 {
   "name": "ta-math",
-  "version": "1.0.35",
+  "version": "1.0.36",
   "lockfileVersion": 1,
   "requires": true,
   "dependencies": {
@@ -2987,9 +2987,9 @@
       }
     },
     "zora": {
-      "version": "4.0.0",
-      "resolved": "https://registry.npmjs.org/zora/-/zora-4.0.0.tgz",
-      "integrity": "sha512-ZmINt/1QY3p0+3FnvTTEKV+QWdC/srp2bHoTNzHy2/ij/BjVHBu2TkWMMBu3mEuxl6uLSb4eL7rJ7h/pX3kFPQ==",
+      "version": "4.0.1",
+      "resolved": "https://registry.npmjs.org/zora/-/zora-4.0.1.tgz",
+      "integrity": "sha512-wHn3TYPABlDyzpLV+qYshYPnpQUvBvcBxw5GJ8Z4wbIynbJaC3QdV48D4/SqtPk5A7F6OJCb6t8PmsHtsnMWtA==",
       "dev": true
     }
   }
