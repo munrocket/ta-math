@@ -1,6 +1,6 @@
 {
   "name": "ta-math",
-  "version": "1.0.40",
+  "version": "1.0.41",
   "description": "Technical analysis library in javascript. Calculates indicators and overlays from ohlcv data",
   "main": "dist/ta-math.js",
   "types": "dist/types/index.d.ts",
@@ -21,7 +21,7 @@
     "build:clean": "find dist -maxdepth 1 -name '*.d.ts' -type f -delete"
   },
   "devDependencies": {
-    "@babel/core": "7.12.7",
+    "@babel/core": "7.12.9",
     "@babel/preset-env": "7.12.7",
     "assemblyscript": "0.17.2",
     "esm": "3.2.25",
