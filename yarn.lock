@@ -1113,10 +1113,10 @@ argparse@^1.0.7:
   dependencies:
     sprintf-js "~1.0.2"
 
-assemblyscript@0.17.2:
-  version "0.17.2"
-  resolved "https://registry.yarnpkg.com/assemblyscript/-/assemblyscript-0.17.2.tgz#48438adfb5afd353c6abc5233b5a8e05bfcc5ea9"
-  integrity sha512-QpHROlgiNLdqTrJCnPAwU61uStFCJ7PSW2IDYkiRbWlcHG9lNUaw/SwivCAQCEh+3GjSqZH8Q1mehSmhNDtFtA==
+assemblyscript@0.17.3:
+  version "0.17.3"
+  resolved "https://registry.yarnpkg.com/assemblyscript/-/assemblyscript-0.17.3.tgz#bd9876ea2b177664abb8ed2aeccf259c212a12b8"
+  integrity sha512-PeouwsA+ayYCcLCSt1QUs4SkqiR0DBtX9pLjsm8hHQa/e132tzRN36hjkfk7htJGLQDtimnRlQ3gcA61ciO9gw==
   dependencies:
     binaryen "98.0.0-nightly.20201109"
     long "^4.0.0"
