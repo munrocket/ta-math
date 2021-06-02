@@ -6,7 +6,7 @@ from provider and library will return result. It distributed with Typescript, ES
 
 ![btc-with-bollinger-bands](https://i.imgur.com/moDdzmM.png)
 
-Check [example](https://munrocket.github.io/ta-math/example/index.html) with plotly library, ccxt data provider and BTC prices from Binance exchange.
+Check [example](https://munsocket.github.io/ta-math/example/index.html) with plotly library, ccxt data provider and BTC prices from Binance exchange.
 
 [//]: # (used emoji ➖✔️️❔❌:suspect:)
 
