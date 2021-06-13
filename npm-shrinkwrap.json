@@ -1,11 +1,11 @@
 {
   "name": "ta-math",
-  "version": "1.0.49",
+  "version": "1.0.50",
   "lockfileVersion": 2,
   "requires": true,
   "packages": {
     "": {
-      "version": "1.0.49",
+      "version": "1.0.50",
       "license": "MIT",
       "devDependencies": {
         "@babel/core": "7.14.5",
@@ -17,7 +17,7 @@
         "rollup-plugin-babel": "4.4.0",
         "rollup-plugin-typescript2": "0.30.0",
         "typescript": "4.3.2",
-        "zora": "4.0.1"
+        "zora": "4.1.0"
       }
     },
     "node_modules/@babel/code-frame": {
@@ -3394,9 +3394,9 @@
       }
     },
     "node_modules/zora": {
-      "version": "4.0.1",
-      "resolved": "https://registry.npmjs.org/zora/-/zora-4.0.1.tgz",
-      "integrity": "sha512-wHn3TYPABlDyzpLV+qYshYPnpQUvBvcBxw5GJ8Z4wbIynbJaC3QdV48D4/SqtPk5A7F6OJCb6t8PmsHtsnMWtA==",
+      "version": "4.1.0",
+      "resolved": "https://registry.npmjs.org/zora/-/zora-4.1.0.tgz",
+      "integrity": "sha512-tFowFksaFIwp0hzZ9dhM1rlaicS6VNjNMxEH3phgR5Glz3EMAoRujjJ50aTLAsl//SArTdG/kBt5EuvhqS6mww==",
       "dev": true
     }
   },
@@ -5891,9 +5891,9 @@
       }
     },
     "zora": {
-      "version": "4.0.1",
-      "resolved": "https://registry.npmjs.org/zora/-/zora-4.0.1.tgz",
-      "integrity": "sha512-wHn3TYPABlDyzpLV+qYshYPnpQUvBvcBxw5GJ8Z4wbIynbJaC3QdV48D4/SqtPk5A7F6OJCb6t8PmsHtsnMWtA==",
+      "version": "4.1.0",
+      "resolved": "https://registry.npmjs.org/zora/-/zora-4.1.0.tgz",
+      "integrity": "sha512-tFowFksaFIwp0hzZ9dhM1rlaicS6VNjNMxEH3phgR5Glz3EMAoRujjJ50aTLAsl//SArTdG/kBt5EuvhqS6mww==",
       "dev": true
     }
   }
