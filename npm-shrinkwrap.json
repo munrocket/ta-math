@@ -1,11 +1,11 @@
 {
   "name": "ta-math",
-  "version": "1.0.48",
+  "version": "1.0.49",
   "lockfileVersion": 2,
   "requires": true,
   "packages": {
     "": {
-      "version": "1.0.48",
+      "version": "1.0.49",
       "license": "MIT",
       "devDependencies": {
         "@babel/core": "7.14.5",
@@ -16,7 +16,7 @@
         "rollup": "2.51.2",
         "rollup-plugin-babel": "4.4.0",
         "rollup-plugin-typescript2": "0.30.0",
-        "typescript": "4.1.2",
+        "typescript": "4.3.2",
         "zora": "4.0.1"
       }
     },
@@ -3194,9 +3194,9 @@
       }
     },
     "node_modules/typescript": {
-      "version": "4.1.2",
-      "resolved": "https://registry.npmjs.org/typescript/-/typescript-4.1.2.tgz",
-      "integrity": "sha512-thGloWsGH3SOxv1SoY7QojKi0tc+8FnOmiarEGMbd/lar7QOEd3hvlx3Fp5y6FlDUGl9L+pd4n2e+oToGMmhRQ==",
+      "version": "4.3.2",
+      "resolved": "https://registry.npmjs.org/typescript/-/typescript-4.3.2.tgz",
+      "integrity": "sha512-zZ4hShnmnoVnAHpVHWpTcxdv7dWP60S2FsydQLV8V5PbS3FifjWFFRiHSWpDJahly88PRyV5teTSLoq4eG7mKw==",
       "dev": true,
       "bin": {
         "tsc": "bin/tsc",
@@ -5739,9 +5739,9 @@
       }
     },
     "typescript": {
-      "version": "4.1.2",
-      "resolved": "https://registry.npmjs.org/typescript/-/typescript-4.1.2.tgz",
-      "integrity": "sha512-thGloWsGH3SOxv1SoY7QojKi0tc+8FnOmiarEGMbd/lar7QOEd3hvlx3Fp5y6FlDUGl9L+pd4n2e+oToGMmhRQ==",
+      "version": "4.3.2",
+      "resolved": "https://registry.npmjs.org/typescript/-/typescript-4.3.2.tgz",
+      "integrity": "sha512-zZ4hShnmnoVnAHpVHWpTcxdv7dWP60S2FsydQLV8V5PbS3FifjWFFRiHSWpDJahly88PRyV5teTSLoq4eG7mKw==",
       "dev": true
     },
     "unicode-canonical-property-names-ecmascript": {
