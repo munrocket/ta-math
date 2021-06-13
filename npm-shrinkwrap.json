@@ -1,16 +1,16 @@
 {
   "name": "ta-math",
-  "version": "1.0.46",
+  "version": "1.0.47",
   "lockfileVersion": 2,
   "requires": true,
   "packages": {
     "": {
-      "version": "1.0.46",
+      "version": "1.0.47",
       "license": "MIT",
       "devDependencies": {
         "@babel/core": "7.14.5",
         "@babel/preset-env": "7.14.5",
-        "assemblyscript": "0.17.3",
+        "assemblyscript": "0.19.2",
         "esm": "3.2.25",
         "nyc": "15.1.0",
         "rollup": "2.34.0",
@@ -1658,12 +1658,12 @@
       }
     },
     "node_modules/assemblyscript": {
-      "version": "0.17.3",
-      "resolved": "https://registry.npmjs.org/assemblyscript/-/assemblyscript-0.17.3.tgz",
-      "integrity": "sha512-PeouwsA+ayYCcLCSt1QUs4SkqiR0DBtX9pLjsm8hHQa/e132tzRN36hjkfk7htJGLQDtimnRlQ3gcA61ciO9gw==",
+      "version": "0.19.2",
+      "resolved": "https://registry.npmjs.org/assemblyscript/-/assemblyscript-0.19.2.tgz",
+      "integrity": "sha512-0ETRv6oSOhqgPmf23KrD+111QL685IxY/k3UHlC7NzGK2VAi+3Em1U2E06zCPnb45tjUD86wBANlDJDGEZisBg==",
       "dev": true,
       "dependencies": {
-        "binaryen": "98.0.0-nightly.20201109",
+        "binaryen": "101.0.0-nightly.20210604",
         "long": "^4.0.0"
       },
       "bin": {
@@ -1730,9 +1730,9 @@
       "dev": true
     },
     "node_modules/binaryen": {
-      "version": "98.0.0-nightly.20201109",
-      "resolved": "https://registry.npmjs.org/binaryen/-/binaryen-98.0.0-nightly.20201109.tgz",
-      "integrity": "sha512-iRarAqdH5lMWlMBzrDuJgLYJR2g4QXk93iYE2zpr6gEZkb/jCgDpPUXdhuN11Ge1zZ/6By4DwA1mmifcx7FWaw==",
+      "version": "101.0.0-nightly.20210604",
+      "resolved": "https://registry.npmjs.org/binaryen/-/binaryen-101.0.0-nightly.20210604.tgz",
+      "integrity": "sha512-aTgX1JDN8m3tTFK8g9hazJcEOdQl7mK4yVfElkKAh7q+TRUCaea4a2SMLr1z2xZL7s9N4lkrvrBblxRuEPvxWQ==",
       "dev": true,
       "bin": {
         "wasm-opt": "bin/wasm-opt"
@@ -4552,12 +4552,12 @@
       }
     },
     "assemblyscript": {
-      "version": "0.17.3",
-      "resolved": "https://registry.npmjs.org/assemblyscript/-/assemblyscript-0.17.3.tgz",
-      "integrity": "sha512-PeouwsA+ayYCcLCSt1QUs4SkqiR0DBtX9pLjsm8hHQa/e132tzRN36hjkfk7htJGLQDtimnRlQ3gcA61ciO9gw==",
+      "version": "0.19.2",
+      "resolved": "https://registry.npmjs.org/assemblyscript/-/assemblyscript-0.19.2.tgz",
+      "integrity": "sha512-0ETRv6oSOhqgPmf23KrD+111QL685IxY/k3UHlC7NzGK2VAi+3Em1U2E06zCPnb45tjUD86wBANlDJDGEZisBg==",
       "dev": true,
       "requires": {
-        "binaryen": "98.0.0-nightly.20201109",
+        "binaryen": "101.0.0-nightly.20210604",
         "long": "^4.0.0"
       }
     },
@@ -4607,9 +4607,9 @@
       "dev": true
     },
     "binaryen": {
-      "version": "98.0.0-nightly.20201109",
-      "resolved": "https://registry.npmjs.org/binaryen/-/binaryen-98.0.0-nightly.20201109.tgz",
-      "integrity": "sha512-iRarAqdH5lMWlMBzrDuJgLYJR2g4QXk93iYE2zpr6gEZkb/jCgDpPUXdhuN11Ge1zZ/6By4DwA1mmifcx7FWaw==",
+      "version": "101.0.0-nightly.20210604",
+      "resolved": "https://registry.npmjs.org/binaryen/-/binaryen-101.0.0-nightly.20210604.tgz",
+      "integrity": "sha512-aTgX1JDN8m3tTFK8g9hazJcEOdQl7mK4yVfElkKAh7q+TRUCaea4a2SMLr1z2xZL7s9N4lkrvrBblxRuEPvxWQ==",
       "dev": true
     },
     "brace-expansion": {
