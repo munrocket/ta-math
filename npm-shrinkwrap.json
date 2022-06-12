@@ -1,12 +1,12 @@
 {
   "name": "ta-math",
-  "version": "1.0.55",
+  "version": "1.0.56",
   "lockfileVersion": 2,
   "requires": true,
   "packages": {
     "": {
       "name": "ta-math",
-      "version": "1.0.55",
+      "version": "1.0.56",
       "license": "MIT",
       "devDependencies": {
         "@babel/core": "7.18.2",
@@ -14,7 +14,7 @@
         "assemblyscript": "0.20.6",
         "esm": "3.2.25",
         "nyc": "15.1.0",
-        "rollup": "2.51.2",
+        "rollup": "2.75.6",
         "rollup-plugin-babel": "4.4.0",
         "rollup-plugin-typescript2": "0.31.2",
         "typescript": "4.7.3",
@@ -3187,9 +3187,9 @@
       }
     },
     "node_modules/rollup": {
-      "version": "2.51.2",
-      "resolved": "https://registry.npmjs.org/rollup/-/rollup-2.51.2.tgz",
-      "integrity": "sha512-ReV2eGEadA7hmXSzjxdDKs10neqH2QURf2RxJ6ayAlq93ugy6qIvXMmbc5cWMGCDh1h5T4thuWO1e2VNbMq8FA==",
+      "version": "2.75.6",
+      "resolved": "https://registry.npmjs.org/rollup/-/rollup-2.75.6.tgz",
+      "integrity": "sha512-OEf0TgpC9vU6WGROJIk1JA3LR5vk/yvqlzxqdrE2CzzXnqKXNzbAwlWUXis8RS3ZPe7LAq+YUxsRa0l3r27MLA==",
       "dev": true,
       "bin": {
         "rollup": "dist/bin/rollup"
@@ -3198,7 +3198,7 @@
         "node": ">=10.0.0"
       },
       "optionalDependencies": {
-        "fsevents": "~2.3.1"
+        "fsevents": "~2.3.2"
       }
     },
     "node_modules/rollup-plugin-babel": {
@@ -5961,12 +5961,12 @@
       }
     },
     "rollup": {
-      "version": "2.51.2",
-      "resolved": "https://registry.npmjs.org/rollup/-/rollup-2.51.2.tgz",
-      "integrity": "sha512-ReV2eGEadA7hmXSzjxdDKs10neqH2QURf2RxJ6ayAlq93ugy6qIvXMmbc5cWMGCDh1h5T4thuWO1e2VNbMq8FA==",
+      "version": "2.75.6",
+      "resolved": "https://registry.npmjs.org/rollup/-/rollup-2.75.6.tgz",
+      "integrity": "sha512-OEf0TgpC9vU6WGROJIk1JA3LR5vk/yvqlzxqdrE2CzzXnqKXNzbAwlWUXis8RS3ZPe7LAq+YUxsRa0l3r27MLA==",
       "dev": true,
       "requires": {
-        "fsevents": "~2.3.1"
+        "fsevents": "~2.3.2"
       }
     },
     "rollup-plugin-babel": {
