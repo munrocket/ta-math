@@ -1,17 +1,17 @@
 {
   "name": "ta-math",
-  "version": "1.0.66",
+  "version": "1.0.67",
   "lockfileVersion": 2,
   "requires": true,
   "packages": {
     "": {
       "name": "ta-math",
-      "version": "1.0.66",
+      "version": "1.0.67",
       "license": "MIT",
       "devDependencies": {
         "@babel/core": "7.18.9",
         "@babel/preset-env": "7.18.9",
-        "assemblyscript": "0.20.13",
+        "assemblyscript": "0.20.16",
         "esm": "3.2.25",
         "nyc": "15.1.0",
         "rollup": "2.77.0",
@@ -1770,9 +1770,9 @@
       }
     },
     "node_modules/assemblyscript": {
-      "version": "0.20.13",
-      "resolved": "https://registry.npmjs.org/assemblyscript/-/assemblyscript-0.20.13.tgz",
-      "integrity": "sha512-F4ACXdBdXCBnPEzRCl/ovFFPGmKXQPvWW4cM6U21eRezaCoREqxA0hjSUOYTz7txY3MJclyBfjwMSEJ5e9HKsw==",
+      "version": "0.20.16",
+      "resolved": "https://registry.npmjs.org/assemblyscript/-/assemblyscript-0.20.16.tgz",
+      "integrity": "sha512-scwMytSJI/5DFVD2dZBvgCNF0SJ77ZtxM7wUqyyrcKB/C1wuaWgFiEU532LHBDY7+APUVMkGEfpn1+Vb97Xpdg==",
       "dev": true,
       "dependencies": {
         "binaryen": "108.0.0-nightly.20220528",
@@ -1781,6 +1781,10 @@
       "bin": {
         "asc": "bin/asc.js",
         "asinit": "bin/asinit.js"
+      },
+      "engines": {
+        "node": ">=16.0.0",
+        "npm": ">=7.0.0"
       },
       "funding": {
         "type": "opencollective",
@@ -4747,9 +4751,9 @@
       }
     },
     "assemblyscript": {
-      "version": "0.20.13",
-      "resolved": "https://registry.npmjs.org/assemblyscript/-/assemblyscript-0.20.13.tgz",
-      "integrity": "sha512-F4ACXdBdXCBnPEzRCl/ovFFPGmKXQPvWW4cM6U21eRezaCoREqxA0hjSUOYTz7txY3MJclyBfjwMSEJ5e9HKsw==",
+      "version": "0.20.16",
+      "resolved": "https://registry.npmjs.org/assemblyscript/-/assemblyscript-0.20.16.tgz",
+      "integrity": "sha512-scwMytSJI/5DFVD2dZBvgCNF0SJ77ZtxM7wUqyyrcKB/C1wuaWgFiEU532LHBDY7+APUVMkGEfpn1+Vb97Xpdg==",
       "dev": true,
       "requires": {
         "binaryen": "108.0.0-nightly.20220528",
