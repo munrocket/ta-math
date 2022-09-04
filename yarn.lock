@@ -1018,12 +1018,12 @@ argparse@^1.0.7:
   dependencies:
     sprintf-js "~1.0.2"
 
-assemblyscript@0.20.16:
-  version "0.20.16"
-  resolved "https://registry.npmjs.org/assemblyscript/-/assemblyscript-0.20.16.tgz"
-  integrity sha512-scwMytSJI/5DFVD2dZBvgCNF0SJ77ZtxM7wUqyyrcKB/C1wuaWgFiEU532LHBDY7+APUVMkGEfpn1+Vb97Xpdg==
+assemblyscript@0.21.3:
+  version "0.21.3"
+  resolved "https://registry.npmjs.org/assemblyscript/-/assemblyscript-0.21.3.tgz"
+  integrity sha512-DqA9/3uJeL/YceLu5yNT9nIk+6NOPqQDEgZFNrgLgYBpCapUDd3lSyz//566K1jcMHtH+e+NHyS6XBYrQE73nQ==
   dependencies:
-    binaryen "108.0.0-nightly.20220528"
+    binaryen "109.0.0-nightly.20220831"
     long "^5.2.0"
 
 babel-plugin-dynamic-import-node@^2.3.3:
@@ -1062,10 +1062,10 @@ balanced-match@^1.0.0:
   resolved "https://registry.npmjs.org/balanced-match/-/balanced-match-1.0.0.tgz"
   integrity sha1-ibTRmasr7kneFk6gK4nORi1xt2c=
 
-binaryen@108.0.0-nightly.20220528:
-  version "108.0.0-nightly.20220528"
-  resolved "https://registry.npmjs.org/binaryen/-/binaryen-108.0.0-nightly.20220528.tgz"
-  integrity sha512-9biG357fx3NXmJNotIuY9agZBcCNHP7d1mgOGaTlPYVHZE7/61lt1IyHCXAL+W5jUOYgmFZ260PR4IbD19RKuA==
+binaryen@109.0.0-nightly.20220831:
+  version "109.0.0-nightly.20220831"
+  resolved "https://registry.npmjs.org/binaryen/-/binaryen-109.0.0-nightly.20220831.tgz"
+  integrity sha512-fy3zefoIq9tsZ00wlk2VcyYnJg2WQXi4IPH9LddUcFpxQXagzMvijkgCUX37MhmTP48WdLJ5jpZ9h/58HijovA==
 
 brace-expansion@^1.1.7:
   version "1.1.11"
