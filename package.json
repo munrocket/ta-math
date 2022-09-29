@@ -1,6 +1,6 @@
 {
   "name": "ta-math",
-  "version": "1.0.81",
+  "version": "1.0.82",
   "description": "Technical analysis library in javascript. Calculates indicators and overlays from ohlcv data",
   "main": "dist/ta-math.js",
   "types": "dist/types/index.d.ts",
@@ -10,13 +10,13 @@
     "dist"
   ],
   "scripts": {
-    "build": "rollup -c; yarn build:clean",
+    "start": "servez -S",
+    "build": "rollup -c && npm run build:clean",
     "watch": "rollup -cw",
     "test": "node -r esm ./test/test.js",
-    "wasm": "asc src/index.ts -b dist/ta-math.wasm -O3 --runtime=half",
+    "wasm": "asc src/index.ts -b dist/ta-math.wasm -O2",
     "ci": "npm run build && npm run test",
     "cov": "nyc report --reporter=lcov",
-    "http": "http-server -p 1234 -c-1",
     "python": "python ./test/expected.py",
     "build:clean": "find dist -maxdepth 1 -name '*.d.ts' -type f -delete"
   },
@@ -56,5 +56,8 @@
     "url": "git+https://github.com/munrocket/ta-math.git"
   },
   "author": "munrocket",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "servez": "^1.14.1"
+  }
 }

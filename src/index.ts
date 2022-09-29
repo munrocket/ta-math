@@ -77,6 +77,8 @@ export default class TA extends CLookup {
     return TA.expdev(this.$close, window) }
   fi(window = 13) {
     return TA.fi(this.$close, this.$volume, window) }
+  hma(window = 10) {
+    return TA.hma(this.$close, window) }
   keltner(window = 14, mult = 2) {
     return TA.keltner(this.$high, this.$low, this.$close, window, mult) }
   kst(w1=10, w2=15, w3=20, w4=30, s1=10, s2=10, s3=10, s4=15, sig=9) {
@@ -113,6 +115,8 @@ export default class TA extends CLookup {
     return TA.vwap(this.$high, this.$low, this.$close, this.$volume) }
   williams(window = 14) {
     return TA.williams(this.$high, this.$low, this.$close, window) }
+  wma(window = 10) {
+    return TA.wma(this.$close, window) }
   zigzag(percent = 15) {
     return TA.zigzag(this.$time, this.$high, this.$low, percent) }
 
@@ -141,6 +145,8 @@ export default class TA extends CLookup {
     return core.expdev($close, window) }  
   static fi($close: Array<number>, $volume: Array<number>, window = 13) {
     return indicators.fi($close, $volume, window) }
+  static hma($close: Array<number>, window = 10) {
+    return overlays.hma($close, window) }
   static keltner($high: Array<number>, $low: Array<number>, $close: Array<number>, window = 14, mult = 2) {
     return overlays.keltner($high, $low, $close, window, mult) }
   static kst($close: Array<number>, w1=10, w2=15, w3=20, w4=30, s1=10, s2=10, s3=10, s4=15, sig=9) {
@@ -177,6 +183,8 @@ export default class TA extends CLookup {
     return overlays.vwap($high, $low, $close, $volume) }
   static williams($high: Array<number>, $low: Array<number>, $close: Array<number>, window = 14) {
     return indicators.williams($high, $low, $close, window) }
+  static wma($close: Array<number>, window = 10) {
+    return core.wma($close, window) }
   static zigzag($time: Array<number>, $high: Array<number>, $low: Array<number>, percent = 15) {
     return overlays.zigzag($time, $high, $low, percent) }        
 

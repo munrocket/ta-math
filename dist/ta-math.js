@@ -1,8 +1,8 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  (global = global || self, global.TA = factory());
-}(this, (function () { 'use strict';
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.TA = factory());
+})(this, (function () { 'use strict';
 
   function mean(series) {
       let sum = 0;
@@ -61,6 +61,17 @@
           ema.push(series[i] * weight + (1 - weight) * ema[i - 1]);
       }
       return ema;
+  }
+  function wma(series, window) {
+      let result = [];
+      for (let i = 0, len = series.length; i < len; i++) {
+          let sum = 0, wind = Math.max(window, i + 1);
+          for (let j = 0; j < wind; j++) {
+              sum += series[i - j] * (wind - j);
+          }
+          result.push(sum * 2 / wind / (wind + 1));
+      }
+      return result;
   }
   function stdev(series, window) {
       return rolling((s) => sd(s), series, window);
@@ -168,6 +179,12 @@
           cumulV[i] = cumulV[i - 1] + $volume[i];
       }
       return pointwise((a, b) => a / b, cumulVTP, cumulV);
+  }
+  function hma(series, window) {
+      let s1 = wma(series, Math.floor(window / 2));
+      let s2 = wma(series, window);
+      let s3 = pointwise((a, b) => 2 * a - b, s1, s2);
+      return s3;
   }
   function zigzag($time, $high, $low, percent) {
       let lowest = $low[0], thattime = $time[0], isUp = false;
@@ -433,6 +450,9 @@
       fi(window = 13) {
           return TA.fi(this.$close, this.$volume, window);
       }
+      hma(window = 10) {
+          return TA.hma(this.$close, window);
+      }
       keltner(window = 14, mult = 2) {
           return TA.keltner(this.$high, this.$low, this.$close, window, mult);
       }
@@ -487,6 +507,9 @@
       williams(window = 14) {
           return TA.williams(this.$high, this.$low, this.$close, window);
       }
+      wma(window = 10) {
+          return TA.wma(this.$close, window);
+      }
       zigzag(percent = 15) {
           return TA.zigzag(this.$time, this.$high, this.$low, percent);
       }
@@ -525,6 +548,9 @@
       }
       static fi($close, $volume, window = 13) {
           return fi($close, $volume, window);
+      }
+      static hma($close, window = 10) {
+          return hma($close, window);
       }
       static keltner($high, $low, $close, window = 14, mult = 2) {
           return keltner($high, $low, $close, window, mult);
@@ -580,6 +606,9 @@
       static williams($high, $low, $close, window = 14) {
           return williams($high, $low, $close, window);
       }
+      static wma($close, window = 10) {
+          return wma($close, window);
+      }
       static zigzag($time, $high, $low, percent = 15) {
           return zigzag($time, $high, $low, percent);
       }
@@ -587,4 +616,4 @@
 
   return TA;
 
-})));
+}));

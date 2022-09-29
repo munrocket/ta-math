@@ -17,14 +17,14 @@ Check [example](https://munrocket.github.io/ta-math/example/index.html) with plo
 | dema      | Double Exponential Moving Average     |   ️ ✔️️    | Patrick  Mulloy   | 1994 |
 | ema       | Exponential Moving Average            |    ✔️️    |                   |      |
 | ebb       | Exponential Bollinger Band            |    ✔️️    | Based on Welford's|      |
-| hma       | Hull Moving Average                   |    x    | Alan Hull         | 2005 |
+| hma       | Hull Moving Average                   |    ❌    | Alan Hull         | 2005 |
 | keltner   | Keltner Channels                      |    ✔️️    | Chester Keltner   | 1960 |
-| psar      | Parabolic SAR                         | :suspect: | Welles Wilder     | 1978 |
+| psar      | Parabolic SAR                         |    ❌    | Welles Wilder     | 1978 |
 | sma       | Simple Moving Average                 |    ✔️️    |                   |      |
 | tema      | Triple Exponential Moving Average     |   ️ ✔️️    | Patrick  Mulloy   | 1994 |
 | vbp       | Volume by Price                       |    ✔️️    |                   |      |
 | vwap      | Volume Weighted Average Price         |    ✔️️    | James Elkins      | 1984 |
-| wma       | Weighted Moving Average               |    x    | John J. Murphy    | 1999 |
+| wma       | Weighted Moving Average               |    ❌    | John J. Murphy    | 1999 |
 | zigzag    | ZigZag Indicator                      |    ✔️️    | Arthur Merrill    | 1977 |
 
 ### Technical Indicators
@@ -33,9 +33,9 @@ Check [example](https://munrocket.github.io/ta-math/example/index.html) with plo
 | adl       | Accumulation / Distribution line      |   ✔️    | Marc Chaikin                      | 1970s|
 | atr       | Average True Range                    |   ✔️    | Welles Wilder                     | 1978 |
 | adx       | Average Directional Index             |   ✔️    | Welles Wilder                     | 1978 |
-| bbp       | Bollinger Bands Percent Bandwidth %B  |   👌   |                                   |      |
+| bbp       | Bollinger Bands Percent Bandwidth %B  |   ok   |                                   |      |
 | cci       | Commodity Channel Index               |   ✔️    | Donald Lambert                    | 1980 |
-| cho       | Chaikin Oscillator                    |   👌   |  Marc Chaikin                     |      |
+| cho       | Chaikin Oscillator                    |   ok   |  Marc Chaikin                     |      |
 | expdev    | Exponential Weighted Deviation        |   ✔️    |                                   |      |
 | fi        | Force Index                           |   ✔️    |                                   |      |
 | kst       | Know Sure Thing                       |   ✔️    |                                   |      |
@@ -103,7 +103,7 @@ Install npm package `npm i ta-math` or add `ta-math.js` script file on web page.
 - [X] coverage
 - [X] good looking example
 - [X] migrate to typescript
-- [ ] fix PSAR
+- [ ] fix PSAR, WMA, HMA
 
 ### Contributing
 Feel free to contribute. Here [reference](http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators)

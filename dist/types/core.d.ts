@@ -11,6 +11,7 @@ export declare function nrmse(f: Array<number>, g: Array<number>): number;
 export declare function mape(f: Array<number>, g: Array<number>): number;
 export declare function sma(series: Array<number>, window: number): any[];
 export declare function ema(series: Array<number>, window: number, start?: number): number[];
+export declare function wma(series: Array<number>, window: number): number[];
 export declare function stdev(series: Array<number>, window: number): any[];
 export declare function madev(series: Array<number>, window: number): any[];
 export declare function expdev(series: Array<number>, window: number): any[];

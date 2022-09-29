@@ -75,8 +75,9 @@ function renderChart(ta) {
 
   var charts = [
     { context: barContext(ta), label: 'None' },
-    { context: maContext(ta), label: 'Simple Moving Average' },
-    { context: maContext(ta, true), label: 'Exponential Moving Average' },
+    { context: maContext(ta, 0), label: 'Simple Moving Average' },
+    { context: maContext(ta, 1), label: 'Exponential Moving Average' },
+    { context: maContext(ta, 2), label: 'Hull Moving Average' },
     { context: bbContext(ta), label: 'Bollinger Bands' },
     { context: bbContext(ta, true), label: 'Exponential Bollinger Bands' },
     { context: macdContext(ta), label: 'MACD'}
@@ -143,12 +144,12 @@ function barContext(ta) {
   }];
 }
 
-function maContext(ta, isExp) {
-  var long = isExp ? ta.ema(21) : ta.sma(21);
-  var short = isExp ? ta.ema(10) : ta.sma(10);
+function maContext(ta, type = 0) { //type 0 - sma, 1 - ema, 2 - hma
+  var long = (type == 0) ? ta.ema(21) : ((type == 1) ? ta.sma(21) : ta.hma(21));
+  var short = (type == 0) ? ta.ema(10) : ((type == 1) ? ta.sma(10) : ta.hma(10));
 
   var maLong = {
-    name: isExp ? 'EMA(21)' : 'SMA(21)',
+    name: (type = 0) ? 'EMA(21)' : ((type = 1) ? 'SMA(21)' : 'HMA(21)'),
     x: ta.$time,
     y: long,
     type: 'line',
@@ -157,7 +158,7 @@ function maContext(ta, isExp) {
   }
 
   var maShort = {
-    name: isExp ? 'EMA(10)' : 'SMA(10)',
+    name: (type = 0) ? 'EMA(10)' : ((type = 1) ? 'SMA(10)' : 'HMA(10)'),
     x: ta.$time,
     y: short,
     type: 'line',
@@ -180,7 +181,7 @@ function bbContext(ta, isExp) {
   }
 
   var bbMiddle = {
-    name: isExp ? 'EMA(10)' : 'SMA(15)',
+    name: isExp ? 'middle EBB(15,2)' : 'middle BB(15,2)',
     x: ta.$time,
     y: bb.middle,
     type: 'line',
