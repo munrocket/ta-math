@@ -88,6 +88,25 @@ export function ema(series: Array<number>, window: number, start ?: number) {
   return ema;
 }
 
+export function wma(series: Array<number>, window: number) {
+  let result: Array<number> = [];
+  for (let i = 0, len = series.length; i < len; i++) {
+    let sum = 0, wind = Math.max(window, i + 1);
+    for (let j = 0; j < wind; j++) {
+      sum += series[i - j] * (wind - j);
+    }
+    result.push(sum * 2 / wind / (wind + 1));
+  }
+  return result;
+}
+
+export function hma(series: Array<number>, window: number) {
+  let s1 = wma(series, Math.floor(window / 2));
+  let s2 = wma(series, window);
+  let s3 = pointwise((a: number, b: number) => 2 * a - b, s1, s2);
+  return wma(s3, Math.floor(Math.sqrt(window)));
+}
+
 export function stdev(series: Array<number>, window: number) {
   return rolling((s: Array<number>) => sd(s), series, window);
 }

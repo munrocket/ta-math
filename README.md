@@ -17,12 +17,14 @@ Check [example](https://munrocket.github.io/ta-math/example/index.html) with plo
 | dema      | Double Exponential Moving Average     |   ️ ✔️️    | Patrick  Mulloy   | 1994 |
 | ema       | Exponential Moving Average            |    ✔️️    |                   |      |
 | ebb       | Exponential Bollinger Band            |    ✔️️    | Based on Welford's|      |
+| hma       | Hull Moving Average                   |    x    | Alan Hull         | 2005 |
 | keltner   | Keltner Channels                      |    ✔️️    | Chester Keltner   | 1960 |
 | psar      | Parabolic SAR                         | :suspect: | Welles Wilder     | 1978 |
 | sma       | Simple Moving Average                 |    ✔️️    |                   |      |
 | tema      | Triple Exponential Moving Average     |   ️ ✔️️    | Patrick  Mulloy   | 1994 |
 | vbp       | Volume by Price                       |    ✔️️    |                   |      |
 | vwap      | Volume Weighted Average Price         |    ✔️️    | James Elkins      | 1984 |
+| wma       | Weighted Moving Average               |    x    | John J. Murphy    | 1999 |
 | zigzag    | ZigZag Indicator                      |    ✔️️    | Arthur Merrill    | 1977 |
 
 ### Technical Indicators
