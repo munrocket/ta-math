@@ -1,5 +1,5 @@
 import TA from '../dist/ta-math';
-import { mean, sd, mae, mape, rmse, nrmse } from '../temp/core';
+import { avg, wavg, sd, mae, mape, rmse, nrmse } from '../temp/core';
 import { test } from 'zora';
  
 // random ohlcv
@@ -38,17 +38,25 @@ test('Getters formats', T => {
   T.ok(delta < 1e-2, `objectFormat`);
 })
 
-test('Mean, SD', T => {
+test('Avg, SD', T => {
   let f = [21.40, 21.71, 21.20, 21.34, 21.49, 21.39, 22.16, 22.53, 22.44, 22.75,
       23.23, 23.09, 22.85, 22.45, 22.48, 22.27, 22.37, 22.28, 23.06, 22.99];
   let expected = 22.2738;
-  let actual = mean(f);
+  let actual = avg(f);
   let delta = Math.abs(expected - actual);
-  T.ok(delta < 1e-2, `Direct mean test (${delta.toFixed(5)})`);
+  T.ok(delta < 1e-2, `Direct avg test (${delta.toFixed(5)})`);
   expected = Math.sqrt(0.3985);
   actual = sd(f);
   delta = Math.abs(expected - actual);
   T.ok(delta < 1e-2, `Direct sd test (${delta.toFixed(5)})`);
+})
+
+test('WAvg', T => {
+  let c = [22.73, 22.71, 22.57, 22.59, 22.72];
+  let expected = [22.664];
+  let actual = wavg(c);
+  let delta = Math.abs(expected - actual);
+  T.ok(delta < 1e-2, `Direct wavg test (${delta.toFixed(5)})`);
 })
 
 test('Cov, Cor', T => {
@@ -70,13 +78,13 @@ test('MAE', T => {
   T.ok(mae([-2,5,-8,9,-4],[-2,5,-8,9,-4]) < 1e-12, 'Equal test');
   let data = [23.98,23.92,23.79,23.67,23.54,23.36,23.65,23.72,24.16,23.91,23.81,
     23.92,23.74,24.68,24.94,24.93,25.10,25.12,25.20,25.06];
-  let delta = Math.abs(mae(data, new Array(data.length).fill(mean(data))) - 0.55);
+  let delta = Math.abs(mae(data, new Array(data.length).fill(avg(data))) - 0.55);
   T.ok(delta < 1e-2, `Direct test (${delta.toFixed(5)})`);
 })
 
 test('MAPE', T => {
   let actual = mape([112.3, 108.4, 148.9, 117.4], [124.7, 103.7, 116.6, 78.5]);
-  let expected = mean([11, 4.3, 21.7, 33.1]);
+  let expected = avg([11, 4.3, 21.7, 33.1]);
   let delta = Math.abs(actual - expected);
   T.ok(delta < 1e-1, `Direct test (${delta.toFixed(5)})`);
 })

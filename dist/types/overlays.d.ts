@@ -22,7 +22,7 @@ export declare function vbp($close: Array<number>, $volume: Array<number>, zones
     volumes: number[];
 };
 export declare function vwap($high: Array<number>, $low: Array<number>, $close: Array<number>, $volume: Array<number>): any[];
-export declare function hma(series: Array<number>, window: number): any[];
+export declare function hma(series: Array<number>, window: number): number[];
 export declare function zigzag($time: Array<number>, $high: Array<number>, $low: Array<number>, percent: number): {
     time: number[];
     price: number[];

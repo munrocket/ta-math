@@ -1,4 +1,5 @@
-export declare function mean(series: Array<number>): number;
+export declare function avg(series: Array<number>): number;
+export declare function wavg(series: Array<number>): number;
 export declare function sd(series: Array<number>): number;
 export declare function cov(f: Array<number>, g: Array<number>): number;
 export declare function cor(f: Array<number>, g: Array<number>): number;
@@ -11,7 +12,7 @@ export declare function nrmse(f: Array<number>, g: Array<number>): number;
 export declare function mape(f: Array<number>, g: Array<number>): number;
 export declare function sma(series: Array<number>, window: number): any[];
 export declare function ema(series: Array<number>, window: number, start?: number): number[];
-export declare function wma(series: Array<number>, window: number): number[];
+export declare function wma(series: Array<number>, window: number): any[];
 export declare function stdev(series: Array<number>, window: number): any[];
 export declare function madev(series: Array<number>, window: number): any[];
 export declare function expdev(series: Array<number>, window: number): any[];

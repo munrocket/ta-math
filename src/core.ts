@@ -1,35 +1,43 @@
 /* basic math */
 
-export function mean(series: Array<number>) {
-  let sum = 0;
-  for (let i = 0; i < series.length; i++) {
+export function avg(series: Array<number>) {
+  let sum = 0, len = series.length;
+  for (let i = 0; i < len; i++) {
     sum += series[i];
   }
-  return sum / series.length;
+  return sum / len;
+}
+
+export function wavg(series: Array<number>) {
+  let sum = 0, len = series.length;
+  for (let i = 0; i < len; i++) {
+    sum += series[i] * (i + 1);
+  }
+  return sum / (len * (len + 1) / 2);
 }
 
 export function sd(series: Array<number>) {
-  let E = mean(series);
-  let E2 = mean(pointwise((x: number) => x * x, series));
+  let E = avg(series);
+  let E2 = avg(pointwise((x: number) => x * x, series));
   return Math.sqrt(E2 - E * E);
 }
 
 export function cov(f: Array<number>, g: Array<number>) {
-  let Ef = mean(f), Eg = mean(g);
-  let Efg = mean(pointwise((a: number, b: number) => a * b, f, g));
+  let Ef = avg(f), Eg = avg(g);
+  let Efg = avg(pointwise((a: number, b: number) => a * b, f, g));
   return Efg - Ef * Eg;
 }
 
 export function cor(f: Array<number>, g: Array<number>) {
-  let Ef = mean(f), Eg = mean(g);
-  let Ef2 = mean(pointwise((a: number) => a * a, f));
-  let Eg2 = mean(pointwise((a: number) => a * a, g));
-  let Efg = mean(pointwise((a: number, b: number) => a * b, f, g));
+  let Ef = avg(f), Eg = avg(g);
+  let Ef2 = avg(pointwise((a: number) => a * a, f));
+  let Eg2 = avg(pointwise((a: number) => a * a, g));
+  let Efg = avg(pointwise((a: number, b: number) => a * b, f, g));
   return (Efg - Ef * Eg) / Math.sqrt((Ef2 - Ef * Ef) * (Eg2 - Eg * Eg));
 }
 
 export function mad(array: Array<number>) {
-  return mae(array, new Array(array.length).fill(mean(array)));
+  return mae(array, new Array(array.length).fill(avg(array)));
 }
 
 /* functional programming */
@@ -56,12 +64,12 @@ export function rolling(operation: Function, series: Array<number>, window: numb
 
 export function mae(f: Array<number>, g: Array<number>) {
   const absDiff = pointwise((a: number, b: number) => Math.abs(a - b), f, g);
-  return (f.length != g.length) ? Infinity : mean(absDiff);
+  return (f.length != g.length) ? Infinity : avg(absDiff);
 }
 
 export function rmse(f: Array<number>, g: Array<number>) {
   const sqrDiff = pointwise((a: number, b: number) => (a - b) * (a - b), f, g);
-  return (f.length != g.length) ? Infinity : Math.sqrt(mean(sqrDiff));
+  return (f.length != g.length) ? Infinity : Math.sqrt(avg(sqrDiff));
 }
 
 export function nrmse(f: Array<number>, g: Array<number>) {
@@ -70,18 +78,18 @@ export function nrmse(f: Array<number>, g: Array<number>) {
 
 export function mape(f: Array<number>, g: Array<number>) {
   const frac = pointwise((a: number, b: number) => Math.abs((a - b) / a), f, g);
-  return (f.length != g.length) ? Infinity : mean(frac) * 100;
+  return (f.length != g.length) ? Infinity : avg(frac) * 100;
 }
 
 /* core indicators & overlays */
 
 export function sma(series: Array<number>, window: number) {
-  return rolling((s: Array<number>) => mean(s), series, window);
+  return rolling((s: Array<number>) => avg(s), series, window);
 }
 
 export function ema(series: Array<number>, window: number, start ?: number) {
   let weight = 2 / (window + 1);
-  let ema = [ start ? start : mean(series.slice(0, window)) ];
+  let ema = [ start ? start : avg(series.slice(0, window)) ];
   for (let i = 1, len = series.length; i < len; i++) {
     ema.push(series[i] * weight + (1 - weight) * ema[i - 1]);
   }
@@ -89,15 +97,7 @@ export function ema(series: Array<number>, window: number, start ?: number) {
 }
 
 export function wma(series: Array<number>, window: number) {
-  let result: Array<number> = [];
-  for (let i = 0, len = series.length; i < len; i++) {
-    let sum = 0, wind = Math.max(window, i + 1);
-    for (let j = 0; j < wind; j++) {
-      sum += series[i - j] * (wind - j);
-    }
-    result.push(sum * 2 / wind / (wind + 1));
-  }
-  return result;
+  return rolling((s: Array<number>) => wavg(s), series, window);
 }
 
 export function stdev(series: Array<number>, window: number) {

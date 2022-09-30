@@ -1,29 +1,36 @@
-function mean(series) {
-    let sum = 0;
-    for (let i = 0; i < series.length; i++) {
+function avg(series) {
+    let sum = 0, len = series.length;
+    for (let i = 0; i < len; i++) {
         sum += series[i];
     }
-    return sum / series.length;
+    return sum / len;
+}
+function wavg(series) {
+    let sum = 0, len = series.length;
+    for (let i = 0; i < len; i++) {
+        sum += series[i] * (i + 1);
+    }
+    return sum / (len * (len + 1) / 2);
 }
 function sd(series) {
-    let E = mean(series);
-    let E2 = mean(pointwise((x) => x * x, series));
+    let E = avg(series);
+    let E2 = avg(pointwise((x) => x * x, series));
     return Math.sqrt(E2 - E * E);
 }
 function cov(f, g) {
-    let Ef = mean(f), Eg = mean(g);
-    let Efg = mean(pointwise((a, b) => a * b, f, g));
+    let Ef = avg(f), Eg = avg(g);
+    let Efg = avg(pointwise((a, b) => a * b, f, g));
     return Efg - Ef * Eg;
 }
 function cor(f, g) {
-    let Ef = mean(f), Eg = mean(g);
-    let Ef2 = mean(pointwise((a) => a * a, f));
-    let Eg2 = mean(pointwise((a) => a * a, g));
-    let Efg = mean(pointwise((a, b) => a * b, f, g));
+    let Ef = avg(f), Eg = avg(g);
+    let Ef2 = avg(pointwise((a) => a * a, f));
+    let Eg2 = avg(pointwise((a) => a * a, g));
+    let Efg = avg(pointwise((a, b) => a * b, f, g));
     return (Efg - Ef * Eg) / Math.sqrt((Ef2 - Ef * Ef) * (Eg2 - Eg * Eg));
 }
 function mad(array) {
-    return mae(array, new Array(array.length).fill(mean(array)));
+    return mae(array, new Array(array.length).fill(avg(array)));
 }
 function pointwise(operation, ...serieses) {
     let result = [];
@@ -43,29 +50,21 @@ function rolling(operation, series, window) {
 }
 function mae(f, g) {
     const absDiff = pointwise((a, b) => Math.abs(a - b), f, g);
-    return (f.length != g.length) ? Infinity : mean(absDiff);
+    return (f.length != g.length) ? Infinity : avg(absDiff);
 }
 function sma(series, window) {
-    return rolling((s) => mean(s), series, window);
+    return rolling((s) => avg(s), series, window);
 }
 function ema(series, window, start) {
     let weight = 2 / (window + 1);
-    let ema = [start ? start : mean(series.slice(0, window))];
+    let ema = [start ? start : avg(series.slice(0, window))];
     for (let i = 1, len = series.length; i < len; i++) {
         ema.push(series[i] * weight + (1 - weight) * ema[i - 1]);
     }
     return ema;
 }
 function wma(series, window) {
-    let result = [];
-    for (let i = 0, len = series.length; i < len; i++) {
-        let sum = 0, wind = Math.max(window, i + 1);
-        for (let j = 0; j < wind; j++) {
-            sum += series[i - j] * (wind - j);
-        }
-        result.push(sum * 2 / wind / (wind + 1));
-    }
-    return result;
+    return rolling((s) => wavg(s), series, window);
 }
 function stdev(series, window) {
     return rolling((s) => sd(s), series, window);
@@ -178,7 +177,7 @@ function hma(series, window) {
     let s1 = wma(series, Math.floor(window / 2));
     let s2 = wma(series, window);
     let s3 = pointwise((a, b) => 2 * a - b, s1, s2);
-    return s3;
+    return wma(s3, Math.floor(Math.sqrt(window)));
 }
 function zigzag($time, $high, $low, percent) {
     let lowest = $low[0], thattime = $time[0], isUp = false;
@@ -609,4 +608,4 @@ class TA extends CLookup {
 }
 
 export { TA as default };
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidGEtbWF0aC5lc20uanMiLCJzb3VyY2VzIjpbXSwic291cmNlc0NvbnRlbnQiOltdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7In0=
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidGEtbWF0aC5lc20uanMiLCJzb3VyY2VzIjpbXSwic291cmNlc0NvbnRlbnQiOltdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OzsifQ==

@@ -2,7 +2,7 @@
 # Technical analysis math [![bundlephobia](https://badgen.net/bundlephobia/minzip/ta-math)](https://bundlephobia.com/result?p=ta-math) [![Codecov](https://img.shields.io/codecov/c/github/munrocket/ta-math.svg)](https://codecov.io/gh/munrocket/ta-math) [![Total alerts](https://img.shields.io/lgtm/alerts/g/munrocket/ta-math.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/munrocket/ta-math/alerts/)
 
 Library for calculating technical indicators and overlays. You can choose format of price data
-from provider and library will return result. It distributed with Typescript, ES6 and ES5.
+from provider and library will return result. It distributed with Typescript and Javascript (ES6, ES5).
 
 ![btc-with-bollinger-bands](https://i.imgur.com/moDdzmM.png)
 
@@ -17,14 +17,14 @@ Check [example](https://munrocket.github.io/ta-math/example/index.html) with plo
 | dema      | Double Exponential Moving Average     |   ️ ✔️️    | Patrick  Mulloy   | 1994 |
 | ema       | Exponential Moving Average            |    ✔️️    |                   |      |
 | ebb       | Exponential Bollinger Band            |    ✔️️    | Based on Welford's|      |
-| hma       | Hull Moving Average                   |    ❌    | Alan Hull         | 2005 |
+| hma       | Hull Moving Average                   |    ok    | Alan Hull         | 2005 |
 | keltner   | Keltner Channels                      |    ✔️️    | Chester Keltner   | 1960 |
 | psar      | Parabolic SAR                         |    ❌    | Welles Wilder     | 1978 |
 | sma       | Simple Moving Average                 |    ✔️️    |                   |      |
 | tema      | Triple Exponential Moving Average     |   ️ ✔️️    | Patrick  Mulloy   | 1994 |
 | vbp       | Volume by Price                       |    ✔️️    |                   |      |
 | vwap      | Volume Weighted Average Price         |    ✔️️    | James Elkins      | 1984 |
-| wma       | Weighted Moving Average               |    ❌    | John J. Murphy    | 1999 |
+| wma       | Weighted Moving Average               |    ️ok    | John J. Murphy    | 1999 |
 | zigzag    | ZigZag Indicator                      |    ✔️️    | Arthur Merrill    | 1977 |
 
 ### Technical Indicators
