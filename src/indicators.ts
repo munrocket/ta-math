@@ -1,4 +1,4 @@
-import { ema, sma, madev, pointwise, rolling, trueRange, typicalPrice, wilderSmooth} from './core';
+import { ema, sma, madev, pointwise, rolling, medianPrice, trueRange, typicalPrice, wilderSmooth} from './core';
 import { bb } from './overlays';
 
 /* indicators */
@@ -22,15 +22,25 @@ export function adx($high: Array<number>, $low: Array<number>, $close: Array<num
   let str = wilderSmooth(trueRange($high, $low, $close), window);
   dmp = wilderSmooth(dmp, window);
   dmm = wilderSmooth(dmm, window);
-  let dip = pointwise((a: number, b: number) => 100 * a / b, dmp, str);
-  let dim = pointwise((a: number, b: number) => 100 * a / b, dmm, str);
-  let dx = pointwise((a: number, b: number) => 100 * Math.abs(a - b) / (a + b), dip, dim);
+  let dip = pointwise((a, b) => 100 * a / b, dmp, str);
+  let dim = pointwise((a, b) => 100 * a / b, dmm, str);
+  let dx = pointwise((a, b) => 100 * Math.abs(a - b) / (a + b), dip, dim);
   return {dip: dip, dim: dim, adx: new Array(14).fill(NaN).concat(ema(dx.slice(14), 2 * window - 1))};
+}
+
+export function ao($high: Array<number>, $low: Array<number>, winshort: number, winlong: number) {
+  let md = medianPrice($high, $low);
+  return pointwise((a, b) => a - b, sma(md, winshort), sma(md, winlong));
+}
+
+export function ac($high: Array<number>, $low: Array<number>, winsma: number, winshort: number, winlong: number) {
+  let s = ao($high, $low, winshort, winlong);
+  return pointwise((a, b) => a - b, s, sma(s, winsma));
 }
 
 export function bbp($close: Array<number>, window: number, mult: number) {
   let band = bb($close, window, mult);
-  return pointwise((p: number, u: number, l: number) => (p - l) / (u - l), $close, band.upper, band.lower);
+  return pointwise((p, u, l) => (p - l) / (u - l), $close, band.upper, band.lower);
 }
 
 export function cci($high: Array<number>, $low: Array<number>, $close: Array<number>, window: number, mult: number) {
@@ -38,18 +48,18 @@ export function cci($high: Array<number>, $low: Array<number>, $close: Array<num
   let tpsma = sma(tp, window);
   let tpmad = madev(tp, window);
   tpmad[0] = Infinity;
-  return pointwise((a: number, b: number, c: number) => (a - b) / (c * mult), tp, tpsma, tpmad);
+  return pointwise((a, b, c) => (a - b) / (c * mult), tp, tpsma, tpmad);
 }
 
 export function cho($high: Array<number>, $low: Array<number>, $close: Array<number>,
                     $volume: Array<number>, winshort: number, winlong: number) {
   let adli = adl($high, $low, $close, $volume);
-  return pointwise((s: number, l: number) => s - l, ema(adli, winshort), ema(adli, winlong));
+  return pointwise((s, l) => s - l, ema(adli, winshort), ema(adli, winlong));
 }
 
 export function fi($close: Array<number>, $volume: Array<number>, window: number) {
-  let delta = rolling((s: Array<number>) => s[s.length - 1] - s[0], $close, 2);
-  return ema(pointwise((a: number, b: number) => a * b, delta, $volume), window);
+  let delta = rolling(s => s[s.length - 1] - s[0], $close, 2);
+  return ema(pointwise((a, b) => a * b, delta, $volume), window);
 }
 
 export function kst($close: Array<number>, w1: number, w2: number, w3: number, w4: number,
@@ -58,14 +68,14 @@ export function kst($close: Array<number>, w1: number, w2: number, w3: number, w
   let rcma2 = sma(roc($close, w2), s2);
   let rcma3 = sma(roc($close, w3), s3);
   let rcma4 = sma(roc($close, w4), s4);
-  let line = pointwise((a: number, b: number, c: number, d: number) => a + b * 2 + c * 3 + d * 4, rcma1, rcma2, rcma3, rcma4);
+  let line = pointwise((a, b, c, d) => a + b * 2 + c * 3 + d * 4, rcma1, rcma2, rcma3, rcma4);
   return { line: line, signal: sma(line, sig) };
 }
 
 export function macd($close: Array<number>, winshort: number, winlong: number, winsig: number) {
-  const line = pointwise((a: number, b: number) => a - b, ema($close, winshort), ema($close, winlong));
+  const line = pointwise((a, b) => a - b, ema($close, winshort), ema($close, winlong));
   const signal = ema(line, winsig);
-  const hist = pointwise((a: number, b: number) => a - b, line, signal);
+  const hist = pointwise((a, b) => a - b, line, signal);
   return { line: line, signal: signal, hist: hist };
 }
 
@@ -78,9 +88,9 @@ export function mfi($high: Array<number>, $low: Array<number>,
     pmf.push(diff >= 0 ? tp[i] * $volume[i] : 0);
     nmf.push(diff < 0 ? tp[i] * $volume[i] : 0);
   }
-  pmf = rolling((s: Array<number>) => s.reduce((sum: number, x: number) => {return sum + x}, 0), pmf, window);
-  nmf = rolling((s: Array<number>) => s.reduce((sum: number, x: number) => {return sum + x}, 0), nmf, window);
-  return pointwise((a: number, b: number) => 100 - 100 / (1 + a / b), pmf, nmf);
+  pmf = rolling(s => s.reduce((sum: number, x: number) => {return sum + x}, 0), pmf, window);
+  nmf = rolling(s => s.reduce((sum: number, x: number) => {return sum + x}, 0), nmf, window);
+  return pointwise((a, b) => 100 - 100 / (1 + a / b), pmf, nmf);
 }
 
 export function obv($close: Array<number>, $volume: Array<number>, signal: number) {
@@ -106,22 +116,22 @@ export function rsi($close: Array<number>, window: number) {
     gains.push(diff >= 0 ? diff : 0);
     loss.push(diff < 0 ? -diff : 0);
   }
-  return pointwise((a: number, b: number) => 100 - 100 / (1 + a / b), ema(gains, 2 * window - 1), ema(loss, 2 * window - 1));
+  return pointwise((a, b) => 100 - 100 / (1 + a / b), ema(gains, 2 * window - 1), ema(loss, 2 * window - 1));
 }
 
 export function stoch($high: Array<number>, $low: Array<number>,
                       $close: Array<number>, window: number, signal: number, smooth: number) {
-  let lowest = rolling((s: Array<number>) => Math.min(...s), $low, window);
-  let highest = rolling((s: Array<number>) => Math.max(...s), $high, window);
-  let K = pointwise((h: number, l: number, c: number) => 100 * (c - l) / (h - l), highest, lowest, $close); 
+  let lowest = rolling(s => Math.min(...s), $low, window);
+  let highest = rolling(s => Math.max(...s), $high, window);
+  let K = pointwise((h, l, c) => 100 * (c - l) / (h - l), highest, lowest, $close); 
   if (smooth > 1) { K = sma(K, smooth) }
   return { line: K, signal: sma(K, signal) };
 }
 
 export function stochRsi($close: Array<number>, window: number, signal: number, smooth: number) {
   let _rsi = rsi($close, window);
-  let extreme = rolling((s: Array<number>) => { return { low: Math.min(...s), high: Math.max(...s) }}, _rsi, window);
-  let K = pointwise((rsi: number, e: any) => (rsi - e.low) / (e.high - e.low), _rsi, extreme);
+  let extreme = rolling(s => { return { low: Math.min(...s), high: Math.max(...s) }}, _rsi, window);
+  let K = pointwise((rsi, e) => (rsi - e.low) / (e.high - e.low), _rsi, extreme);
   K[0] = 0; if (smooth > 1) { K = sma(K, smooth) }
   return { line: K, signal: sma(K, signal) };
 }
@@ -132,12 +142,12 @@ export function vi($high: Array<number>, $low: Array<number>, $close: Array<numb
     pv.push(Math.abs($high[i] - $low[i-1]));
     nv.push(Math.abs($high[i-1] - $low[i]));
   }
-  let apv = rolling((s: Array<number>) => s.reduce((sum: number, x: number) => {return sum + x}, 0), pv, window);
-  let anv = rolling((s: Array<number>) => s.reduce((sum: number, x: number) => {return sum + x}, 0), nv, window);
-  let atr = rolling((s: Array<number>) => s.reduce((sum: number, x: number) => {return sum + x}, 0), trueRange($high, $low, $close), window);
-  return { plus: pointwise((a: number, b: number) => a / b, apv, atr), minus: pointwise((a: number, b: number) => a / b, anv, atr) };
+  let apv = rolling(s => s.reduce((sum: number, x: number) => {return sum + x}, 0), pv, window);
+  let anv = rolling(s => s.reduce((sum: number, x: number) => {return sum + x}, 0), nv, window);
+  let atr = rolling(s => s.reduce((sum: number, x: number) => {return sum + x}, 0), trueRange($high, $low, $close), window);
+  return { plus: pointwise((a, b) => a / b, apv, atr), minus: pointwise((a, b) => a / b, anv, atr) };
 }
 
 export function williams($high: Array<number>, $low: Array<number>, $close: Array<number>, window: number) {
-  return pointwise((x: number) => x - 100, stoch($high, $low, $close, window, 1, 1).line);
+  return pointwise((x) => x - 100, stoch($high, $low, $close, window, 1, 1).line);
 }

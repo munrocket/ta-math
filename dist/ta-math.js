@@ -42,7 +42,7 @@
       let result = [];
       for (let i = 0, len = serieses[0].length; i < len; i++) {
           let iseries = (i) => serieses.map(x => x[i]);
-          result[i] = operation(...iseries(i));
+          result.push(operation(...iseries(i)));
       }
       return result;
   }
@@ -59,7 +59,7 @@
       return (f.length != g.length) ? Infinity : avg(absDiff);
   }
   function sma(series, window) {
-      return rolling((s) => avg(s), series, window);
+      return rolling(s => avg(s), series, window);
   }
   function ema(series, window, start) {
       let weight = 2 / (window + 1);
@@ -70,13 +70,13 @@
       return ema;
   }
   function wma(series, window) {
-      return rolling((s) => wavg(s), series, window);
+      return rolling(s => wavg(s), series, window);
   }
   function stdev(series, window) {
-      return rolling((s) => sd(s), series, window);
+      return rolling(s => sd(s), series, window);
   }
   function madev(series, window) {
-      return rolling((s) => mad(s), series, window);
+      return rolling(s => mad(s), series, window);
   }
   function expdev(series, window) {
       let sqrDiff = pointwise((a, b) => (a - b) * (a - b), series, ema(series, window));
@@ -93,6 +93,9 @@
           result.push((1 - 1 / window) * result[i - 1] + series[i]);
       }
       return result;
+  }
+  function medianPrice($high, $low) {
+      return pointwise((a, b) => (a + b) / 2, $high, $low);
   }
   function typicalPrice($high, $low, $close) {
       return pointwise((a, b, c) => (a + b + c) / 3, $high, $low, $close);
@@ -240,6 +243,14 @@
       let dx = pointwise((a, b) => 100 * Math.abs(a - b) / (a + b), dip, dim);
       return { dip: dip, dim: dim, adx: new Array(14).fill(NaN).concat(ema(dx.slice(14), 2 * window - 1)) };
   }
+  function ao($high, $low, winshort, winlong) {
+      let md = medianPrice($high, $low);
+      return pointwise((a, b) => a - b, sma(md, winshort), sma(md, winlong));
+  }
+  function ac($high, $low, winsma, winshort, winlong) {
+      let s = ao($high, $low, winshort, winlong);
+      return pointwise((a, b) => a - b, s, sma(s, winsma));
+  }
   function bbp($close, window, mult) {
       let band = bb($close, window, mult);
       return pointwise((p, u, l) => (p - l) / (u - l), $close, band.upper, band.lower);
@@ -256,7 +267,7 @@
       return pointwise((s, l) => s - l, ema(adli, winshort), ema(adli, winlong));
   }
   function fi($close, $volume, window) {
-      let delta = rolling((s) => s[s.length - 1] - s[0], $close, 2);
+      let delta = rolling(s => s[s.length - 1] - s[0], $close, 2);
       return ema(pointwise((a, b) => a * b, delta, $volume), window);
   }
   function kst($close, w1, w2, w3, w4, s1, s2, s3, s4, sig) {
@@ -281,8 +292,8 @@
           pmf.push(diff >= 0 ? tp[i] * $volume[i] : 0);
           nmf.push(diff < 0 ? tp[i] * $volume[i] : 0);
       }
-      pmf = rolling((s) => s.reduce((sum, x) => { return sum + x; }, 0), pmf, window);
-      nmf = rolling((s) => s.reduce((sum, x) => { return sum + x; }, 0), nmf, window);
+      pmf = rolling(s => s.reduce((sum, x) => { return sum + x; }, 0), pmf, window);
+      nmf = rolling(s => s.reduce((sum, x) => { return sum + x; }, 0), nmf, window);
       return pointwise((a, b) => 100 - 100 / (1 + a / b), pmf, nmf);
   }
   function obv($close, $volume, signal) {
@@ -309,8 +320,8 @@
       return pointwise((a, b) => 100 - 100 / (1 + a / b), ema(gains, 2 * window - 1), ema(loss, 2 * window - 1));
   }
   function stoch($high, $low, $close, window, signal, smooth) {
-      let lowest = rolling((s) => Math.min(...s), $low, window);
-      let highest = rolling((s) => Math.max(...s), $high, window);
+      let lowest = rolling(s => Math.min(...s), $low, window);
+      let highest = rolling(s => Math.max(...s), $high, window);
       let K = pointwise((h, l, c) => 100 * (c - l) / (h - l), highest, lowest, $close);
       if (smooth > 1) {
           K = sma(K, smooth);
@@ -319,7 +330,7 @@
   }
   function stochRsi($close, window, signal, smooth) {
       let _rsi = rsi($close, window);
-      let extreme = rolling((s) => { return { low: Math.min(...s), high: Math.max(...s) }; }, _rsi, window);
+      let extreme = rolling(s => { return { low: Math.min(...s), high: Math.max(...s) }; }, _rsi, window);
       let K = pointwise((rsi, e) => (rsi - e.low) / (e.high - e.low), _rsi, extreme);
       K[0] = 0;
       if (smooth > 1) {
@@ -333,9 +344,9 @@
           pv.push(Math.abs($high[i] - $low[i - 1]));
           nv.push(Math.abs($high[i - 1] - $low[i]));
       }
-      let apv = rolling((s) => s.reduce((sum, x) => { return sum + x; }, 0), pv, window);
-      let anv = rolling((s) => s.reduce((sum, x) => { return sum + x; }, 0), nv, window);
-      let atr = rolling((s) => s.reduce((sum, x) => { return sum + x; }, 0), trueRange($high, $low, $close), window);
+      let apv = rolling(s => s.reduce((sum, x) => { return sum + x; }, 0), pv, window);
+      let anv = rolling(s => s.reduce((sum, x) => { return sum + x; }, 0), nv, window);
+      let atr = rolling(s => s.reduce((sum, x) => { return sum + x; }, 0), trueRange($high, $low, $close), window);
       return { plus: pointwise((a, b) => a / b, apv, atr), minus: pointwise((a, b) => a / b, anv, atr) };
   }
   function williams($high, $low, $close, window) {
@@ -421,6 +432,12 @@
       }
       adx(window = 14) {
           return TA.adx(this.$high, this.$low, this.$close, window);
+      }
+      ao(winshort = 5, winlong = 34) {
+          return TA.ao(this.$high, this.$low, winshort, winlong);
+      }
+      ac(winsma = 5, winshort = 5, winlong = 34) {
+          return TA.ac(this.$high, this.$low, winsma, winshort, winlong);
       }
       bb(window = 15, mult = 2) {
           return TA.bb(this.$close, window, mult);
@@ -520,6 +537,12 @@
       }
       static adx($high, $low, $close, window = 14) {
           return adx($high, $low, $close, window);
+      }
+      static ao($high, $low, winshort = 5, winlong = 34) {
+          return ao($high, $low, winshort, winlong);
+      }
+      static ac($high, $low, winsma = 5, winshort = 5, winlong = 34) {
+          return ac($high, $low, winsma, winshort, winlong);
       }
       static bb($close, window = 15, mult = 2) {
           return bb($close, window, mult);

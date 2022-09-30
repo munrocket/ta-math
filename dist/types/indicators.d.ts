@@ -4,6 +4,8 @@ export declare function adx($high: Array<number>, $low: Array<number>, $close: A
     dim: any[];
     adx: any[];
 };
+export declare function ao($high: Array<number>, $low: Array<number>, winshort: number, winlong: number): any[];
+export declare function ac($high: Array<number>, $low: Array<number>, winsma: number, winshort: number, winlong: number): any[];
 export declare function bbp($close: Array<number>, window: number, mult: number): any[];
 export declare function cci($high: Array<number>, $low: Array<number>, $close: Array<number>, window: number, mult: number): any[];
 export declare function cho($high: Array<number>, $low: Array<number>, $close: Array<number>, $volume: Array<number>, winshort: number, winlong: number): any[];

@@ -5,28 +5,28 @@ import { sma, ema, wma, stdev, expdev, pointwise, atr, typicalPrice} from './cor
 export function bb($close: Array<number>, window: number, mult: number) {
   let ma = sma($close, window);
   let dev = stdev($close, window);
-  let upper = pointwise((a: number, b: number) => a + b * mult, ma, dev);
-  let lower = pointwise((a: number, b: number) => a - b * mult, ma, dev);
+  let upper = pointwise((a, b) => a + b * mult, ma, dev);
+  let lower = pointwise((a, b) => a - b * mult, ma, dev);
   return { lower : lower, middle : ma, upper : upper };
 }
 
 export function dema($close: Array<number>, window: number) {
   let ema1 = ema($close, window);
-  return pointwise((a: number, b: number) => 2 * a - b, ema1, ema(ema1, window));
+  return pointwise((a, b) => 2 * a - b, ema1, ema(ema1, window));
 }
 
 export function ebb($close: Array<number>, window: number, mult: number) {
   let ma = ema($close, window);
   let dev = expdev($close, window);
-  let upper = pointwise((a: number, b: number) => a + b * mult, ma, dev);
-  let lower = pointwise((a: number, b: number) => a - b * mult, ma, dev);
+  let upper = pointwise((a, b) => a + b * mult, ma, dev);
+  let lower = pointwise((a, b) => a - b * mult, ma, dev);
   return { lower : lower, middle : ma, upper : upper };
 }
 
 export function keltner($high: Array<number>, $low: Array<number>, $close: Array<number>, window: number, mult: number) {
   let middle = ema($close, window);
-  let upper = pointwise((a: number, b: number) => a + mult * b, middle, atr($high, $low, $close, window));
-  let lower = pointwise((a: number, b: number) => a - mult * b, middle, atr($high, $low, $close, window));
+  let upper = pointwise((a, b) => a + mult * b, middle, atr($high, $low, $close, window));
+  let lower = pointwise((a, b) => a - mult * b, middle, atr($high, $low, $close, window));
   return { lower: lower, middle: middle, upper: upper };
 }
 
@@ -56,7 +56,7 @@ export function psar($high: Array<number>, $low: Array<number>, stepfactor: numb
 export function tema($close: Array<number>, window: number) {
   let ema1 = ema($close, window);
   let ema2 = ema(ema1, window);
-  return pointwise((a: number, b: number, c: number) => 3 * a - 3 * b + c, ema1, ema2, ema(ema2, window));
+  return pointwise((a, b, c) => 3 * a - 3 * b + c, ema1, ema2, ema(ema2, window));
 }
 
 export function vbp($close: Array<number>, $volume: Array<number>, zones: number, left: number, right: number) {
@@ -82,13 +82,13 @@ export function vwap($high: Array<number>, $low: Array<number>, $close: Array<nu
     cumulVTP[i] = cumulVTP[i - 1] + $volume[i] * tp[i];
     cumulV[i] = cumulV[i - 1] + $volume[i];
   }
-  return pointwise((a: number, b: number) => a / b, cumulVTP, cumulV)
+  return pointwise((a, b) => a / b, cumulVTP, cumulV)
 }
 
 export function hma(series: Array<number>, window: number) {
   let s1 = wma(series, Math.floor(window / 2));
   let s2 = wma(series, window);
-  let s3 = pointwise((a: number, b: number) => 2 * a - b, s1, s2);
+  let s3 = pointwise((a, b) => 2 * a - b, s1, s2);
   return wma(s3, Math.floor(Math.sqrt(window)));
 }
 

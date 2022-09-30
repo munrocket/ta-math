@@ -24,7 +24,7 @@ export function sd(series: Array<number>) {
 
 export function cov(f: Array<number>, g: Array<number>) {
   let Ef = avg(f), Eg = avg(g);
-  let Efg = avg(pointwise((a: number, b: number) => a * b, f, g));
+  let Efg = avg(pointwise((a, b) => a * b, f, g));
   return Efg - Ef * Eg;
 }
 
@@ -32,7 +32,7 @@ export function cor(f: Array<number>, g: Array<number>) {
   let Ef = avg(f), Eg = avg(g);
   let Ef2 = avg(pointwise((a: number) => a * a, f));
   let Eg2 = avg(pointwise((a: number) => a * a, g));
-  let Efg = avg(pointwise((a: number, b: number) => a * b, f, g));
+  let Efg = avg(pointwise((a, b) => a * b, f, g));
   return (Efg - Ef * Eg) / Math.sqrt((Ef2 - Ef * Ef) * (Eg2 - Eg * Eg));
 }
 
@@ -42,16 +42,16 @@ export function mad(array: Array<number>) {
 
 /* functional programming */
 
-export function pointwise(operation: Function, ...serieses: Array<Array<number>>) {
+export function pointwise(operation: (...args: any[]) => any, ...serieses: Array<Array<number>>) {
   let result = [];
   for (let i = 0, len = serieses[0].length; i < len; i++) {
     let iseries = (i: number) => serieses.map(x => x[i]);
-    result[i] = operation(...iseries(i));
+    result.push(operation(...iseries(i)));
   }
   return result;
 }
 
-export function rolling(operation: Function, series: Array<number>, window: number) {
+export function rolling(operation: (...args: any[]) => any, series: Array<number>, window: number) {
   let result = [];
   for (let i = 0, len = series.length; i < len; i++) {
     let j = i + 1 - window;
@@ -63,12 +63,12 @@ export function rolling(operation: Function, series: Array<number>, window: numb
 /* scaled and percentage errors */
 
 export function mae(f: Array<number>, g: Array<number>) {
-  const absDiff = pointwise((a: number, b: number) => Math.abs(a - b), f, g);
+  const absDiff = pointwise((a, b) => Math.abs(a - b), f, g);
   return (f.length != g.length) ? Infinity : avg(absDiff);
 }
 
 export function rmse(f: Array<number>, g: Array<number>) {
-  const sqrDiff = pointwise((a: number, b: number) => (a - b) * (a - b), f, g);
+  const sqrDiff = pointwise((a, b) => (a - b) * (a - b), f, g);
   return (f.length != g.length) ? Infinity : Math.sqrt(avg(sqrDiff));
 }
 
@@ -77,14 +77,14 @@ export function nrmse(f: Array<number>, g: Array<number>) {
 }
 
 export function mape(f: Array<number>, g: Array<number>) {
-  const frac = pointwise((a: number, b: number) => Math.abs((a - b) / a), f, g);
+  const frac = pointwise((a, b) => Math.abs((a - b) / a), f, g);
   return (f.length != g.length) ? Infinity : avg(frac) * 100;
 }
 
 /* core indicators & overlays */
 
 export function sma(series: Array<number>, window: number) {
-  return rolling((s: Array<number>) => avg(s), series, window);
+  return rolling(s => avg(s), series, window);
 }
 
 export function ema(series: Array<number>, window: number, start ?: number) {
@@ -97,19 +97,19 @@ export function ema(series: Array<number>, window: number, start ?: number) {
 }
 
 export function wma(series: Array<number>, window: number) {
-  return rolling((s: Array<number>) => wavg(s), series, window);
+  return rolling(s => wavg(s), series, window);
 }
 
 export function stdev(series: Array<number>, window: number) {
-  return rolling((s: Array<number>) => sd(s), series, window);
+  return rolling(s => sd(s), series, window);
 }
 
 export function madev(series: Array<number>, window: number) {
-  return rolling((s: Array<number>) => mad(s), series, window);
+  return rolling(s => mad(s), series, window);
 }
 
 export function expdev(series: Array<number>, window: number) {
-  let sqrDiff = pointwise((a: number, b: number) => (a - b) * (a - b), series, ema(series, window));
+  let sqrDiff = pointwise((a, b) => (a - b) * (a - b), series, ema(series, window));
   return pointwise((x: number) => Math.sqrt(x), ema(sqrDiff, window));
 }
 
@@ -131,8 +131,12 @@ export function wilderSmooth(series: Array<number>, window: number) {
 
 /* price transformations */
 
+export function medianPrice($high: Array<number>, $low: Array<number>) {
+  return pointwise((a, b) => (a + b) / 2, $high, $low);
+}
+
 export function typicalPrice($high: Array<number>, $low: Array<number>, $close: Array<number>) {
-  return pointwise((a: number, b: number, c: number) => (a + b + c) / 3, $high, $low, $close);
+  return pointwise((a, b, c) => (a + b + c) / 3, $high, $low, $close);
 }
 
 export function trueRange($high: Array<number>, $low: Array<number>, $close: Array<number>) {

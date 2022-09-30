@@ -33,6 +33,8 @@ Check [example](https://munrocket.github.io/ta-math/example/index.html) with plo
 | adl       | Accumulation / Distribution line      |   ✔️    | Marc Chaikin                      | 1970s|
 | atr       | Average True Range                    |   ✔️    | Welles Wilder                     | 1978 |
 | adx       | Average Directional Index             |   ✔️    | Welles Wilder                     | 1978 |
+| ao        | Awesome Oscillator                    |   -    | Bill Williams                     |      |
+| ac        | Accelerator Oscillator                |   -    | Bill Williams                     |      |
 | bbp       | Bollinger Bands Percent Bandwidth %B  |   ok   |                                   |      |
 | cci       | Commodity Channel Index               |   ✔️    | Donald Lambert                    | 1980 |
 | cho       | Chaikin Oscillator                    |   ok   |  Marc Chaikin                     |      |
@@ -62,8 +64,9 @@ Check [example](https://munrocket.github.io/ta-math/example/index.html) with plo
 ### Price transformations
 | Function     | Price transformation               | Tested  |
 |:-------------|:-----------------------------------|:-------:|
-| trueRange    | True Range                         |    ✔️   |
+| medianPrice  | Median Price                       |    -   |
 | typicalPrice | Typical Price                      |    ✔️   |
+| trueRange    | True Range                         |    ✔️   |
 
 ### Statistical methods
 | Function  | Statistical methods                    | Tested  |
@@ -103,7 +106,7 @@ Install npm package `npm i ta-math` or add `ta-math.js` script file on web page.
 - [X] coverage
 - [X] good looking example
 - [X] migrate to typescript
-- [ ] fix PSAR, WMA, HMA
+- [ ] fix PSAR
 
 ### Contributing
 Feel free to contribute. Here [reference](http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators)

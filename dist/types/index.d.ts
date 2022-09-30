@@ -35,6 +35,8 @@ export default class TA extends CLookup {
         dim: any[];
         adx: any[];
     };
+    ao(winshort?: number, winlong?: number): any[];
+    ac(winsma?: number, winshort?: number, winlong?: number): any[];
     bb(window?: number, mult?: number): {
         lower: any[];
         middle: any[];
@@ -52,7 +54,7 @@ export default class TA extends CLookup {
     ema(window?: number): number[];
     expdev(window?: number): any[];
     fi(window?: number): number[];
-    hma(window?: number): any;
+    hma(window?: number): any[];
     keltner(window?: number, mult?: number): {
         lower: any[];
         middle: number[];
@@ -98,7 +100,7 @@ export default class TA extends CLookup {
     };
     vwap(): any[];
     williams(window?: number): any[];
-    wma(window?: number): number[];
+    wma(window?: number): any[];
     zigzag(percent?: number): {
         time: number[];
         price: number[];
@@ -110,6 +112,8 @@ export default class TA extends CLookup {
         dim: any[];
         adx: any[];
     };
+    static ao($high: Array<number>, $low: Array<number>, winshort?: number, winlong?: number): any[];
+    static ac($high: Array<number>, $low: Array<number>, winsma?: number, winshort?: number, winlong?: number): any[];
     static bb($close: Array<number>, window?: number, mult?: number): {
         lower: any[];
         middle: any[];
@@ -127,7 +131,7 @@ export default class TA extends CLookup {
     static ema($close: Array<number>, window?: number): number[];
     static expdev($close: Array<number>, window?: number): any[];
     static fi($close: Array<number>, $volume: Array<number>, window?: number): number[];
-    static hma($close: Array<number>, window?: number): any;
+    static hma($close: Array<number>, window?: number): any[];
     static keltner($high: Array<number>, $low: Array<number>, $close: Array<number>, window?: number, mult?: number): {
         lower: any[];
         middle: number[];
@@ -173,7 +177,7 @@ export default class TA extends CLookup {
     };
     static vwap($high: Array<number>, $low: Array<number>, $close: Array<number>, $volume: Array<number>): any[];
     static williams($high: Array<number>, $low: Array<number>, $close: Array<number>, window?: number): any[];
-    static wma($close: Array<number>, window?: number): number[];
+    static wma($close: Array<number>, window?: number): any[];
     static zigzag($time: Array<number>, $high: Array<number>, $low: Array<number>, percent?: number): {
         time: number[];
         price: number[];

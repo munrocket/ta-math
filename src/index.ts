@@ -59,6 +59,10 @@ export default class TA extends CLookup {
     return TA.atr(this.$high, this.$low, this.$close, window) }
   adx(window = 14) {
     return TA.adx(this.$high, this.$low, this.$close, window) }
+  ao(winshort = 5, winlong = 34) {
+    return TA.ao(this.$high, this.$low, winshort, winlong) }
+  ac(winsma = 5, winshort = 5, winlong = 34) {
+    return TA.ac(this.$high, this.$low, winsma, winshort, winlong) }
   bb(window = 15, mult = 2) {
     return TA.bb(this.$close, window, mult) }
   bbp(window = 15, mult = 2) {
@@ -127,6 +131,10 @@ export default class TA extends CLookup {
     return core.atr($high, $low, $close, window) }
   static adx($high: Array<number>, $low: Array<number>, $close: Array<number>, window = 14) {
     return indicators.adx($high, $low, $close, window) }
+  static ao($high: Array<number>, $low: Array<number>, winshort = 5, winlong = 34) {
+      return indicators.ao($high, $low, winshort, winlong) }
+  static ac($high: Array<number>, $low: Array<number>, winsma = 5, winshort = 5, winlong = 34) {
+    return indicators.ac($high, $low, winsma, winshort, winlong) }
   static bb($close: Array<number>, window = 15, mult = 2) {
     return overlays.bb($close, window, mult) }
   static bbp($close: Array<number>, window = 15, mult = 2) {
