@@ -1,6 +1,6 @@
 {
   "name": "ta-math",
-  "version": "1.0.92",
+  "version": "1.0.93",
   "description": "Technical analysis library in javascript. Calculates indicators and overlays from ohlcv data",
   "main": "dist/ta-math.js",
   "types": "dist/types/index.d.ts",
@@ -58,6 +58,6 @@
   "author": "munrocket",
   "license": "MIT",
   "dependencies": {
-    "servez": "^1.14.1"
+    "servez": "^2.0.0"
   }
 }
